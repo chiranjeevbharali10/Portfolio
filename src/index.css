@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-primary font-inter overflow-x-hidden selection:bg-lime selection:text-black;
+  }
+}
+
+@layer utilities {
+  .font-podium {
+    font-family: "FSP DEMO - PODIUM Sharp 4.11", "Podium", sans-serif;
+  }
+  
+  /* Glowing cyan-tinted subtle grid lines */
+  .editorial-grid {
+    background-image: 
+      linear-gradient(to right, rgba(0, 229, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 229, 255, 0.04) 1px, transparent 1px);
+    background-size: 5vw 5vw;
+    background-position: center;
+  }
+
+  /* Experimental Typography Effects */
+  .text-stroke {
+    -webkit-text-stroke: 1px rgba(245, 243, 232, 0.4);
+    color: transparent;
+  }
+
+  .text-stroke-lime {
+    -webkit-text-stroke: 1px #DFFF00;
+    color: transparent;
+  }
+  
+  .text-gradient-purple-pink {
+    background: linear-gradient(135deg, #8B35FF, #FF2D9A);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
