@@ -65,31 +65,59 @@ export const Landing = () => {
         </div>
 
         {/* RIGHT COLUMN (2/3) */}
-        <div className="w-full md:w-2/3 h-[500px] md:h-full">
-          {/* MAIN CREATIVITY CARD */}
+        <div className="w-full md:w-2/3 h-[500px] md:h-full p-2 md:p-0">
+          {/* MAIN CREATIVITY POSTER */}
           <Link 
             to="/universe#creativity" 
-            className="group relative flex w-full h-full items-center justify-center bg-[#0c0c0c] rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-[#0000ff]"
+            className="group relative flex w-full h-full items-center justify-center bg-[#050508] rounded-[24px] sm:rounded-[28px] p-8 overflow-hidden transition-all duration-700 hover:scale-[0.99] shadow-2xl border-2 border-[#1b6bff]/80"
           >
-            {/* Mesh Background */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#0000ff2e_1px,transparent_1px),linear-gradient(to_bottom,#0000ff2e_1px,transparent_1px)] bg-[size:40px_40px] opacity-40 group-hover:scale-105 transition-transform duration-1000"></div>
-            
+            {/* Vibrant Warped SVG Grid Texture - Evenly Lit */}
+            <div className="absolute inset-[-5%] z-0 opacity-50 group-hover:opacity-80 transition-opacity duration-1000 flex items-center justify-center pointer-events-none">
+              <svg viewBox="0 0 1000 1000" className="w-full h-full text-[#1b6bff]">
+                <g>
+                  {Array.from({ length: 26 }).map((_, i) => {
+                    const pos = i * 40;
+                    const center = 500;
+                    const dist = 0.12; // Wavy grid
+                    const d = (pos - center) * dist;
+                    return (
+                      <g key={i}>
+                        <path d={`M ${pos} -50 Q ${pos + d} 500 ${pos} 1050`} fill="none" stroke="currentColor" strokeWidth="1" />
+                        <path d={`M -50 ${pos} Q 500 ${pos + d} 1050 ${pos}`} fill="none" stroke="currentColor" strokeWidth="1" />
+                      </g>
+                    );
+                  })}
+                </g>
+              </svg>
+            </div>
+
             {/* Top Left Text */}
-            <div className="absolute top-6 left-8 font-inter text-[10px] text-white/60 tracking-widest z-20">
+            <div className="absolute top-6 left-8 font-inter text-[10px] text-white tracking-widest z-20">
               chiranjeevbharali10
             </div>
 
-            {/* Bottom Left Text */}
-            <div className="absolute bottom-6 left-8 font-inter text-[10px] text-white/60 tracking-widest z-20 flex items-center gap-4">
-              <span>0026</span>
-              <span className="w-14 h-px bg-white/40"></span>
-              <span>15'</span>
+            {/* Top Right Icon */}
+            <div className="absolute top-6 right-8 z-20">
+              <img src="/fonts/earth-01.svg" alt="Earth" className="w-12 h-12 opacity-90" />
             </div>
 
+            {/* Bottom Left Text */}
+            <div className="absolute bottom-6 left-8 font-inter text-[10px] text-white tracking-widest z-20 flex items-center gap-4">
+              <span>07</span>
+              <span className="w-14 h-px bg-white"></span>
+              <span>'26</span>
+            </div>
+
+            {/* Bottom Right Icon */}
+            <div className="absolute bottom-6 right-8 z-20">
+              <img src="/fonts/xx.svg" alt="Icon" className="w-14 h-14 opacity-90" />
+            </div>
+
+            {/* Main Typography Artwork */}
             <img 
               src="/fonts/CREATIVITYMAKESSS-01.svg" 
               alt="Creativity Makes Anything Possible" 
-              className="relative z-10 w-[85%] h-[85%] object-contain transition-transform duration-700 group-hover:scale-105" 
+              className="relative z-30 w-[90%] h-[90%] object-contain transition-transform duration-1000 group-hover:scale-[1.03]" 
             />
           </Link>
         </div>
