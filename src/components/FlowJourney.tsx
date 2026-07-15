@@ -2,8 +2,9 @@ import { useRef } from 'react';
 import { useGSAP } from '@gsap/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
 export const FlowJourney = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -11,6 +12,7 @@ export const FlowJourney = () => {
   const gradientRef = useRef<HTMLDivElement>(null);
   const titleWrapperRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
+  const glowRef = useRef<SVGCircleElement>(null);
 
   useGSAP(() => {
     // 1. Circle Expansion (Solid Green)
@@ -25,14 +27,14 @@ export const FlowJourney = () => {
       }
     });
 
-    // 2. Crossfade to Gradient Background
+    // 2. Crossfade to Dim Ambient Background
     gsap.to(gradientRef.current, {
       opacity: 1,
       ease: "power2.inOut",
       scrollTrigger: {
         trigger: containerRef.current,
-        start: "top -50%", // Starts fading in after circle is halfway done
-        end: "top -150%",  // Completes as the timeline section fully enters
+        start: "top -100%", // Starts fading after circle is fully expanded
+        end: "top -180%",   // Finishes as we enter timeline section
         scrub: 1,
       }
     });
@@ -53,14 +55,12 @@ export const FlowJourney = () => {
       }
     });
 
-    // 4. SVG Road Drawing
+    // 4. SVG Road Drawing & Glow Path
     if (pathRef.current) {
       const length = pathRef.current.getTotalLength();
       gsap.set(pathRef.current, { strokeDasharray: length, strokeDashoffset: length });
       
-      gsap.to(pathRef.current, {
-        strokeDashoffset: 0,
-        ease: "none",
+      const tl = gsap.timeline({
         scrollTrigger: {
           trigger: ".timeline-section",
           start: "top center",
@@ -68,6 +68,22 @@ export const FlowJourney = () => {
           scrub: 1,
         }
       });
+
+      tl.to(pathRef.current, {
+        strokeDashoffset: 0,
+        ease: "none",
+      }, 0);
+
+      if (glowRef.current) {
+        tl.to(glowRef.current, {
+          motionPath: {
+            path: pathRef.current,
+            align: pathRef.current,
+            alignOrigin: [0.5, 0.5]
+          },
+          ease: "none",
+        }, 0);
+      }
     }
 
     // 5. Clean Text Reveal
@@ -104,10 +120,10 @@ export const FlowJourney = () => {
           style={{ transform: 'scale(0)' }}
         ></div>
 
-        {/* Gradient Overlay (Fades in) */}
+        {/* Dim Ambient Background (Fades in) */}
         <div 
           ref={gradientRef} 
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#35fe5d] via-[#21db46] to-[#0d7d24] opacity-0"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#11451f] via-[#0a2e13] to-[#050505] opacity-0"
         ></div>
       </div>
 
@@ -132,11 +148,33 @@ export const FlowJourney = () => {
           
           {/* Solid Thick Black Road */}
           <div className="absolute inset-0 w-full h-full pointer-events-none z-10 flex justify-center">
-            <svg viewBox="0 0 1000 3000" preserveAspectRatio="none" className="w-full h-full max-w-[1400px]">
+            <svg viewBox="0 0 1000 3000" preserveAspectRatio="none" className="w-full h-full max-w-[1400px] overflow-visible">
+              <defs>
+                <filter id="greenGlow" x="-500%" y="-500%" width="1100%" height="1100%">
+                  <feGaussianBlur stdDeviation="80" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              {/* Dim base road */}
               <path 
                 d="M 500 0 C 500 400, 200 600, 200 1000 S 800 1400, 800 1800 S 200 2200, 200 2600 S 500 2800, 500 3000" 
-                fill="none" stroke="rgba(0,0,0,0.05)" strokeWidth="30" strokeLinecap="round"
+                fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="30" strokeLinecap="round"
               />
+              
+              {/* Glowing Follower */}
+              <circle 
+                ref={glowRef} 
+                r="100" 
+                fill="#35fe5d" 
+                filter="url(#greenGlow)" 
+                opacity="0.8"
+              />
+
+              {/* The solid black road being drawn */}
               <path 
                 ref={pathRef}
                 d="M 500 0 C 500 400, 200 600, 200 1000 S 800 1400, 800 1800 S 200 2200, 200 2600 S 500 2800, 500 3000" 
