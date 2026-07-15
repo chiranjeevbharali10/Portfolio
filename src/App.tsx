@@ -5,7 +5,6 @@ import { FloatingObjects } from "./components/FloatingObjects";
 import { CustomCursor } from "./components/CustomCursor";
 import { CinematicBackground } from "./components/CinematicBackground";
 import { Manifesto } from "./components/Manifesto";
-import { ProjectArchive } from "./components/ProjectArchive";
 import { initSmoothScrolling } from "./utils/smoothScroll";
 import { playHeroTimeline } from "./animations/gsapAnimations";
 
@@ -13,7 +12,7 @@ function App() {
   useEffect(() => {
     initSmoothScrolling();
     
-    // Play hero timeline after a short delay for fonts/DOM to mount
+    // Play hero metadata/navbar timeline after a short delay
     const timer = setTimeout(() => {
       playHeroTimeline();
     }, 150);
@@ -30,7 +29,6 @@ function App() {
       <Navbar />
       <Hero />
       <Manifesto />
-      <ProjectArchive />
       
       {/* Future sections would go here */}
       <section id="work" className="min-h-screen w-full relative z-10 flex items-center justify-center border-t border-primary/10">

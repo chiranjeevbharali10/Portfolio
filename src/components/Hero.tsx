@@ -1,8 +1,95 @@
+import { useRef, useMemo } from 'react';
+import { useGSAP } from '@gsap/react';
+import { gsap } from 'gsap';
+
+const PHRASE_LINES = [
+  "CREATIVITY",
+  "MAKES ANYTHING",
+  "POSSIBLE"
+];
+
+const LETTER_MAP: Record<string, string[]> = {
+    'A': ['A_fist-01.svg', 'A_second-01.svg', 'A_second-01.svg'],
+    'B': ['B-01.svg'],
+    'C': ['C-01.svg'],
+    'E': ['E-01.svg', 'E-01.svg', 'E-01.svg'],
+    'G': ['G-01.svg'],
+    'H': ['H-01.svg'],
+    'I': ['I-01.svg', 'I-01.svg', 'I-01.svg', 'I-01.svg'],
+    'K': ['K-01.svg'],
+    'L': ['L-01.svg'],
+    'M': ['M-01.svg'],
+    'N': ['N-01.svg', 'N-01.svg'],
+    'O': ['O-01.svg'],
+    'P': ['P-01.svg'],
+    'R': ['R-01.svg'],
+    'S': ['S-01_fist-01.svg', 'S_second-01.svg', 'S_second-01.svg'],
+    'T': ['T-01.svg', 'T-01.svg', 'T-01.svg'],
+    'V': ['V-01.svg'],
+    'Y': ['Y-01.svg', 'Y-01.svg'],
+};
+
 export const Hero = () => {
+  const containerRef = useRef<HTMLElement>(null);
+
+  const letters = useMemo(() => {
+    const occurrences: Record<string, number> = {};
+    const lines = [];
+    
+    for (const line of PHRASE_LINES) {
+      const lineData = [];
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === ' ') {
+          lineData.push({ char: ' ', src: null });
+          continue;
+        }
+        
+        if (!occurrences[char]) occurrences[char] = 1;
+        else occurrences[char]++;
+        
+        const count = occurrences[char];
+        const files = LETTER_MAP[char] || [`${char}-01.svg`]; 
+        const file = files[count - 1] || files[0] || `${char}-01.svg`;
+        
+        lineData.push({ char, src: `/fonts/${file}` });
+      }
+      lines.push(lineData);
+    }
+    return lines;
+  }, []);
+
+  useGSAP(() => {
+    const letterEls = gsap.utils.toArray<HTMLElement>('.svg-letter');
+    
+    // Initial hidden state
+    gsap.set(letterEls, {
+      opacity: 0,
+      scale: 0.8,
+      y: 30,
+      rotation: 0,
+    });
+
+    // Staggered reveal
+    gsap.to(letterEls, {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      rotation: 0,
+      duration: 1.5,
+      delay: 0.2,
+      stagger: {
+        each: 0.05,
+        from: "start"
+      },
+      ease: "power3.out"
+    });
+  }, { scope: containerRef });
+
   return (
-    <section className="relative min-h-screen flex items-center px-6 sm:px-10 lg:px-20 z-10 overflow-hidden">
+    <section ref={containerRef} className="relative min-h-screen flex items-center px-6 sm:px-10 lg:px-20 z-10 overflow-hidden">
       
-      {/* LEFT: Technical Labels (Vertical layout) with restrained colors */}
+      {/* LEFT: Technical Labels */}
       <div className="tech-label absolute left-6 md:left-10 top-[20%] flex flex-col gap-12 hidden lg:flex">
         <div className="font-inter text-[10px] tracking-[0.3em] uppercase text-primary/60 rotate-180" style={{ writingMode: 'vertical-rl' }}>
           <span className="text-[#EAE4D3] mb-3 font-bold">01.</span>
@@ -14,39 +101,47 @@ export const Hero = () => {
         </div>
       </div>
 
-      {/* CENTER: Typography scaled to fit viewport, no cropping */}
-      <div className="w-full lg:w-4/5 flex flex-col pt-20 lg:pt-0 relative z-20 mx-auto lg:ml-[10%]">
-        <h1 className="hero-heading font-podium uppercase flex flex-col w-full relative z-30">
-          {/* BUILD. - cream filled */}
-          <div className="text-[clamp(4rem,10vw,12rem)] leading-[0.85] tracking-tighter text-primary">
-            BUILD.
-          </div>
-          {/* CREATE. - beige filled */}
-          <div className="text-[clamp(4rem,10vw,12rem)] leading-[0.85] tracking-tighter lg:ml-[5%] text-[#EAE4D3]">
-            CREATE.
-          </div>
-          {/* EVOLVE. - outlined silver/gray */}
-          <div className="text-[clamp(4rem,10vw,12rem)] leading-[0.85] tracking-tighter lg:ml-[10%]">
-             <span style={{ WebkitTextStroke: '1.5px #8C8C8C', color: 'transparent' }}>
-                EVOLVE.
-             </span>
-          </div>
-        </h1>
+      {/* CENTER: SVG Typography */}
+      <div className="w-full lg:w-[85%] flex flex-col pt-20 lg:pt-0 relative z-20 mx-auto items-center">
+        
+        {/* Aspect Ratio Preserved Flexbox Layout */}
+        <div className="flex flex-col w-full relative z-30 mb-8 items-center">
+          {letters.map((line, lineIndex) => (
+            <div key={lineIndex} className={`flex justify-center items-end w-full ${lineIndex > 0 ? '-mt-[5vw] lg:-mt-[3.5vw]' : ''}`}>
+              {line.map((letter, letterIndex) => {
+                return (
+                <div 
+                  key={`${lineIndex}-${letterIndex}`} 
+                  className={`flex justify-center items-center ${letter.char === ' ' ? 'w-[3vw]' : '-mx-[1.2vw] lg:-mx-[1vw]'}`}
+                >
+                  {letter.src && (
+                    <div className="svg-letter relative will-change-transform">
+                      <img 
+                        src={letter.src} 
+                        alt={letter.char} 
+                        // Fix: Constrain height instead of width so aspect ratio is preserved perfectly
+                        className="h-[14vw] lg:h-[9vw] w-auto object-contain block opacity-90 drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)]"
+                      />
+                    </div>
+                  )}
+                </div>
+              )})}
+            </div>
+          ))}
+        </div>
 
-        {/* Description aligned uniquely */}
-        <p className="hero-metadata font-inter text-primary/60 text-sm sm:text-base leading-relaxed max-w-sm mt-12 lg:ml-[10%] border-l border-primary/20 pl-6">
+        <p className="hero-metadata font-inter text-primary/60 text-sm sm:text-base leading-relaxed max-w-sm mt-12 border-l border-primary/20 pl-6 text-center lg:text-left">
           I build intelligent systems and immersive digital experiences that blur the line between engineering and digital art.
         </p>
 
-        {/* CTA Buttons - Asymmetric alignment */}
-        <div className="hero-metadata flex flex-col sm:flex-row gap-6 mt-12 lg:ml-[10%]">
+        <div className="hero-metadata flex flex-col sm:flex-row gap-6 mt-12">
           <button className="bg-[#EAE4D3] text-black rounded-full px-8 py-4 text-xs font-bold tracking-widest uppercase hover:bg-primary transition-colors duration-300 interactive">
             VIEW EXPERIMENTS ↗
           </button>
         </div>
       </div>
 
-      {/* BOTTOM: Grid-aligned Metadata with restrained highlights */}
+      {/* BOTTOM: Grid-aligned Metadata */}
       <div className="hero-metadata absolute bottom-10 left-6 sm:left-10 lg:left-20 right-6 sm:right-10 lg:right-20 flex justify-between items-end border-t border-primary/20 pt-4 hidden md:flex">
         <div className="font-inter text-[9px] tracking-widest text-primary/60 uppercase">
           <span className="text-primary font-bold">CHIRANJEEV</span> <br/>
