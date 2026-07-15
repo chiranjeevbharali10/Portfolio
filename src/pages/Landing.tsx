@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
 
 export const Landing = () => {
   return (
@@ -13,61 +12,56 @@ export const Landing = () => {
           {/* GREEN FLOW CARD */}
           <Link 
             to="/universe#flow" 
-            className="group relative flex-1 min-h-[250px] bg-[#35fe5d] rounded-[24px] sm:rounded-[32px] p-6 sm:p-8 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5"
+            className="group relative h-[180px] sm:h-[220px] shrink-0 bg-[#35fe5d] rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col items-center justify-center"
           >
-            <div className="absolute inset-0 bg-[url('/fonts/star-01.svg')] bg-no-repeat bg-right-top bg-[length:150px] opacity-10 translate-x-10 -translate-y-10 group-hover:rotate-12 transition-transform duration-700"></div>
-            <div className="relative z-10 h-full flex flex-col justify-between">
-              <h2 className="font-podium text-3xl sm:text-4xl text-black tracking-tight leading-none uppercase">
-                GROW WITH<br/>THE FLOW
-              </h2>
-              <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-[#35fe5d] group-hover:scale-110 transition-transform">
-                <ArrowUpRight size={20} />
-              </div>
+            {/* Top Right Stars */}
+            <div className="absolute top-4 right-6 flex gap-1 opacity-40">
+              <span className="text-black text-xl">✦</span>
+              <span className="text-black text-xl">✦</span>
+              <span className="text-black text-xl">✦</span>
             </div>
+
+            {/* Bottom Left Symbols */}
+            <div className="absolute bottom-4 left-6 flex gap-2 opacity-40 text-black font-mono text-xs tracking-widest">
+              * 〰 ↙
+            </div>
+
+            <img 
+              src="/fonts/GROW-WITH-THE-FLOW.svg" 
+              alt="Grow With The Flow" 
+              className="relative z-10 w-[95%] h-[95%] object-contain brightness-0 transition-transform duration-700 group-hover:scale-105" 
+            />
           </Link>
 
-          {/* EXPERIMENTS & ABOUT (50/50 split row) */}
-          <div className="flex gap-6 min-h-[160px]">
+          {/* BOTTOM SECTION (Projects Left, Exp & About Right) */}
+          <div className="flex gap-6 flex-1 min-h-[250px]">
+            
+            {/* LEFT: PROJECTS (Tall Card) */}
             <Link 
-              to="/universe#experiments" 
-              className="group relative flex-1 bg-[#0c0c0c] rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5"
+              to="/universe#projects" 
+              className="group relative flex-1 bg-[#0c0c0c] rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col justify-between"
             >
-              <div className="relative z-10 h-full flex flex-col justify-between">
-                <h2 className="font-podium text-2xl text-primary tracking-wide uppercase">EXP</h2>
-                <div className="w-8 h-8 rounded-full border border-primary/20 flex items-center justify-center text-primary/60 group-hover:border-primary group-hover:text-primary transition-all self-end">
-                  <ArrowUpRight size={16} />
-                </div>
-              </div>
+              <h2 className="font-podium text-2xl sm:text-3xl text-primary tracking-tight uppercase">PROJECTS</h2>
             </Link>
 
-            <Link 
-              to="/universe#about" 
-              className="group relative flex-1 bg-[#0c0c0c] rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5"
-            >
-              <div className="relative z-10 h-full flex flex-col justify-between">
-                <h2 className="font-podium text-lg text-primary tracking-wide uppercase">ABOUT</h2>
-                <div className="w-8 h-8 rounded-full border border-primary/20 flex items-center justify-center text-primary/60 group-hover:border-primary group-hover:text-primary transition-all self-end">
-                  <ArrowUpRight size={16} />
-                </div>
-              </div>
-            </Link>
+            {/* RIGHT: EXPERIMENTS & ABOUT (Stacked) */}
+            <div className="flex flex-col gap-6 flex-1">
+              <Link 
+                to="/universe#experiments" 
+                className="group relative flex-1 bg-[#0c0c0c] rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col justify-end"
+              >
+                <h2 className="font-podium text-xl text-primary tracking-wide uppercase">EXP</h2>
+              </Link>
+
+              <Link 
+                to="/universe#about" 
+                className="group relative flex-1 bg-[#0c0c0c] rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col justify-end"
+              >
+                <h2 className="font-podium text-xl text-primary tracking-wide uppercase">ABOUT</h2>
+              </Link>
+            </div>
+
           </div>
-
-          {/* PROJECTS CARD */}
-          <Link 
-            to="/universe#projects" 
-            className="group relative min-h-[160px] bg-[#0c0c0c] rounded-[24px] sm:rounded-[32px] p-6 sm:p-8 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5"
-          >
-            <div className="relative z-10 h-full flex flex-col justify-between md:flex-row md:items-end">
-              <div>
-                <h2 className="font-podium text-3xl sm:text-4xl text-primary tracking-tight uppercase">PROJECTS</h2>
-                <p className="mt-2 font-inter text-primary/40 uppercase tracking-[0.2em] text-xs">Systems & Applications</p>
-              </div>
-              <div className="w-10 h-10 mt-6 md:mt-0 rounded-full border border-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-black transition-all">
-                <ArrowUpRight size={20} />
-              </div>
-            </div>
-          </Link>
         </div>
 
         {/* RIGHT COLUMN (2/3) */}
@@ -75,24 +69,28 @@ export const Landing = () => {
           {/* MAIN CREATIVITY CARD */}
           <Link 
             to="/universe#creativity" 
-            className="group relative block w-full h-full bg-[#0c0c0c] rounded-[24px] sm:rounded-[32px] p-8 sm:p-12 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5"
+            className="group relative flex w-full h-full items-center justify-center bg-[#0c0c0c] rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-[#0000ff]"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-50"></div>
+            {/* Mesh Background */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#0000ff2e_1px,transparent_1px),linear-gradient(to_bottom,#0000ff2e_1px,transparent_1px)] bg-[size:40px_40px] opacity-40 group-hover:scale-105 transition-transform duration-1000"></div>
             
-            <div className="relative z-10 h-full flex flex-col justify-between">
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-black group-hover:scale-110 transition-transform self-end">
-                <ArrowUpRight size={20} />
-              </div>
-              
-              <div className="mt-20 md:mt-0">
-                <h2 className="font-podium text-5xl sm:text-6xl lg:text-[100px] text-primary tracking-tighter leading-[0.85] uppercase drop-shadow-lg">
-                  CREATIVITY<br/>
-                  MAKES ANYTHING<br/>
-                  POSSIBLE
-                </h2>
-                <p className="mt-6 font-inter text-primary/40 uppercase tracking-[0.2em] text-xs">Enter the cinematic experience</p>
-              </div>
+            {/* Top Left Text */}
+            <div className="absolute top-6 left-8 font-inter text-[10px] text-white/60 tracking-widest z-20">
+              chiranjeevbharali10
             </div>
+
+            {/* Bottom Left Text */}
+            <div className="absolute bottom-6 left-8 font-inter text-[10px] text-white/60 tracking-widest z-20 flex items-center gap-4">
+              <span>0026</span>
+              <span className="w-14 h-px bg-white/40"></span>
+              <span>15'</span>
+            </div>
+
+            <img 
+              src="/fonts/CREATIVITYMAKESSS-01.svg" 
+              alt="Creativity Makes Anything Possible" 
+              className="relative z-10 w-[85%] h-[85%] object-contain transition-transform duration-700 group-hover:scale-105" 
+            />
           </Link>
         </div>
 

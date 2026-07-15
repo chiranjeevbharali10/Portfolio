@@ -30,9 +30,8 @@ export const Navbar = () => {
 
   return (
     <nav ref={navRef} className="navbar-container fixed top-0 w-full z-50 px-6 sm:px-10 lg:px-16 py-6 flex justify-between items-center mix-blend-difference">
-      <div className="font-podium text-2xl tracking-[0.2em] text-primary uppercase cursor-pointer hover:tracking-[0.4em] transition-all duration-500 interactive">
-        CHIRANJEEV
-      </div>
+      {/* Removed CHIRANJEEV logo as requested */}
+      <div className="w-[150px]"></div>
 
       <div className="nav-links hidden md:flex gap-8 font-inter text-xs tracking-[0.3em] uppercase text-primary/60">
         <a href="#work" className="hover:text-primary transition-colors interactive">Work</a>

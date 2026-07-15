@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Hero } from "../components/Hero";
 import { Manifesto } from "../components/Manifesto";
-import { ReadyTransition } from "../components/ReadyTransition";
+import { FlowJourney } from "../components/FlowJourney";
 import { Projects } from "./Projects";
 import { Experiments } from "./Experiments";
 import { About } from "./About";
@@ -31,16 +31,16 @@ export const Universe = () => {
         const element = document.getElementById(id);
         if (element) {
           if (id === 'flow') {
-            // The flow section has a pinned ScrollTrigger that spans 150vh.
-            // If we just scrollIntoView, we land at the start (black screen).
-            // We want to land at the END of the animation (fully green screen).
-            // 1.45 ensures we are 96% through the animation, text is fully visible, but we haven't unpinned yet.
+            // The flow journey section spans 450vh and uses sticky headers.
+            // We want to land right at the start of the actual timeline drawing, 
+            // skipping the initial circle expansion and fade in.
+            // 2.5 * windowHeight puts us at 250vh, which is where the title finishes shrinking.
             const rect = element.getBoundingClientRect();
             const scrollTop = window.scrollY || document.documentElement.scrollTop;
             const elementTop = rect.top + scrollTop;
             
             window.scrollTo({
-              top: elementTop + (window.innerHeight * 1.45),
+              top: elementTop + (window.innerHeight * 2.5),
               behavior: 'instant'
             });
           } else {
@@ -54,14 +54,14 @@ export const Universe = () => {
   }, [location.hash]);
 
   return (
-    <>
+    <div className="w-full bg-[#050505]">
       <div id="creativity">
         <Hero />
         <Manifesto />
       </div>
       
       <div id="flow">
-        <ReadyTransition />
+        <FlowJourney />
       </div>
       
       <div id="projects">
@@ -75,6 +75,6 @@ export const Universe = () => {
       <div id="about">
         <About />
       </div>
-    </>
+    </div>
   );
 };
