@@ -25,7 +25,7 @@ const LETTER_MAP: Record<string, string[]> = {
     'R': ['R-01.svg'],
     'S': ['S-01_fist-01.svg', 'S_second-01.svg', 'S_second-01.svg'],
     'T': ['T-01.svg', 'T-01.svg', 'T-01.svg'],
-    'V': ['V-01.svg'],
+    'V': ['xx.svg'],
     'Y': ['Y-01.svg', 'Y-01.svg'],
 };
 
@@ -89,7 +89,7 @@ export const Hero = () => {
   return (
     <section ref={containerRef} className="relative min-h-screen flex items-center px-6 sm:px-10 lg:px-20 z-10 overflow-hidden">
       
-      {/* LEFT: Technical Labels */}
+      {/* LEvFT: Technical Labels */}
       <div className="tech-label absolute left-6 md:left-10 top-[20%] flex flex-col gap-12 hidden lg:flex">
         <div className="font-inter text-[10px] tracking-[0.3em] uppercase text-primary/60 rotate-180" style={{ writingMode: 'vertical-rl' }}>
           <span className="text-[#EAE4D3] mb-3 font-bold">01.</span>
@@ -105,22 +105,30 @@ export const Hero = () => {
       <div className="w-full lg:w-[85%] flex flex-col pt-20 lg:pt-0 relative z-20 mx-auto items-center">
         
         {/* Aspect Ratio Preserved Flexbox Layout */}
-        <div className="flex flex-col w-full relative z-30 mb-8 items-center">
+        <div className="hero-svg-wrapper flex flex-col w-full relative z-30 mb-8 items-center justify-center origin-center">
           {letters.map((line, lineIndex) => (
-            <div key={lineIndex} className={`flex justify-center items-end w-full ${lineIndex > 0 ? '-mt-[5vw] lg:-mt-[3.5vw]' : ''}`}>
+              <div 
+  key={lineIndex} 
+  className={`flex justify-center items-end ${
+    lineIndex === 1 ? 'translate-y-[25px]' :
+    lineIndex === 2 ? 'translate-y-[50px]' :
+    ''
+  }`}
+>
               {line.map((letter, letterIndex) => {
                 return (
                 <div 
                   key={`${lineIndex}-${letterIndex}`} 
-                  className={`flex justify-center items-center ${letter.char === ' ' ? 'w-[3vw]' : '-mx-[1.2vw] lg:-mx-[1vw]'}`}
+                    className={`flex items-center justify-center ${
+    letter.char === ' ' ?  'w-[3vw] lg:w-[2vw]' : 'mx-[0.3vw] lg:mx-[0.25vw]' 
+  }`}
                 >
                   {letter.src && (
                     <div className="svg-letter relative will-change-transform">
                       <img 
                         src={letter.src} 
                         alt={letter.char} 
-                        // Fix: Constrain height instead of width so aspect ratio is preserved perfectly
-                        className="h-[14vw] lg:h-[9vw] w-auto object-contain block opacity-90 drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)]"
+                        className="h-[7vw] lg:h-[4vw] w-auto object-contain block opacity-90 drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)]"
                       />
                     </div>
                   )}
