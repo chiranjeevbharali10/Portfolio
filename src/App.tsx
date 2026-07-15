@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Navbar } from "./components/Navbar";
 import { Hero } from "./components/Hero";
+import { ReadyTransition } from "./components/ReadyTransition";
 import { FloatingObjects } from "./components/FloatingObjects";
 import { CustomCursor } from "./components/CustomCursor";
 import { CinematicBackground } from "./components/CinematicBackground";
@@ -29,6 +30,7 @@ function App() {
       <Navbar />
       <Hero />
       <Manifesto />
+      <ReadyTransition />
       
       {/* Future sections would go here */}
       <section id="work" className="min-h-screen w-full relative z-10 flex items-center justify-center border-t border-primary/10">

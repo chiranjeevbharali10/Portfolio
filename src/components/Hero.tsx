@@ -25,7 +25,7 @@ const LETTER_MAP: Record<string, string[]> = {
     'R': ['R-01.svg'],
     'S': ['S-01_fist-01.svg', 'S_second-01.svg', 'S_second-01.svg'],
     'T': ['T-01.svg', 'T-01.svg', 'T-01.svg'],
-    'V': ['xx.svg'],
+    'V': ['V-01.svg'],
     'Y': ['Y-01.svg', 'Y-01.svg'],
 };
 
