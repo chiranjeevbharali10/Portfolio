@@ -48,4 +48,14 @@
   .animate-spin-slow-float {
     animation: spin-slow-float 25s ease-in-out infinite;
   }
+
+  @keyframes checkpoint-spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  @keyframes checkpoint-spin-reverse {
+    from { transform: translate(-50%, -50%) rotate(360deg); }
+    to { transform: translate(-50%, -50%) rotate(0deg); }
+  }
 }

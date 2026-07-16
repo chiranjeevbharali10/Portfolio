@@ -1,9 +1,14 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Scene as GlobeScene } from "../components/playground/globe/Scene";
-import { FlowerScene } from "../components/playground/flower/FlowerScene";
+import { ShowcaseCard } from "../components/ShowcaseCard";
+import { ShowcaseTransition } from "../components/transitions/ShowcaseTransition";
+import { Projects } from "./Projects";
 
 export const Landing = () => {
+  const [showProjects, setShowProjects] = useState(false);
+
   return (
+    <>
     <section className="min-h-screen w-full bg-[#050505] p-6 sm:p-10 lg:p-16 flex items-center justify-center overflow-hidden">
 
       <div className="w-full max-w-[1400px] mx-auto flex flex-col md:flex-row gap-6 md:h-[80vh]">
@@ -14,7 +19,7 @@ export const Landing = () => {
           {/* GREEN FLOW CARD */}
           <Link
             to="/universe#flow"
-            className="group relative h-[180px] sm:h-[220px] shrink-0 bg-[#35fe5d] rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col items-center justify-center"
+            className="group relative h-[180px] sm:h-[220px] shrink-0 bg-[#35fe5d] rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col items-center justify-center landing-fade-target"
           >
             {/* Top Right Stars */}
             <div className="absolute top-4 right-6 flex gap-1 opacity-40">
@@ -39,31 +44,20 @@ export const Landing = () => {
           <div className="flex gap-6 flex-1 min-h-[250px]">
 
             {/* LEFT: PROJECTS (New Interactive Showcase Card) */}
-            <div
-              className="group relative flex-1 bg-[#FFF4E4] rounded-[24px] sm:rounded-[32px] overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer border-2 border-black p-2 sm:p-2.5"
+            <ShowcaseTransition 
+              className="flex-1"
+              onSwap={() => setShowProjects(true)}
             >
-              {/* Inner Boundary */}
-              <div className="w-full h-full border-[2px] border-black/80 rounded-[18px] sm:rounded-[24px] flex flex-col items-center justify-center gap-2 sm:gap-3 overflow-hidden py-4">
-
-                {/* TOP CIRCLE: Procedural 3D Flower */}
-                <div className="h-[45%] max-w-[90%] aspect-square bg-black rounded-full overflow-hidden relative flex items-center justify-center transition-transform duration-500 group-hover:scale-[1.03] shrink-0">
-                  <div className="absolute inset-0">
-                    <FlowerScene />
-                  </div>
-                </div>
-
-                {/* BOTTOM CIRCLE: Three.js Globe */}
-                <div className="h-[45%] max-w-[90%] aspect-square bg-black rounded-full overflow-hidden relative flex items-center justify-center transition-transform duration-500 group-hover:scale-[1.03] shrink-0">
-                  <div className="absolute inset-0">
-                    <GlobeScene />
-                  </div>
-                </div>
-
-              </div>
-            </div>
+              {(isTransitioned) => (
+                <ShowcaseCard 
+                  layout={isTransitioned ? 'horizontal' : 'vertical'}
+                  className="w-full h-full shadow-lg"
+                />
+              )}
+            </ShowcaseTransition>
 
             {/* RIGHT: EXPERIMENTS & ABOUT (Stacked) */}
-            <div className="flex flex-col gap-6 flex-1">
+            <div className="flex flex-col gap-6 flex-1 landing-fade-target">
               <Link
                 to="/universe#experiments"
                 className="group relative flex-1 bg-[#0c0c0c] rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col justify-end"
@@ -83,7 +77,7 @@ export const Landing = () => {
         </div>
 
         {/* RIGHT COLUMN (2/3) */}
-        <div className="w-full md:w-2/3 h-[500px] md:h-full p-2 md:p-0">
+        <div className="w-full md:w-2/3 h-[500px] md:h-full p-2 md:p-0 landing-fade-target">
           {/* MAIN CREATIVITY POSTER */}
           <Link
             to="/universe#creativity"
@@ -143,5 +137,12 @@ export const Landing = () => {
       </div>
 
     </section>
+
+      {showProjects && (
+        <div className="fixed inset-0 z-[80] overflow-y-auto">
+          <Projects />
+        </div>
+      )}
+    </>
   );
 };
