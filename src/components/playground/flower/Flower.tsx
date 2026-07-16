@@ -16,7 +16,7 @@ export const Flower: React.FC = () => {
     return new THREE.TubeGeometry(curve, 256, 0.12, 64, true);
   }, []);
 
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     if (meshRef.current) {
       // Flat circular rotation around the Z axis (facing the camera)
       meshRef.current.rotation.z -= delta * 0.3;

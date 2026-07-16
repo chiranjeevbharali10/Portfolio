@@ -171,7 +171,7 @@ export const FlowJourney = () => {
       // Step 7: List items stagger in
       tl.to(textBlockItems, {
         color: "rgba(255,255,255,0.9)",
-        x: (index, target) => {
+        x: () => {
           return block.classList.contains('items-end') ? -10 : 10;
         },
         stagger: 0.1,

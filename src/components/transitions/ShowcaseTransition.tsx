@@ -20,7 +20,7 @@ export const ShowcaseTransition: React.FC<ShowcaseTransitionProps> = ({ children
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isTransitioned, setIsTransitioned] = useState(false);
 
-  const handleClick = useCallback((e: React.MouseEvent) => {
+  const handleClick = useCallback((_e: React.MouseEvent) => {
     if (isTransitioning || !cardRef.current || !containerRef.current || !pathRef.current) return;
     setIsTransitioning(true);
 

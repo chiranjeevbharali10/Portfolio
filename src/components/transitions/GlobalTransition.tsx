@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useRef, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useRef } from 'react';
+import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ShowcaseCard } from '../ShowcaseCard';
