@@ -8,7 +8,7 @@ export const CustomCursor = () => {
     const cursor = cursorRef.current;
     if (!cursor) return;
 
-    gsap.set(cursor, { xPercent: -50, yPercent: -50 });
+    gsap.set(cursor, { xPercent: -50, yPercent: -50, scale: 0.1875 });
 
     const onMouseMove = (e: MouseEvent) => {
       gsap.to(cursor, {
@@ -21,7 +21,7 @@ export const CustomCursor = () => {
 
     const onMouseEnter = () => {
       gsap.to(cursor, { 
-        scale: 6, 
+        scale: 1, 
         backgroundColor: "#F5F3E8", 
         mixBlendMode: "difference",
         duration: 0.4,
@@ -31,7 +31,7 @@ export const CustomCursor = () => {
 
     const onMouseLeave = () => {
       gsap.to(cursor, { 
-        scale: 1, 
+        scale: 0.1875, 
         backgroundColor: "#00ff66", 
         mixBlendMode: "normal",
         duration: 0.4,
@@ -64,7 +64,7 @@ export const CustomCursor = () => {
   return (
     <div
       ref={cursorRef}
-      className="fixed top-0 left-0 w-3 h-3 bg-accent rounded-full pointer-events-none z-[100]"
+      className="fixed top-0 left-0 w-16 h-16 bg-accent rounded-full pointer-events-none z-[100]"
       style={{ willChange: "transform" }}
     />
   );
