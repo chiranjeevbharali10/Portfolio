@@ -43,7 +43,7 @@ export const Landing = () => {
               className="group relative flex-1 bg-[#FFF4E4] rounded-[24px] sm:rounded-[32px] overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer border-2 border-black p-2 sm:p-2.5"
             >
               {/* Inner Boundary */}
-              <div className="w-full h-full border-[1.5px] border-black/80 rounded-[18px] sm:rounded-[24px] flex flex-col items-center justify-center gap-2 sm:gap-3 overflow-hidden py-4">
+              <div className="w-full h-full border-[2px] border-black/80 rounded-[18px] sm:rounded-[24px] flex flex-col items-center justify-center gap-2 sm:gap-3 overflow-hidden py-4">
 
                 {/* TOP CIRCLE: Procedural 3D Flower */}
                 <div className="h-[45%] max-w-[90%] aspect-square bg-black rounded-full overflow-hidden relative flex items-center justify-center transition-transform duration-500 group-hover:scale-[1.03] shrink-0">
