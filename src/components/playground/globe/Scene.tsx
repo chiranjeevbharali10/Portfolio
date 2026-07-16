@@ -9,16 +9,16 @@ import { Effects } from './Effects';
 export const Scene: React.FC = () => {
   return (
     <Canvas
-      gl={{ 
-        antialias: true, 
-        toneMapping: THREE.ACESFilmicToneMapping, 
-        outputColorSpace: THREE.SRGBColorSpace 
+      gl={{
+        antialias: true,
+        toneMapping: THREE.ACESFilmicToneMapping,
+        outputColorSpace: THREE.SRGBColorSpace
       }}
-      camera={{ position: [0, 0, 5], fov: 45 }}
+      camera={{ position: [0, 0, 5], fov: 40 }}
       dpr={[1, 2]} // High DPR for retina displays
     >
       <color attach="background" args={['#000000']} />
-      
+
       <Lights />
       <Globe />
       <Effects />

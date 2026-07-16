@@ -23,8 +23,6 @@ export const Globe: React.FC<GlobeProps> = ({
   useFrame((state) => {
     if (groupRef.current) {
       const time = state.clock.elapsedTime;
-      // Extremely subtle floating motion
-      groupRef.current.position.y = Math.sin(time) * 0.03;
       // Almost invisible rotational breathing to make it feel alive
       groupRef.current.rotation.x = Math.sin(time * 0.2) * 0.02;
       groupRef.current.rotation.z = Math.cos(time * 0.3) * 0.02;

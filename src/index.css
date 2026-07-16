@@ -38,4 +38,14 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+
+  @keyframes spin-slow-float {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(180deg); }
+    100% { transform: translateY(0px) rotate(360deg); }
+  }
+
+  .animate-spin-slow-float {
+    animation: spin-slow-float 25s ease-in-out infinite;
+  }
 }

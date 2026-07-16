@@ -4,11 +4,11 @@ import { EffectComposer, Bloom } from '@react-three/postprocessing';
 export const Effects: React.FC = () => {
   return (
     <EffectComposer>
-      <Bloom 
-        luminanceThreshold={0.8} 
-        mipmapBlur 
-        intensity={0.6} 
-        radius={0.4} 
+      <Bloom
+        luminanceThreshold={0.8}
+        mipmapBlur
+        intensity={0.2}
+        radius={0.3}
       />
     </EffectComposer>
   );
