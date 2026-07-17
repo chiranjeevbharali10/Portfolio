@@ -57,20 +57,18 @@ function CarScene() {
        if (wheel) wheel.rotation.x = wheelSpinRef.current;
     });
     
-    // 3. Cinematic Camera Pan inside the small canvas
-    // We gently rotate the camera opposite to the turn to show the side profile
-    const cameraPan = -diff * 0.5;
-    state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, cameraPan * 15, 2, delta);
+    // 3. Fixed Camera
+    // Keep camera perfectly centered so the car never visually drifts off the SVG road
+    state.camera.position.x = 0;
     state.camera.lookAt(0, 0, 0);
   });
   
   return (
     <group ref={groupRef}>
       {/* 
-        Adjusted scale to ensure it fits perfectly within the 300x300 HTML container.
-        Since the container is small, the car is effectively "a point" that drives along the road. 
+        Adjusted scale and lowered position to ensure it fits and tires touch the shadow plane.
       */}
-      <group scale={2.2} rotation={[0, 0, 0]}>
+      <group scale={2.2} rotation={[0, 0, 0]} position={[0, -0.15, 0]}>
          <primitive object={clonedScene} />
       </group>
     </group>

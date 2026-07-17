@@ -65,8 +65,9 @@ export const FlowJourney = () => {
     });
 
     // 4. SVG Road & Car Follower
-    if (pathRef.current) {
-      const length = pathRef.current.getTotalLength();
+    const pathEl = pathRef.current;
+    if (pathEl) {
+      const length = pathEl.getTotalLength();
 
       const proxy = { progress: 0 };
       
@@ -81,10 +82,10 @@ export const FlowJourney = () => {
         flowJourneyState.progress = p;
         
         if (carMoverRef.current) {
-          const pt = pathRef.current.getPointAtLength(length * p);
+          const pt = pathEl.getPointAtLength(length * p);
           
           if (p < 0.999) {
-            const pt2 = pathRef.current.getPointAtLength(length * Math.min(p + 0.001, 1));
+            const pt2 = pathEl.getPointAtLength(length * Math.min(p + 0.001, 1));
             // SVG coordinate space is 1000x5000. We map dx, dy to true screen pixels.
             // Wait, if we just use the raw SVG coordinates for dx/dy, the angle might be slightly skewed if aspect ratio isn't exactly 1000:5000.
             // But 1000:5000 is 1:5.
@@ -109,7 +110,7 @@ export const FlowJourney = () => {
           trigger: ".timeline-section",
           start: "top center",
           end: "bottom center",
-          scrub: 2, // Heavier damping for a smoother, less floating feel
+          scrub: 2, // Heavy damping for maximum smoothness (zero jiggle)
         }
       });
 
