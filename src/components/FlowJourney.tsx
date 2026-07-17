@@ -246,11 +246,22 @@ export const FlowJourney = () => {
           {/* Solid Thick Black Road (SVG) - z-index 10 */}
           <div className="absolute inset-0 w-full h-full pointer-events-none z-10 flex justify-center">
             <svg viewBox="0 0 1000 5000" preserveAspectRatio="none" className="w-full h-full max-w-[1400px] overflow-visible">
-              {/* The solid black road (No drawing animation) */}
+              {/* The solid black road with borders and center line */}
+              {/* 1. Outer White Borders */}
+              <path 
+                d="M 500 0 C 500 400, 200 600, 200 1000 S 800 1400, 800 1800 S 200 2200, 200 2600 S 800 3000, 800 3400 S 200 3800, 200 4200 S 500 4600, 500 5000" 
+                fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="140" strokeLinecap="round"
+              />
+              {/* 2. Main Black Road */}
               <path 
                 ref={pathRef}
                 d="M 500 0 C 500 400, 200 600, 200 1000 S 800 1400, 800 1800 S 200 2200, 200 2600 S 800 3000, 800 3400 S 200 3800, 200 4200 S 500 4600, 500 5000" 
-                fill="none" stroke="#0a0a0a" strokeWidth="72" strokeLinecap="round"
+                fill="none" stroke="#0a0a0a" strokeWidth="132" strokeLinecap="round"
+              />
+              {/* 3. Center Dashed Line */}
+              <path 
+                d="M 500 0 C 500 400, 200 600, 200 1000 S 800 1400, 800 1800 S 200 2200, 200 2600 S 800 3000, 800 3400 S 200 3800, 200 4200 S 500 4600, 500 5000" 
+                fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="4" strokeLinecap="round" strokeDasharray="40 40"
               />
             </svg>
           </div>
