@@ -17,14 +17,14 @@ export const Landing = () => {
     tl.to(".creativity-poster", {
       scaleY: 0.85, // <-- CHANGE THIS VALUE to adjust how much it shrinks
       duration: 0.9,
-      ease: "back.out(1.2)", 
-    }, 0)
-    // Avatar pops in almost simultaneously
-    .fromTo(".avatar-me",
-      { opacity: 0, y: 60, scale: 0.8 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "back.out(1.5)" },
-      0.15 // 0.15s offset so it feels like the box shrinking forces the avatar out
-    );
+      ease: "back.out(1.2)",
+    })
+      // Avatar pops in AFTER the box finishes shrinking
+      .fromTo(".avatar-me",
+        { opacity: 0, y: 60, scale: 0.8 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "back.out(1.5)" },
+        "> -0.2" // Starts just as the box finishes shrinking
+      );
 
   }, { scope: containerRef });
 
@@ -102,8 +102,8 @@ export const Landing = () => {
 
             {/* AVATAR */}
             {/* TO ADJUST AVATAR VERTICAL POSITION: Change the `top-[5%]` class below (e.g. to `top-[0%]`, `top-[10%]`, or `-top-[5%]`) */}
-            <div className="avatar-me absolute -top-[7%] left-[50%] -translate-x-[60%] -translate-y-[100%] z-40 w-48 sm:w-64 md:w-80 pointer-events-none opacity-0">
-              <img src="/fonts/Me.png" alt="Chiranjeev Avatar" className="w-full h-auto object-contain drop-shadow-2xl" />
+            <div className="avatar-me absolute -top-[8%] left-[50%] -translate-x-[60%] -translate-y-[100%] z-40 w-32 sm:w-48 md:w-64 pointer-events-none opacity-0">
+              <img src="/fonts/me-01.svg" alt="Chiranjeev Avatar" className="w-full h-auto object-contain drop-shadow-2xl" />
             </div>
 
             {/* MAIN CREATIVITY POSTER */}
