@@ -21,10 +21,25 @@ export const Landing = () => {
     })
       // Avatar pops in AFTER the box finishes shrinking
       .fromTo(".avatar-me",
-        { opacity: 0, y: 60, scale: 0.8 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "back.out(1.5)" },
-        "> -0.2" // Starts just as the box finishes shrinking
-      );
+        { y: 200, scale: 0.85, zIndex: 10 }, // Start hidden behind (z-10)
+        { y: 0, scale: 1, duration: 0.8, ease: "back.out(1.4)" }, // "wooop" elastic pop
+        "> -0.1" 
+      )
+      .set(".avatar-me", { zIndex: 40 }, "-=0.4") // Snap to front (z-40) mid-bounce so hands overlap the border
+      // Bubble 1 pops in
+      .to(".bubble-1", {
+        opacity: 1,
+        scale: 1,
+        duration: 0.5,
+        ease: "back.out(1.7)"
+      }, "+=0.1")
+      // Bubble 2 pops in
+      .to(".bubble-2", {
+        opacity: 1,
+        scale: 1,
+        duration: 0.5,
+        ease: "back.out(1.7)"
+      }, "+=0.4");
 
   }, { scope: containerRef });
 
@@ -102,14 +117,25 @@ export const Landing = () => {
 
             {/* AVATAR */}
             {/* TO ADJUST AVATAR VERTICAL POSITION: Change the `top-[5%]` class below (e.g. to `top-[0%]`, `top-[10%]`, or `-top-[5%]`) */}
-            <div className="avatar-me absolute -top-[8%] left-[50%] -translate-x-[60%] -translate-y-[100%] z-40 w-32 sm:w-48 md:w-64 pointer-events-none opacity-0">
+            <div className="avatar-me absolute -top-[8%] left-[50%] -translate-x-[60%] -translate-y-[100%] z-10 w-32 sm:w-48 md:w-64 pointer-events-none">
+              
+              {/* BUBBLE 1 */}
+              <div className="bubble-1 absolute bottom-[85%] right-[75%] bg-white text-black font-podium tracking-wide text-[10px] sm:text-xs md:text-sm px-4 py-2 rounded-2xl rounded-br-sm shadow-[0_0_20px_rgba(255,255,255,0.4)] opacity-0 scale-50 origin-bottom-right whitespace-nowrap z-50">
+                Hi, I am Chiranjeev
+              </div>
+
+              {/* BUBBLE 2 */}
+              <div className="bubble-2 absolute bottom-[65%] right-[85%] bg-[#35fe5d] text-black font-inter font-bold text-[8px] sm:text-[10px] md:text-xs px-3 py-1.5 rounded-2xl rounded-tr-sm shadow-[0_0_20px_rgba(53,254,93,0.3)] opacity-0 scale-50 origin-top-right whitespace-nowrap z-50">
+                Click below to get started
+              </div>
+
               <img src="/fonts/me-01.svg" alt="Chiranjeev Avatar" className="w-full h-auto object-contain drop-shadow-2xl" />
             </div>
 
             {/* MAIN CREATIVITY POSTER */}
             <Link
               to="/universe#creativity"
-              className="creativity-poster origin-bottom group relative flex w-full h-full items-center justify-center bg-[#050508] rounded-[24px] sm:rounded-[28px] p-8 overflow-hidden transition-all duration-700 hover:scale-[0.99] shadow-2xl border-2 border-[#1b6bff]/80"
+              className="creativity-poster origin-bottom group relative flex w-full h-full items-center justify-center bg-[#050508] rounded-[24px] sm:rounded-[28px] p-8 overflow-hidden transition-all duration-700 hover:scale-[0.99] shadow-2xl border-2 border-[#1b6bff]/80 z-20"
             >
               {/* Vibrant Warped SVG Grid Texture - Evenly Lit */}
               <div className="absolute inset-[-5%] z-0 opacity-50 group-hover:opacity-80 transition-opacity duration-1000 flex items-center justify-center pointer-events-none">
