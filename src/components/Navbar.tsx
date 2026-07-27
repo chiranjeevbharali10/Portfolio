@@ -34,11 +34,9 @@ export const Navbar = () => {
       <div className="w-[150px]"></div>
 
       <div className="nav-links hidden md:flex gap-8 font-inter text-xs tracking-[0.3em] uppercase text-primary/60">
-        <a href="#work" className="hover:text-primary transition-colors interactive">Work</a>
+        <a href="#skills" className="hover:text-primary transition-colors interactive">Skills</a>
         <a href="#projects" className="hover:text-primary transition-colors interactive">Projects</a>
-        <a href="#experiments" className="hover:text-primary transition-colors interactive">Experiments</a>
-        <a href="#about" className="hover:text-primary transition-colors interactive">About</a>
-        <a href="#contact" className="hover:text-primary transition-colors interactive">Contact</a>
+        <a href="#experience" className="hover:text-primary transition-colors interactive">Experience</a>
       </div>
 
       {/* Button removed globally as requested */}
@@ -55,11 +53,9 @@ export const Navbar = () => {
             <X size={24} />
           </button>
           <div className="flex flex-col gap-8 font-podium text-4xl uppercase text-center text-primary">
-            <a href="#work" onClick={toggleMenu} className="interactive hover:text-accent transition-colors">Work</a>
+            <a href="#skills" onClick={toggleMenu} className="interactive hover:text-accent transition-colors">Skills</a>
             <a href="#projects" onClick={toggleMenu} className="interactive hover:text-accent transition-colors">Projects</a>
-            <a href="#experiments" onClick={toggleMenu} className="interactive hover:text-accent transition-colors">Experiments</a>
-            <a href="#about" onClick={toggleMenu} className="interactive hover:text-accent transition-colors">About</a>
-            <a href="#contact" onClick={toggleMenu} className="interactive hover:text-accent transition-colors">Contact</a>
+            <a href="#experience" onClick={toggleMenu} className="interactive hover:text-accent transition-colors">Experience</a>
           </div>
         </div>
       )}

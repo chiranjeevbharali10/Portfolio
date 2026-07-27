@@ -138,14 +138,13 @@ export const Hero = () => {
           ))}
         </div>
 
-        <p className="hero-metadata font-inter text-primary/60 text-sm sm:text-base leading-relaxed max-w-sm mt-12 border-l border-primary/20 pl-6 text-center lg:text-left">
-          I build intelligent systems and immersive digital experiences that blur the line between engineering and digital art.
-        </p>
-
-        <div className="hero-metadata flex flex-col sm:flex-row gap-6 mt-12">
-          <button className="bg-[#EAE4D3] text-black rounded-full px-8 py-4 text-xs font-bold tracking-widest uppercase hover:bg-primary transition-colors duration-300 interactive">
-            VIEW EXPERIMENTS ↗
-          </button>
+        <div className="hero-metadata flex flex-col sm:flex-row gap-4 mt-12 justify-center lg:justify-start">
+          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="bg-[#EAE4D3] text-black rounded-full px-8 py-4 text-xs font-bold tracking-widest uppercase hover:bg-primary transition-colors duration-300 interactive text-center">
+            RESUME ↗
+          </a>
+          <a href="#contact" className="border border-primary text-primary rounded-full px-8 py-4 text-xs font-bold tracking-widest uppercase hover:bg-primary hover:text-black transition-colors duration-300 interactive text-center">
+            GET IN TOUCH
+          </a>
         </div>
       </div>
 

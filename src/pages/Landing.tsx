@@ -118,20 +118,20 @@ export const Landing = () => {
                 )}
               </ShowcaseTransition>
 
-              {/* RIGHT: EXPERIMENTS & ABOUT (Stacked) */}
+              {/* RIGHT: SKILLS & EXPERIENCE (Stacked) */}
               <div className="flex flex-col gap-6 flex-1 landing-fade-target">
                 <Link
-                  to="/universe#experiments"
+                  to="/universe#skills"
                   className="group relative flex-1 bg-[#0c0c0c] rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col justify-end"
                 >
-                  <h2 className="font-podium text-xl text-primary tracking-wide uppercase">EXP</h2>
+                  <h2 className="font-podium text-xl text-primary tracking-wide uppercase">SKILLS</h2>
                 </Link>
 
                 <Link
-                  to="/universe#about"
+                  to="/universe#experience"
                   className="group relative flex-1 bg-[#0c0c0c] rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col justify-end"
                 >
-                  <h2 className="font-podium text-xl text-primary tracking-wide uppercase">ABOUT</h2>
+                  <h2 className="font-podium text-xl text-primary tracking-wide uppercase">EXPERIENCE</h2>
                 </Link>
               </div>
 

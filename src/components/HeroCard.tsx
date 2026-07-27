@@ -137,14 +137,13 @@ export const HeroCard = () => {
           ))}
         </div>
 
-        <p className="font-inter text-primary/60 text-xs sm:text-sm leading-relaxed max-w-[280px] mt-10 border-l border-primary/20 pl-4 text-center sm:text-left">
-          I build intelligent systems and immersive digital experiences that blur the line between engineering and digital art.
-        </p>
-
-        <div className="flex gap-4 mt-8">
-          <div className="bg-[#EAE4D3] text-black rounded-full px-6 py-3 text-[10px] font-bold tracking-widest uppercase transition-colors duration-300">
-            VIEW EXPERIMENTS ↗
-          </div>
+        <div className="flex gap-4 mt-8 justify-center sm:justify-start">
+          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="bg-[#EAE4D3] text-black rounded-full px-6 py-3 text-[10px] font-bold tracking-widest uppercase hover:bg-primary transition-colors duration-300 interactive text-center">
+            RESUME ↗
+          </a>
+          <a href="#contact" className="border border-primary text-primary rounded-full px-6 py-3 text-[10px] font-bold tracking-widest uppercase hover:bg-primary hover:text-black transition-colors duration-300 interactive text-center">
+            GET IN TOUCH
+          </a>
         </div>
       </div>
 
