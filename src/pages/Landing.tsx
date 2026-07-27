@@ -11,7 +11,7 @@ export const Landing = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    const tl = gsap.timeline({ delay: 0.4 });
+    const tl = gsap.timeline({ delay: 0.4, repeat: -1, repeatDelay: 2.35 }); // Loops exactly every ~13 seconds
 
     // Shrink the main creativity box with a slight squash/bounce
     tl.to(".creativity-poster", {
