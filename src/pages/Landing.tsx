@@ -39,7 +39,33 @@ export const Landing = () => {
         scale: 1,
         duration: 0.5,
         ease: "back.out(1.7)"
-      }, "+=0.4");
+      }, "+=0.4")
+      
+      // --- 7 SECOND DELAY, THEN DISAPPEAR SEQUENCE ---
+      // 1. Bubbles disappear with a comic woosh
+      .to([".bubble-2", ".bubble-1"], {
+        scale: 0,
+        opacity: 0,
+        duration: 0.4,
+        ease: "back.in(2)",
+        stagger: 0.1
+      }, "+=7") // Wait 7 seconds
+      
+      // 2. Avatar speedy woosh down (instantly snap behind poster first)
+      .set(".avatar-me", { zIndex: 10 })
+      .to(".avatar-me", {
+        y: 200,
+        scale: 0.85,
+        duration: 0.35,
+        ease: "power4.in"
+      }, "+=0.1")
+
+      // 3. Bento box scales back up to its original position
+      .to(".creativity-poster", {
+        scaleY: 1,
+        duration: 0.7,
+        ease: "back.out(1.2)"
+      });
 
   }, { scope: containerRef });
 
