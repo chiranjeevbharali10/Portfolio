@@ -125,7 +125,7 @@ export const Landing = () => {
               </div>
 
               {/* BUBBLE 2 */}
-              <div className="bubble-2 absolute bottom-[65%] right-[85%] bg-[#35fe5d] text-black font-inter font-bold text-[8px] sm:text-[10px] md:text-xs px-3 py-1.5 rounded-2xl rounded-tr-sm shadow-[0_0_20px_rgba(53,254,93,0.3)] opacity-0 scale-50 origin-top-right whitespace-nowrap z-50">
+              <div className="bubble-2 absolute bottom-[65%] right-[85%] bg-white text-black font-podium tracking-wide text-[10px] sm:text-xs md:text-sm px-4 py-2 rounded-2xl rounded-tr-sm shadow-[0_0_20px_rgba(255,255,255,0.3)] opacity-0 scale-50 origin-top-right whitespace-nowrap z-50">
                 Click below to get started
               </div>
 
