@@ -26,7 +26,7 @@ export const LoadingScreen: React.FC = () => {
       return () => clearTimeout(timer);
     } else {
       const handleLoad = () => {
-        const timer = setTimeout(hideLoadingScreen, 3500);
+        setTimeout(hideLoadingScreen, 3500);
       };
       
       window.addEventListener('load', handleLoad);

@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import SocialHoverMenu from "../components/SocialHoverMenu";
@@ -56,15 +55,15 @@ export const CreativeDeveloper = () => {
 
     // Calculate positions relative to the lockup container
     const offscreenLeft = -150; // Start just outside the first letter
-    const centerDock = spacerRef.current.offsetLeft + (spacerRef.current.offsetWidth / 2) - (circleRef.current.offsetWidth / 2);
+    const centerDock = spacerRef.current!.offsetLeft + (spacerRef.current!.offsetWidth / 2) - (circleRef.current!.offsetWidth / 2);
     // Roll past the middle, but stop 45% into DEVELOPER so it doesn't collide with the rising letters!
-    const almostRight = centerDock + (lockupRef.current.offsetWidth - centerDock) * 0.45;
+    const almostRight = centerDock + (lockupRef.current!.offsetWidth - centerDock) * 0.45;
 
     // Ball starts completely outside the screen to the left
     gsap.set(circleRef.current, { x: offscreenLeft });
 
     // Calculate rotation based on distance for true wheel physics
-    const diameter = circleRef.current.offsetWidth || (window.innerWidth * 0.075);
+    const diameter = circleRef.current!.offsetWidth || (window.innerWidth * 0.075);
     const circumference = Math.PI * diameter || 1;
 
     // Distance 1: offscreenLeft -> centerDock
