@@ -5,7 +5,7 @@ import gsap from "gsap";
 import SocialHoverMenu from "../components/SocialHoverMenu";
 
 const SmileIcon = () => (
-  <svg width="1em" height="1em" viewBox="0 0 100 100" className="text-[#1a1a1a] fill-current drop-shadow-sm">
+  <svg width="100%" height="100%" viewBox="0 0 100 100" className="text-[#1a1a1a] fill-current drop-shadow-sm">
     <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="8" />
     <circle cx="35" cy="40" r="6" fill="currentColor" />
     <circle cx="65" cy="40" r="6" fill="currentColor" />
@@ -38,8 +38,8 @@ export const CreativeDeveloper = () => {
     gsap.set(".dot-icon", { scale: 0, opacity: 0 });
 
     // Calculate positions relative to the lockup container
-    const offscreenLeft = -100; // Start just left of the 'C' instead of way off screen
-    const offscreenRight = lockupRef.current.offsetWidth + 200; // Past the end of DEVELOPER
+    const offscreenLeft = -150; // Start just outside the first letter so you can see it immediately
+    const offscreenRight = lockupRef.current.offsetWidth + 150; // Past the end of DEVELOPER
     const centerDock = spacerRef.current.offsetLeft + (spacerRef.current.offsetWidth / 2) - (circleRef.current.offsetWidth / 2);
 
     // Ball starts completely outside the screen to the left
@@ -52,23 +52,22 @@ export const CreativeDeveloper = () => {
     const checkBallPosition = () => {
       const ballX = gsap.getProperty(circleRef.current, "x") as number;
 
-      // Add the ball's width to get its leading edge (or center)
-      const ballCenter = ballX + (circleRef.current!.offsetWidth / 2);
+      // The trailing edge (left side) of the ball
+      const ballLeftEdge = ballX;
 
       letterRefs.current.forEach((letter, index) => {
         if (!letter || triggeredLetters.has(index)) return;
 
-        // The letter's position relative to the lockup
-        // We use offsetParent chain to get reliable offset if needed, but since
-        // letter is inside an inline-block which is inside the flex row,
-        // we can just use the wrapper's offsetLeft.
         const wrapper = letter.parentElement;
         if (!wrapper) return;
+        // The right edge of the letter's space
+        const letterRightEdge = wrapper.offsetLeft + wrapper.offsetWidth;
 
-        const letterCenter = wrapper.offsetLeft + (wrapper.offsetWidth / 2);
+        // Add a visual buffer gap (e.g. 15 pixels) to guarantee the ball has clearly passed
+        const passBuffer = 15;
 
-        // If ball has passed the letter (moving right)
-        if (ballCenter >= letterCenter) {
+        // Trigger ONLY after the ball's trailing edge has passed the letter's right edge plus buffer
+        if (ballLeftEdge >= letterRightEdge + passBuffer) {
           triggeredLetters.add(index);
 
           // Pop the letter up!
@@ -108,8 +107,8 @@ export const CreativeDeveloper = () => {
       }, "roll-right")
       .to(circleInnerRef.current, {
         rotation: rotation1,
-        duration: 2.2,
-        ease: "power2.inOut"
+        duration: 3.5, // Match sweep duration so physics look right
+        ease: "power1.inOut" // Match exactly with x easing so it doesn't slip or slide!
       }, "roll-right")
 
       // The ball is now invisible, so we don't need the 'roll-back' docking animation anymore!
@@ -184,10 +183,11 @@ export const CreativeDeveloper = () => {
           {/* The absolutely positioned ball that rolls over the text */}
           <div
             ref={circleRef}
-            className="absolute bottom-0 left-0 z-20 flex items-end justify-center"
-            style={{ width: '0.3em', paddingBottom: '0.4vw', opacity: 0 }} // Hidden for now as requested
+            className="absolute bottom-0 left-0 z-30 flex items-end justify-center pointer-events-none"
+            style={{ width: '0.8em', height: '0.8em' }}
           >
-            <div ref={circleInnerRef} className="relative origin-center w-full h-[1em] text-[#1a1a1a]">
+            <div ref={circleInnerRef} className="relative origin-center w-full h-full flex items-center justify-center text-[#1a1a1a]">
+              <SmileIcon />
             </div>
           </div>
 
