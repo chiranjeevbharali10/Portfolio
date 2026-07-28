@@ -22,11 +22,11 @@ export const LoadingScreen: React.FC = () => {
     };
 
     if (document.readyState === 'complete') {
-      const timer = setTimeout(hideLoadingScreen, 5000);
+      const timer = setTimeout(hideLoadingScreen, 500);
       return () => clearTimeout(timer);
     } else {
       const handleLoad = () => {
-        setTimeout(hideLoadingScreen, 3500);
+        setTimeout(hideLoadingScreen, 500);
       };
       
       window.addEventListener('load', handleLoad);

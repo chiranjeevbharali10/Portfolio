@@ -8,6 +8,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Armin Grotesk';
+  src: url('/fonts/Fontspring-DEMO-armingrotesk-semibold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -21,6 +29,10 @@
 @layer utilities {
   .font-podium {
     font-family: "FSP DEMO - PODIUM Sharp 4.11", "Podium", sans-serif;
+  }
+  
+  .font-armin {
+    font-family: 'Armin Grotesk', sans-serif;
   }
   
   /* Glowing cyan-tinted subtle grid lines */
