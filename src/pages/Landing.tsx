@@ -160,7 +160,7 @@ export const Landing = () => {
 
             {/* MAIN CREATIVITY POSTER */}
             <Link
-              to="/universe#creativity"
+              to="/creative"
               className="creativity-poster origin-bottom group relative flex w-full h-full items-center justify-center bg-[#050508] rounded-[24px] sm:rounded-[28px] p-8 overflow-hidden transition-all duration-700 hover:scale-[0.99] shadow-2xl border-2 border-[#1b6bff]/80 z-20"
             >
               {/* Vibrant Warped SVG Grid Texture - Evenly Lit */}
