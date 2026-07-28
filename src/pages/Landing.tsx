@@ -5,13 +5,15 @@ import { gsap } from "gsap";
 import { ShowcaseCard } from "../components/ShowcaseCard";
 import { ShowcaseTransition } from "../components/transitions/ShowcaseTransition";
 import { Projects } from "./Projects";
+import { isAppLoaded } from "../utils/loadingState";
 
 export const Landing = () => {
   const [showProjects, setShowProjects] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    const tl = gsap.timeline({ delay: 0.4, repeat: -1, repeatDelay: 2.35 }); // Loops exactly every ~13 seconds
+    const playAnimation = () => {
+      const tl = gsap.timeline({ delay: 0.4, repeat: -1, repeatDelay: 2.35 }); // Loops exactly every ~13 seconds
 
     // Shrink the main creativity box with a slight squash/bounce
     tl.to(".creativity-poster", {
@@ -66,7 +68,13 @@ export const Landing = () => {
         duration: 0.7,
         ease: "back.out(1.2)"
       });
+    };
 
+    if (isAppLoaded()) {
+      playAnimation();
+    } else {
+      window.addEventListener('appLoaded', playAnimation, { once: true });
+    }
   }, { scope: containerRef });
 
   return (

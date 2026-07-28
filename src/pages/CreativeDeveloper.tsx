@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import SocialHoverMenu from "../components/SocialHoverMenu";
+import { isAppLoaded } from "../utils/loadingState";
 
 const SmileIcon = () => {
   // MANUAL SMILEY ADJUSTMENT:
@@ -42,7 +43,8 @@ export const CreativeDeveloper = () => {
   useGSAP(() => {
     if (!fontsLoaded || !lockupRef.current || !circleRef.current || !spacerRef.current) return;
 
-    const tl = gsap.timeline();
+    const playAnimation = () => {
+      const tl = gsap.timeline();
 
     // Set initial scale down for the rolling animation to avoid pixelation on scale up
     gsap.set(lockupRef.current, { scale: 2.0 });
@@ -172,6 +174,13 @@ export const CreativeDeveloper = () => {
         stagger: 0.2,
         ease: "power2.out"
       }, 4.9);
+    };
+
+    if (isAppLoaded()) {
+      playAnimation();
+    } else {
+      window.addEventListener('appLoaded', playAnimation, { once: true });
+    }
 
   }, { scope: containerRef, dependencies: [fontsLoaded] });
 

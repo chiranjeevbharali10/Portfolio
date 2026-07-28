@@ -3,6 +3,7 @@ import { Navbar } from "./components/Navbar";
 import { FloatingObjects } from "./components/FloatingObjects";
 import { CustomCursor } from "./components/CustomCursor";
 import { CinematicBackground } from "./components/CinematicBackground";
+import { LoadingScreen } from "./components/LoadingScreen";
 
 // Pages
 import { Landing } from "./pages/Landing";
@@ -26,6 +27,7 @@ function App() {
 
   return (
     <main className="relative w-full min-h-screen bg-transparent selection:bg-accent selection:text-black">
+      <LoadingScreen />
       {!isCreative && <CustomCursor />}
       <CinematicBackground />
       {!isLanding && <FloatingObjects />}
