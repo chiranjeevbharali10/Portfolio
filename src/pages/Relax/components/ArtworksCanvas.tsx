@@ -13,46 +13,56 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
   const meshRef = useRef<THREE.Mesh>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const dragStartX = useRef<number | null>(null);
   
   // Calculate relative position to the currently focused canvas
   const diff = index - activeIndex;
 
   // ==========================================
-  // 1. MANUAL POSITION TUNING
-  // Adjust x, y, z to move the cards around
+  // 1. MANUAL POSITION TUNING (Tighter transitions)
   // ==========================================
   const defaultPos = useMemo(() => {
-    if (diff === 0) return new THREE.Vector3(-0.5, 0, 2);   // HERO (Front)
-    if (diff === 1) return new THREE.Vector3(3.2, 0.2, 0);  // NEXT (Right)
-    if (diff === 2) return new THREE.Vector3(6.5, 0.4, -2); // FAR NEXT (Right)
-    if (diff === -1) return new THREE.Vector3(-4.2, 0.2, 0); // PREV (Left)
-    if (diff === -2) return new THREE.Vector3(-7.5, 0.4, -2); // FAR PREV (Left)
+    if (diff === 0) return new THREE.Vector3(0, 0, 2);         // HERO (Centered)
+    if (diff === 1) return new THREE.Vector3(3.5, 0.1, 0.5);   // NEXT (Right)
+    if (diff === 2) return new THREE.Vector3(8.0, 0.2, -1.5);  // FAR NEXT (Pushed out of screen)
+    if (diff === -1) return new THREE.Vector3(-3.5, 0.1, 0.5); // PREV (Left)
+    if (diff === -2) return new THREE.Vector3(-8.0, 0.2, -1.5); // FAR PREV
     return new THREE.Vector3(0, 0, 0);
   }, [diff]);
 
   // ==========================================
   // 2. MANUAL ROTATION TUNING
-  // Adjust x, y, z (in radians) to tilt the cards
   // ==========================================
   const defaultRot = useMemo(() => {
     if (diff === 0) return new THREE.Euler(0, 0, 0);
-    if (diff === 1) return new THREE.Euler(-0.05, -0.3, 0.05); // Tilt left
-    if (diff === 2) return new THREE.Euler(-0.1, -0.5, 0.1);
-    if (diff === -1) return new THREE.Euler(-0.05, 0.3, -0.05); // Tilt right
-    if (diff === -2) return new THREE.Euler(-0.1, 0.5, -0.1);
+    if (diff === 1) return new THREE.Euler(0, 0.5, -0.05); // Tilt right side into the screen
+    if (diff === 2) return new THREE.Euler(0, 0.8, -0.1);   // Tilt even more
+    if (diff === -1) return new THREE.Euler(0, -0.5, 0.05); // Tilt left side into the screen
+    if (diff === -2) return new THREE.Euler(0, -0.8, 0.1);
     return new THREE.Euler(0, 0, 0);
   }, [diff]);
 
   // ==========================================
-  // 3. MANUAL SIZE/SCALE TUNING
-  // Change these numbers to make the cards bigger or smaller!
+  // 3. MANUAL SIZE/SCALE TUNING (Smaller cards)
   // ==========================================
   const defaultScale = useMemo(() => {
-    if (diff === 0) return 1.3;  // Hero size
-    if (Math.abs(diff) === 1) return 0.9;  // Adjacent cards size
-    if (Math.abs(diff) === 2) return 0.65; // Far adjacent cards size
+    if (diff === 0) return 0.9;  // Hero size (Made smaller)
+    if (Math.abs(diff) === 1) return 0.6;   // Adjacent cards size
+    if (Math.abs(diff) === 2) return 0.4;  // Far adjacent cards size
     return 0.1;
   }, [diff]);
+
+  // ==========================================
+  // 4. MANUAL OPACITY TUNING
+  // ==========================================
+  const defaultOpacity = useMemo(() => {
+    if (diff === 0) return 1.0;    // Hero fully opaque
+    if (Math.abs(diff) === 1) return 0.6;  // Adjacent semi-transparent
+    if (Math.abs(diff) === 2) return 0.2;  // Far adjacent almost invisible
+    return 0.0;
+  }, [diff]);
+
+  const materialRef = useRef<THREE.MeshBasicMaterial>(null);
 
   useEffect(() => {
     document.body.style.cursor = hovered ? (isDragging ? 'grabbing' : 'pointer') : 'auto';
@@ -61,12 +71,17 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
   useFrame((state, delta) => {
     if (!meshRef.current) return;
 
-    // Smoothly animate scale when focus changes
-    meshRef.current.scale.lerp(new THREE.Vector3(defaultScale, defaultScale, defaultScale), 5 * delta);
+    // Smoothly animate scale when focus changes (slower lerp for softer movement)
+    meshRef.current.scale.lerp(new THREE.Vector3(defaultScale, defaultScale, defaultScale), 3.5 * delta);
+
+    if (materialRef.current) {
+       // Smoothly animate opacity
+       materialRef.current.opacity = THREE.MathUtils.lerp(materialRef.current.opacity, defaultOpacity, 3.5 * delta);
+    }
 
     if (!isDragging) {
-      // Spring back to default position dynamically
-      meshRef.current.position.lerp(defaultPos, 6 * delta);
+      // Spring back to default position dynamically (slower lerp for softer movement)
+      meshRef.current.position.lerp(defaultPos, 3.5 * delta);
       
       // Extremely subtle ambient floating
       const t = state.clock.elapsedTime;
@@ -76,9 +91,9 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
       meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, floatY, 0.1);
       meshRef.current.rotation.z = THREE.MathUtils.lerp(meshRef.current.rotation.z, floatRotZ, 0.1);
       
-      // Spring back rotation
-      meshRef.current.rotation.x = THREE.MathUtils.lerp(meshRef.current.rotation.x, defaultRot.x, 5 * delta);
-      meshRef.current.rotation.y = THREE.MathUtils.lerp(meshRef.current.rotation.y, defaultRot.y, 5 * delta);
+      // Spring back rotation (slower lerp for softer movement)
+      meshRef.current.rotation.x = THREE.MathUtils.lerp(meshRef.current.rotation.x, defaultRot.x, 3.5 * delta);
+      meshRef.current.rotation.y = THREE.MathUtils.lerp(meshRef.current.rotation.y, defaultRot.y, 3.5 * delta);
       
     } else {
       // Dragging logic: map pointer strictly to world space
@@ -100,20 +115,37 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
   const handlePointerDown = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
     setIsDragging(true);
+    dragStartX.current = e.clientX;
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
   };
 
   const handlePointerUp = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
     setIsDragging(false);
+    
+    // Implement swipe-to-navigate logic
+    if (dragStartX.current !== null) {
+      const deltaX = e.clientX - dragStartX.current;
+      const swipeThreshold = 40; // Pixels required to trigger a swipe
+      const maxIndex = 2; // Hardcoded to 3 items max right now
+      
+      if (deltaX > swipeThreshold) {
+        // Dragged right -> Go to Previous
+        setActiveIndex(Math.max(activeIndex - 1, 0));
+      } else if (deltaX < -swipeThreshold) {
+        // Dragged left -> Go to Next
+        setActiveIndex(Math.min(activeIndex + 1, maxIndex));
+      } else if (Math.abs(deltaX) < 10) {
+        // Just a normal click without significant drag -> Focus this item
+        setActiveIndex(index);
+      }
+      
+      dragStartX.current = null;
+    }
+
     if ((e.target as HTMLElement).hasPointerCapture(e.pointerId)) {
        (e.target as HTMLElement).releasePointerCapture(e.pointerId);
     }
-  };
-
-  const handleClick = (e: ThreeEvent<MouseEvent>) => {
-    e.stopPropagation();
-    setActiveIndex(index);
   };
 
   // Give them vibrant placeholder colors to mimic the reference image until textures arrive
@@ -126,12 +158,17 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
       onPointerUp={handlePointerUp}
       onPointerOut={(e) => { setHovered(false); handlePointerUp(e); }}
       onPointerOver={() => setHovered(true)}
-      onClick={handleClick}
       position={defaultPos}
       rotation={defaultRot}
     >
       <planeGeometry args={[4, 4]} />
-      <meshBasicMaterial color={placeholderColors[index]} side={THREE.DoubleSide} />
+      <meshBasicMaterial 
+        ref={materialRef} 
+        color={placeholderColors[index]} 
+        side={THREE.DoubleSide} 
+        transparent={true} 
+        opacity={defaultOpacity} 
+      />
     </mesh>
   );
 };

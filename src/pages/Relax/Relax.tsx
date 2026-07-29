@@ -43,7 +43,7 @@ export const Relax = () => {
       <ArtworksCanvas />
 
       {/* Floating Music Player UI positioned beautifully over the Hero Mesh */}
-      <div className="absolute left-1/2 -translate-x-[55%] bottom-[15%] md:bottom-[20%] z-50 w-[85%] sm:w-full max-w-[360px] pointer-events-auto">
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-[15%] md:bottom-[10%] z-50 w-[85%] sm:w-full max-w-[360px] pointer-events-auto">
         <MusicPlayer 
             track={activeTrack}
             isPlaying={isPlaying}
