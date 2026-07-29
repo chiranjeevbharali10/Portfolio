@@ -8,32 +8,32 @@ gsap.registerPlugin(ScrollTrigger);
 const skillsData = [
   {
     title: "Creative Engineering",
-    desc: "It's the core of my digital identity. I bridge the gap between design and logic, ensuring a seamless, high-performance interactive experience.",
-    skills: ["React & Next.js", "GSAP Animations", "Three.js & WebGL", "Creative Coding"],
+    desc: "Where design meets technology. I create immersive digital experiences by combining creative direction, motion, and modern frontend engineering.",
+    skills: ["React / Next.js", "GSAP Animation", "Three.js", "WebGL", "Creative Coding", "Motion Design"],
     bgColor: "bg-[#B3A4FF]",
     textColor: "text-[#1a1a1a]",
-    imageClass: "bg-black/10" // placeholder
+    imageClass: "bg-black/10"
   },
   {
-    title: "Visual Identity",
-    desc: "Visual identity is the unique visual language of your brand, creating memorable impressions and emotional connections with your audience.",
-    skills: ["Logotype & Typography", "Visual Language", "Art Direction", "Motion Design"],
+    title: "Backend",
+    desc: "Building scalable backend architectures that power reliable and intelligent digital products.",
+    skills: ["Java", "Spring Boot", "FastAPI", "REST APIs", "WebSockets", "PostgreSQL", "JWT Authentication"],
     bgColor: "bg-white",
     textColor: "text-[#1a1a1a]",
     imageClass: "bg-black/5"
   },
   {
-    title: "Product Design",
-    desc: "Our product design services focus on creating intuitive and aesthetically pleasing products that resonate with users and elevate your brand.",
-    skills: ["UX Design", "User Testing", "Prototyping", "UI Design"],
+    title: "Infrastructure",
+    desc: "Engineering production-ready systems with optimized deployment, monitoring, and scalable infrastructure.",
+    skills: ["Linux", "Docker", "Nginx", "CI/CD", "Prometheus", "Grafana", "Cloud Deployment"],
     bgColor: "bg-[#FFD54F]",
     textColor: "text-[#1a1a1a]",
     imageClass: "bg-black/10"
   },
   {
-    title: "Web Architecture",
-    desc: "A beautiful site means nothing if it doesn't load. I architect scalable, maintainable, and blisteringly fast frontends.",
-    skills: ["Performance Optimization", "SEO Best Practices", "Accessibility (a11y)", "System Architecture"],
+    title: "Artificial Intelligence",
+    desc: "Exploring the intersection of artificial intelligence, machine learning, and software engineering.",
+    skills: ["PyTorch", "TensorFlow", "Computer Vision", "LLMs", "vLLM", "Model Deployment", "Machine Learning"],
     bgColor: "bg-[#1a1a1a]",
     textColor: "text-white",
     imageClass: "bg-white/10"
@@ -64,7 +64,7 @@ export const SkillsSection = () => {
       
       // The new card slides up to become the active offset card
       tl.to(card, {
-        y: "35vh", // Leaves 35vh of the previous card visible (heading)
+        y: "28vh", // Increased offset to leave a clear gap between the heading and the next card
         ease: "none"
       }, index - 1);
 
@@ -89,52 +89,55 @@ export const SkillsSection = () => {
 
   return (
     <>
-      {/* Pink Tab that scrolls away */}
-      <div className="w-full bg-[#ffcce0] pt-24 pb-8 px-8 md:px-16 lg:px-24 flex items-end">
-        <h1 className="font-armin text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-[#1a1a1a]">
-          Skills
-        </h1>
-      </div>
 
       <div ref={containerRef} className="h-screen w-full relative overflow-hidden">
         {skillsData.map((data, index) => (
         <div
           key={index}
           ref={el => { cardsRef.current[index] = el; }}
-          className={`absolute inset-0 w-full h-full flex flex-col pt-24 md:pt-32 px-8 md:px-16 lg:px-24 ${data.bgColor} ${data.textColor}`}
+          className={`absolute inset-0 w-full h-full flex flex-col pt-8 md:pt-12 lg:pt-16 px-2 md:px-4 lg:px-6 ${data.bgColor} ${data.textColor}`}
           style={{ 
             zIndex: index, 
             transform: index === 0 ? "translateY(0%)" : "translateY(100%)",
-            boxShadow: index > 0 ? "0 -20px 40px rgba(0,0,0,0.1)" : "none" 
+            boxShadow: "none" 
           }}
         >
-          {/* Huge Heading (Full Width) */}
-          <h2 className="font-armin text-[12vw] md:text-[9vw] lg:text-[8vw] font-semibold tracking-tighter leading-[0.9] mb-8 lg:mb-12">
+          {/* Full-width Top Heading */}
+          <h2 className="font-armin font-semibold text-[12vw] md:text-[9vw] lg:text-[7vw] leading-[0.85] tracking-tighter whitespace-nowrap mb-12 md:mb-16 lg:mb-20 shrink-0">
             {data.title}
           </h2>
 
-          {/* Main Content Area */}
-          <div className="flex flex-col lg:flex-row w-full h-full gap-8 lg:gap-12">
+          {/* Main Content Area - 3 Column Layout */}
+          <div className="flex flex-col lg:flex-row w-full h-full gap-8 lg:gap-12 justify-between pb-8 lg:pb-16 flex-1 min-h-0">
             
-            {/* Left Side (Text & Lists) */}
-            <div className="w-full lg:w-1/2 flex flex-col h-full">
-              {/* Content that gets hidden by the next card */}
-              <div className="flex flex-col md:flex-row gap-8 md:gap-12">
-                <p className="font-inter text-lg md:text-xl leading-snug font-medium opacity-80 max-w-sm">
-                  {data.desc}
-                </p>
-                <div className="flex flex-col gap-1 opacity-80 text-sm md:text-base font-medium">
-                  {data.skills.map((skill, i) => (
-                    <span key={i}>{skill}</span>
-                  ))}
-                </div>
-              </div>
+            {/* Left Column: Description */}
+            <div className="w-full lg:w-[30%] flex flex-col h-full">
+              <p className="font-kefir text-lg md:text-xl lg:text-2xl leading-relaxed opacity-80 max-w-md pt-2">
+                {data.desc}
+              </p>
             </div>
 
-            {/* Right Side (Image/Video Placeholder) */}
-            <div className="hidden lg:flex w-full lg:w-1/2 h-full pb-32">
-              <div className={`w-full h-full max-h-[40vh] rounded-2xl ${data.imageClass} flex items-center justify-center overflow-hidden relative backdrop-blur-sm`}>
-                <span className="font-inter text-sm opacity-50 absolute">Media Placeholder</span>
+            {/* Middle Column: Skills List */}
+            <div className="w-full lg:w-[35%] flex flex-col gap-2 lg:gap-3 overflow-y-auto pr-4 scrollbar-hide pt-2">
+              {data.skills.map((skill, i) => (
+                <div key={i} className="group flex items-center">
+                  <h3 className="font-instrument text-[2rem] md:text-4xl lg:text-[2.75rem] cursor-default opacity-75 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:italic group-hover:translate-x-4 origin-left leading-tight">
+                    {skill}
+                  </h3>
+                </div>
+              ))}
+            </div>
+
+            {/* Right Column: Media Showcase */}
+            <div className="hidden lg:flex w-full lg:w-[35%] h-full pb-8">
+              <div className={`w-full h-full max-h-[50vh] lg:max-h-[60vh] rounded-[2rem] ${data.imageClass} flex items-center justify-center overflow-hidden relative backdrop-blur-md group transition-all duration-700 hover:scale-[1.02]`}>
+                <span className="font-kefir text-sm opacity-40 absolute uppercase tracking-[0.2em] group-hover:opacity-80 transition-opacity duration-500">
+                  Visual Showcase
+                </span>
+                
+                {/* Subtle corner accents */}
+                <div className="absolute top-6 left-6 w-2 h-2 rounded-full border border-current opacity-30"></div>
+                <div className="absolute bottom-6 right-6 w-2 h-2 rounded-full border border-current opacity-30"></div>
               </div>
             </div>
 
@@ -145,3 +148,4 @@ export const SkillsSection = () => {
     </>
   );
 };
+

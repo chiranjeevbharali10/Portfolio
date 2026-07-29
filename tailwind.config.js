@@ -10,6 +10,8 @@ export default {
         podium: ['"FSP DEMO - PODIUM Sharp 4.11"', "sans-serif"],
         inter: ["Inter", "sans-serif"],
         french: ['"French VP Black"', "serif"],
+        kefir: ["Kefir", "serif"],
+        instrument: ['"Instrument Serif"', "serif"],
       },
       colors: {
         background: "#080808",

@@ -16,6 +16,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Kefir';
+  src: url('/fonts/Kefir-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url('/fonts/InstrumentSerif-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -33,6 +49,22 @@
   
   .font-armin {
     font-family: 'Armin Grotesk', sans-serif;
+  }
+  
+  .font-kefir {
+    font-family: 'Kefir', serif;
+  }
+  
+  .font-instrument {
+    font-family: 'Instrument Serif', serif;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
   
   /* Glowing cyan-tinted subtle grid lines */
