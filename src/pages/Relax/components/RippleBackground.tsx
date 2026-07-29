@@ -78,11 +78,9 @@ export const RippleBackground: React.FC = () => {
       
       {/* 
         Massive Concentric Color Regions 
+        All ripples are Orange circles with a Pink outer gradient.
       */}
       {[...Array(numRipples)].map((_, i) => {
-        const isPrimary = i % 2 === 0;
-        const color = isPrimary ? colorSecondary : colorPrimary;
-        
         return (
             <div 
               key={i}
@@ -90,10 +88,11 @@ export const RippleBackground: React.FC = () => {
               style={{ 
                 transformOrigin: 'center center',
                 background: `radial-gradient(
-                  circle,
-                  ${color} 0%,
-                  ${color} 45%,
-                  transparent 75%
+                  circle closest-side,
+                  ${colorPrimary} 0%,
+                  ${colorPrimary} 50%,
+                  ${colorSecondary} 50.5%,
+                  ${colorSecondary}00 100%
                 )`
               }}
             />
