@@ -28,10 +28,10 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({
   onPrev
 }) => {
   // Use shades derived strictly from the 2-color system
-  // Base Primary: #EE8EAC
-  // Base Secondary: #F7A8C4
-  const bgDark = '#8a2b4f'; // Darker shade of primary for contrast
-  const fgLight = '#F7A8C4'; // Secondary color for text/icons
+  // Base Primary: #FF7A2F (Orange)
+  // Base Secondary: #EE8EAC (Pink)
+  const bgDark = '#7A2C05'; // Darker shade of primary (orange) for contrast
+  const fgLight = '#EE8EAC'; // Secondary color (pink) for text/icons
 
   return (
     <div 

@@ -5,9 +5,9 @@ import { useGSAP } from '@gsap/react';
 export const RippleBackground: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   
-  // Base colors
-  const colorPrimary = '#EE8EAC';
-  const colorSecondary = '#F7A8C4'; // Slightly lighter complementary pink
+  // Base colors requested by user
+  const colorPrimary = '#FF7A2F'; // Orange
+  const colorSecondary = '#EE8EAC'; // Pink
 
   const numRipples = 8; 
   // 8 ripples staggered by 3.5 seconds = 28s total loop
@@ -47,7 +47,6 @@ export const RippleBackground: React.FC = () => {
         }, 0);
         
         // Massive, extremely slow expansion
-        // Target scale is huge (6) so it extends well outside the viewport boundaries
         tl.to(ripple, {
             scale: 6, 
             duration: 28, 
@@ -79,9 +78,6 @@ export const RippleBackground: React.FC = () => {
       
       {/* 
         Massive Concentric Color Regions 
-        They alternate between Primary and Secondary.
-        The gradient fades to transparent at the edges, which creates
-        the requested soft transition into the color beneath it.
       */}
       {[...Array(numRipples)].map((_, i) => {
         const isPrimary = i % 2 === 0;
@@ -90,9 +86,8 @@ export const RippleBackground: React.FC = () => {
         return (
             <div 
               key={i}
-              className="water-ripple absolute top-[45%] left-[55%] w-[100vw] h-[100vw] sm:w-[50vw] sm:h-[50vw] rounded-full"
+              className="water-ripple absolute top-1/2 left-1/2 w-[100vw] h-[100vw] sm:w-[50vw] sm:h-[50vw] rounded-full"
               style={{ 
-                // Intentional off-center origin for a more organic feel
                 transformOrigin: 'center center',
                 background: `radial-gradient(
                   circle,

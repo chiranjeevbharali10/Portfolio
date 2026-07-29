@@ -161,7 +161,7 @@ export const Relax = () => {
     <main 
       ref={containerRef}
       className="relative w-full h-screen h-[100svh] overflow-hidden flex items-center justify-center font-inter"
-      style={{ backgroundColor: '#EE8EAC' }}
+      style={{ backgroundColor: '#FF7A2F' }}
     >
       <RippleBackground />
 
