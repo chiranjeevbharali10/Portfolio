@@ -3,6 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import type { ThreeEvent } from '@react-three/fiber';
 import * as THREE from 'three';
 
+const placeholderColors = ["#89D84D", "#EBBF3D", "#C8B1C8", "#51A3D8"];
 interface VinylSleeveProps {
   index: number;
   activeIndex: number;
@@ -130,12 +131,22 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
   // 4. MANUAL OPACITY TUNING
   // ==========================================
   const defaultOpacity = useMemo(() => {
-    if (diff === 0) return 1.0;
-    if (Math.abs(diff) === 1) return 0.6;
-    if (Math.abs(diff) === 2) return 0.2;
+    // Hide completely if off-screen to save rendering, otherwise full solid opacity!
     if (Math.abs(diff) >= 3) return 0.0;
-    return 0.0;
+    return 1.0;
   }, [diff]);
+
+  // ==========================================
+  // 5. MANUAL COLOR TINTING (SHADOW EFFECT)
+  // ==========================================
+  const targetColorHex = texture ? "#ffffff" : placeholderColors[index];
+  const targetColor = useMemo(() => {
+    const c = new THREE.Color(targetColorHex);
+    if (diff === 0) return c;
+    if (Math.abs(diff) === 1) return c.lerp(new THREE.Color("black"), 0.75); // 75% dark shadow
+    if (Math.abs(diff) === 2) return c.lerp(new THREE.Color("black"), 0.95); // 95% dark shadow
+    return new THREE.Color("black");
+  }, [diff, targetColorHex]);
 
   useEffect(() => {
     document.body.style.cursor = hovered ? (isDragging ? 'grabbing' : 'pointer') : 'auto';
@@ -149,9 +160,11 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
 
     if (materialRef.current) {
        materialRef.current.opacity = THREE.MathUtils.lerp(materialRef.current.opacity, defaultOpacity, 3.5 * delta);
+       materialRef.current.color.lerp(targetColor, 3.5 * delta);
     }
     if (reflectionMatRef.current) {
        reflectionMatRef.current.opacity = THREE.MathUtils.lerp(reflectionMatRef.current.opacity, defaultOpacity * 0.15, 3.5 * delta);
+       reflectionMatRef.current.color.lerp(targetColor, 3.5 * delta);
     }
 
     if (!isDragging) {
@@ -219,7 +232,6 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
     }
   };
 
-  const placeholderColors = ["#89D84D", "#EBBF3D", "#C8B1C8", "#51A3D8"]; // Added 4th color
 
   return (
     <group 
