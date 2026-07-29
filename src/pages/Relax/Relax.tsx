@@ -4,6 +4,7 @@ import { useGSAP } from '@gsap/react';
 import { useAudioPlayer } from './hooks/useAudioPlayer';
 import { RippleBackground } from './components/RippleBackground';
 import { MusicPlayer } from './components/MusicPlayer';
+import { Header } from './components/Header';
 
 export const Relax = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -164,6 +165,7 @@ export const Relax = () => {
       style={{ backgroundColor: '#FF7A2F' }}
     >
       <RippleBackground />
+      <Header />
 
       <div className="relative z-10 w-full h-full flex items-center justify-center perspective-1000">
         {activeStation.tracks.map((track, i) => {

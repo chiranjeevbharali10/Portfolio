@@ -1,16 +1,17 @@
 import React, { useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { WebGLNoise } from './WebGLNoise';
 
 export const RippleBackground: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-
+  
   // Base colors requested by user
   const colorPrimary = '#FF7A2F'; // Orange
   const colorSecondary = '#EE8EAC'; // Pink
 
   const numRipples = 6; // Reduced slightly for better performance
-
+  
   // Update mouse position via CSS variables for smooth 60fps masking
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -153,15 +154,13 @@ export const RippleBackground: React.FC = () => {
         </div>
       </div>
 
-      {/* LAYER 3: NOISE OVERLAY */}
-      <div 
-        className="absolute inset-0 z-[9999] opacity-[0.1] mix-blend-overlay pointer-events-none"
-        style={{ 
-          backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'2\' numOctaves=\'2\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")',
-          backgroundSize: '150px 150px' // Keeps the noise extremely fine and dense
-        }}
-      />
-      
+      {/* LAYER 3: HIGH-END WEBGL NOISE OVERLAY */}
+      {/* 
+        You can manually increase the noisiness by changing the opacity here.
+        0.1 = subtle, 0.3 = medium, 0.6 = intense film grain.
+      */}
+      <WebGLNoise opacity={0.15} />
+
     </div>
   );
 };

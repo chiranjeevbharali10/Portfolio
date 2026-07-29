@@ -32,6 +32,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Bangel Black Wave';
+  src: url('/fonts/art-grootfontein-bangel-black-wave.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Asgard Fit XBold';
+  src: url('/fonts/AsgardTrial-FitXbold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -57,6 +73,14 @@
   
   .font-instrument {
     font-family: 'Instrument Serif', serif;
+  }
+  
+  .font-bangel {
+    font-family: 'Bangel Black Wave', sans-serif;
+  }
+  
+  .font-asgard {
+    font-family: 'Asgard Fit XBold', sans-serif;
   }
   
   .scrollbar-hide::-webkit-scrollbar {
