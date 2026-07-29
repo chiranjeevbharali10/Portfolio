@@ -1,5 +1,6 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
+import { Maximize, Minimize } from 'lucide-react';
 import { useAudioPlayer } from './hooks/useAudioPlayer';
 import { RippleBackground } from './components/RippleBackground';
 import { MusicPlayer } from './components/MusicPlayer';
@@ -8,6 +9,7 @@ import { ArtworksCanvas } from './components/ArtworksCanvas';
 
 export const Relax = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   
   const { 
     activeTrack, 
@@ -29,6 +31,27 @@ export const Relax = () => {
         );
     }
   }, []);
+
+  // Track fullscreen state changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
 
   return (
     <main 
@@ -55,6 +78,15 @@ export const Relax = () => {
             onPrev={prevTrack}
         />
       </div>
+
+      {/* Fullscreen Toggle Button */}
+      <button 
+        onClick={toggleFullscreen}
+        className="absolute bottom-6 left-6 md:bottom-8 md:left-8 z-50 p-2 md:p-3 rounded-full hover:bg-black/10 transition-colors text-black flex items-center justify-center cursor-pointer pointer-events-auto"
+        aria-label="Toggle Fullscreen"
+      >
+        {isFullscreen ? <Minimize size={24} /> : <Maximize size={24} />}
+      </button>
 
     </main>
   );
