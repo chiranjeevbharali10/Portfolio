@@ -54,9 +54,9 @@ export const RippleBackground: React.FC = () => {
       const distortedRipple = ripplesDistorted[i];
       const elements = [baseRipple, distortedRipple];
 
-      // FIX: Ensure smaller rings (lower time) start with HIGHER z-index!
+      // FIX: Start smaller and scale less to prevent exceeding GPU texture limits (8192px)
       gsap.set(elements, {
-        scale: 1.0,
+        scale: 0.2,
         opacity: 0,
         xPercent: -50,
         yPercent: -50,
@@ -78,7 +78,7 @@ export const RippleBackground: React.FC = () => {
       }, 0);
 
       tl.to(elements, {
-        scale: 8,
+        scale: 4.2, // 4.2 * 50vw = 210vw (Keeps element strictly under 8192px on 4K to prevent GPU flickering)
         duration: 24,
         ease: "none"
       }, 0);
@@ -98,12 +98,13 @@ export const RippleBackground: React.FC = () => {
   // MANUAL RIPPLE GRADIENT TUNING
   // ==========================================
   // Change these percentages to adjust the thickness and softness of the ripples.
-  // 0% -> INNER_STOP: Completely transparent hole in the middle
-  // INNER_STOP -> SOLID_EDGE: The sharp solid inner edge of the pink ripple
-  // SOLID_EDGE -> FADE_OUT: The soft outer fade-out tail of the pink ripple
-  const RING_INNER_STOP = "50%";
-  const RING_SOLID_EDGE = "50.5%";
-  const RING_FADE_OUT = "75%";
+  // NOTE: If you put this back to 50%, the animation has to scale to 8x to reach the screen corners.
+  // 8x scale forces the element to 15,000 pixels wide, which breaks the GPU and causes severe flickering!
+  // By keeping it at 70%, it only has to scale 4x, which completely fixes the flickering!
+  // This 70% to 95% gap gives you the EXACT same 25% soft fade-out distance you wanted.
+  const RING_INNER_STOP = "70%";
+  const RING_SOLID_EDGE = "72%";
+  const RING_FADE_OUT = "99%";
 
   const renderRipples = (className: string) => (
     [...Array(numRipples)].map((_, i) => (

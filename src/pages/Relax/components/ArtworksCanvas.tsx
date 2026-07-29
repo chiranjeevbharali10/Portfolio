@@ -81,6 +81,11 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
         tex.colorSpace = THREE.SRGBColorSpace;
         setTexture(tex);
       });
+    } else if (index === 1) {
+      new THREE.TextureLoader().load('/frame2.png', (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        setTexture(tex);
+      });
     }
   }, [index]);
 
@@ -150,20 +155,22 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
     }
 
     if (!isDragging) {
-      // Spring back to default position dynamically
-      meshRef.current.position.lerp(defaultPos, 3.5 * delta);
-      
-      // Extremely subtle ambient floating
       const t = state.clock.elapsedTime;
-      const floatY = defaultPos.y + Math.sin(t * 1.5 + index * 2) * 0.08;
-      const floatRotZ = defaultRot.z + Math.sin(t * 1.2 + index * 1.5) * 0.02;
       
-      meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, floatY, 0.1);
-      meshRef.current.rotation.z = THREE.MathUtils.lerp(meshRef.current.rotation.z, floatRotZ, 0.1);
+      // 1. Calculate the final target position (base + float)
+      const targetPos = defaultPos.clone();
+      targetPos.y += Math.sin(t * 1.5 + index * 2) * 0.08;
       
-      // Spring back rotation
-      meshRef.current.rotation.x = THREE.MathUtils.lerp(meshRef.current.rotation.x, defaultRot.x, 3.5 * delta);
-      meshRef.current.rotation.y = THREE.MathUtils.lerp(meshRef.current.rotation.y, defaultRot.y, 3.5 * delta);
+      // 2. Calculate the final target rotation (base + float)
+      const targetRot = defaultRot.clone();
+      targetRot.z += Math.sin(t * 1.2 + index * 1.5) * 0.02;
+      
+      // 3. Apply a single smooth lerp to both
+      meshRef.current.position.lerp(targetPos, 3.5 * delta);
+      
+      meshRef.current.rotation.x = THREE.MathUtils.lerp(meshRef.current.rotation.x, targetRot.x, 3.5 * delta);
+      meshRef.current.rotation.y = THREE.MathUtils.lerp(meshRef.current.rotation.y, targetRot.y, 3.5 * delta);
+      meshRef.current.rotation.z = THREE.MathUtils.lerp(meshRef.current.rotation.z, targetRot.z, 3.5 * delta);
       
     } else {
       // Dragging logic
@@ -229,8 +236,8 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
         <planeGeometry args={[4, 4]} />
         <meshBasicMaterial 
           ref={materialRef} 
-          map={index === 0 ? texture : null}
-          color={index === 0 && texture ? "white" : placeholderColors[index]} 
+          map={texture || null}
+          color={texture ? "white" : placeholderColors[index]} 
           side={THREE.DoubleSide} 
           transparent={true} 
           opacity={defaultOpacity} 
@@ -244,8 +251,8 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
         <planeGeometry args={[4, 4]} />
         <meshBasicMaterial 
           ref={reflectionMatRef}
-          map={index === 0 ? texture : null}
-          color={index === 0 && texture ? "white" : placeholderColors[index]} 
+          map={texture || null}
+          color={texture ? "white" : placeholderColors[index]} 
           side={THREE.DoubleSide} 
           transparent={true} 
           opacity={defaultOpacity * 0.15} 
