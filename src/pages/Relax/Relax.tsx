@@ -59,9 +59,8 @@ export const Relax = () => {
     <main 
       ref={containerRef}
       className="relative w-full h-screen h-[100svh] overflow-hidden flex items-center justify-center font-inter"
-      style={{ backgroundColor: '#FF7A2F' }}
     >
-      <RippleBackground />
+      <RippleBackground activeIndex={activeTrackIndex} />
       <Header />
       
       {/* 3D WebGL Gallery Array - perfectly synced to the music track! */}
