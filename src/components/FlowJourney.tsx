@@ -206,7 +206,7 @@ export const FlowJourney = () => {
   }, { scope: containerRef });
 
   return (
-    <div ref={containerRef} className="relative w-full bg-[#050505]">
+    <div ref={containerRef} className="relative w-full bg-[#1a1a1a]">
       
       {/* MASTER BACKGROUND (Sticky for all 550vh) */}
       <div className="sticky top-0 w-full h-screen flex items-center justify-center pointer-events-none z-10 overflow-hidden">

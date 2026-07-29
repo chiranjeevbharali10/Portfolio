@@ -5,6 +5,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SocialHoverMenu from "../components/SocialHoverMenu";
 import { isAppLoaded } from "../utils/loadingState";
 import { SkillsSection } from "../components/SkillsSection";
+import { FlowJourney } from "../components/FlowJourney";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,6 +34,8 @@ export const CreativeDeveloper = () => {
   const leftColRef = useRef<HTMLDivElement>(null);
   const counterRef = useRef<HTMLHeadingElement>(null);
   const headingLinesRef = useRef<(HTMLDivElement | null)[]>([]);
+  const fixedHeaderRef = useRef<HTMLDivElement>(null);
+  const flowContainerRef = useRef<HTMLDivElement>(null);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
 
@@ -270,6 +273,21 @@ export const CreativeDeveloper = () => {
           }
         );
       }
+
+      // 5. Hide Fixed Header when entering Flow Journey
+      if (fixedHeaderRef.current && flowContainerRef.current) {
+        gsap.to(fixedHeaderRef.current, {
+          opacity: 0,
+          y: -50,
+          ease: "power2.inOut",
+          scrollTrigger: {
+            trigger: flowContainerRef.current,
+            start: "top bottom", // Start fading as soon as FlowJourney enters the screen
+            end: "top top", // Fully hidden by the time FlowJourney reaches the top of the screen
+            scrub: true
+          }
+        });
+      }
     };
 
     if (isAppLoaded()) {
@@ -292,7 +310,7 @@ export const CreativeDeveloper = () => {
       <div ref={scrollSpacerRef} className="h-[120vh] w-full"></div>
       
       {/* Fixed Sticky Header Section (always visible) */}
-      <div className="fixed inset-0 w-full h-screen z-40 pointer-events-none flex flex-col items-center justify-center">
+      <div ref={fixedHeaderRef} className="fixed inset-0 w-full h-screen z-40 pointer-events-none flex flex-col items-center justify-center">
         
         {/* Kinetic Typography Lockup */}
         <div
@@ -392,6 +410,11 @@ export const CreativeDeveloper = () => {
 
       {/* Stacked Cards Skills Section */}
       <SkillsSection />
+
+      {/* Grow with the flow section */}
+      <div ref={flowContainerRef} className="w-full relative">
+        <FlowJourney />
+      </div>
 
     </div>
   );
