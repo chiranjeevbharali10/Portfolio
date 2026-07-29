@@ -9,14 +9,80 @@ interface VinylSleeveProps {
   setActiveIndex: (index: number) => void;
 }
 
+const ShineOverlay = ({ defaultOpacity }: { defaultOpacity: number }) => {
+  const materialRef = useRef<THREE.ShaderMaterial>(null);
+  useFrame((state, delta) => {
+    if (materialRef.current) {
+      materialRef.current.uniforms.time.value = state.clock.elapsedTime;
+      materialRef.current.uniforms.opacityMult.value = THREE.MathUtils.lerp(
+        materialRef.current.uniforms.opacityMult.value,
+        defaultOpacity,
+        3.5 * delta
+      );
+    }
+  });
+
+  return (
+    <mesh position={[0, 0, 0.01]}>
+      <planeGeometry args={[4, 4]} />
+      <shaderMaterial
+        ref={materialRef}
+        transparent={true}
+        depthWrite={false}
+        uniforms={{
+          time: { value: 0 },
+          opacityMult: { value: 0 }
+        }}
+        vertexShader={`
+          varying vec2 vUv;
+          void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `}
+        fragmentShader={`
+          uniform float time;
+          uniform float opacityMult;
+          varying vec2 vUv;
+          void main() {
+            // 8 second period
+            float cycle = mod(time, 8.0) / 8.0; 
+            
+            // Sweep across from top-left to bottom-right
+            float c = cycle * 3.0 - 0.5; 
+            
+            float dist = abs((vUv.x + vUv.y) - c);
+            float shine = smoothstep(0.2, 0.0, dist); // width of the shine
+            
+            gl_FragColor = vec4(1.0, 1.0, 1.0, shine * 0.4 * opacityMult);
+          }
+        `}
+      />
+    </mesh>
+  );
+};
+
 const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActiveIndex }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const [isDragging, setIsDragging] = useState(false);
+  const meshRef = useRef<THREE.Group>(null);
+  const materialRef = useRef<THREE.MeshBasicMaterial>(null);
+  const reflectionMatRef = useRef<THREE.MeshBasicMaterial>(null);
+  
   const [hovered, setHovered] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const dragStartX = useRef<number | null>(null);
   
-  // Calculate relative position to the currently focused canvas
   const diff = index - activeIndex;
+
+  const [texture, setTexture] = useState<THREE.Texture | null>(null);
+
+  useEffect(() => {
+    if (index === 0) {
+      new THREE.TextureLoader().load('/frame1.png', (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        setTexture(tex);
+      });
+    }
+  }, [index]);
 
   // ==========================================
   // 1. MANUAL POSITION TUNING (Tighter transitions)
@@ -62,8 +128,6 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
     return 0.0;
   }, [diff]);
 
-  const materialRef = useRef<THREE.MeshBasicMaterial>(null);
-
   useEffect(() => {
     document.body.style.cursor = hovered ? (isDragging ? 'grabbing' : 'pointer') : 'auto';
   }, [hovered, isDragging]);
@@ -71,16 +135,18 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
   useFrame((state, delta) => {
     if (!meshRef.current) return;
 
-    // Smoothly animate scale when focus changes (slower lerp for softer movement)
+    // Smoothly animate scale when focus changes
     meshRef.current.scale.lerp(new THREE.Vector3(defaultScale, defaultScale, defaultScale), 3.5 * delta);
 
     if (materialRef.current) {
-       // Smoothly animate opacity
        materialRef.current.opacity = THREE.MathUtils.lerp(materialRef.current.opacity, defaultOpacity, 3.5 * delta);
+    }
+    if (reflectionMatRef.current) {
+       reflectionMatRef.current.opacity = THREE.MathUtils.lerp(reflectionMatRef.current.opacity, defaultOpacity * 0.3, 3.5 * delta);
     }
 
     if (!isDragging) {
-      // Spring back to default position dynamically (slower lerp for softer movement)
+      // Spring back to default position dynamically
       meshRef.current.position.lerp(defaultPos, 3.5 * delta);
       
       // Extremely subtle ambient floating
@@ -91,20 +157,18 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
       meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, floatY, 0.1);
       meshRef.current.rotation.z = THREE.MathUtils.lerp(meshRef.current.rotation.z, floatRotZ, 0.1);
       
-      // Spring back rotation (slower lerp for softer movement)
+      // Spring back rotation
       meshRef.current.rotation.x = THREE.MathUtils.lerp(meshRef.current.rotation.x, defaultRot.x, 3.5 * delta);
       meshRef.current.rotation.y = THREE.MathUtils.lerp(meshRef.current.rotation.y, defaultRot.y, 3.5 * delta);
       
     } else {
-      // Dragging logic: map pointer strictly to world space
-      // We dampen it slightly so it feels like moving through thick water
+      // Dragging logic
       const targetX = (state.pointer.x * state.viewport.width) / 2;
       const targetY = (state.pointer.y * state.viewport.height) / 2;
       
       meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.2);
       meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.2);
       
-      // Add a dynamic 3D tilt based on where you are dragging it
       const targetRotX = (state.pointer.y * 0.5);
       const targetRotY = (state.pointer.x * 0.5);
       meshRef.current.rotation.x = THREE.MathUtils.lerp(meshRef.current.rotation.x, targetRotX, 10 * delta);
@@ -123,20 +187,16 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
     e.stopPropagation();
     setIsDragging(false);
     
-    // Implement swipe-to-navigate logic
     if (dragStartX.current !== null) {
       const deltaX = e.clientX - dragStartX.current;
-      const swipeThreshold = 40; // Pixels required to trigger a swipe
-      const maxIndex = 2; // Hardcoded to 3 items max right now
+      const swipeThreshold = 40;
+      const maxIndex = 2;
       
       if (deltaX > swipeThreshold) {
-        // Dragged right -> Go to Previous
         setActiveIndex(Math.max(activeIndex - 1, 0));
       } else if (deltaX < -swipeThreshold) {
-        // Dragged left -> Go to Next
         setActiveIndex(Math.min(activeIndex + 1, maxIndex));
       } else if (Math.abs(deltaX) < 10) {
-        // Just a normal click without significant drag -> Focus this item
         setActiveIndex(index);
       }
       
@@ -148,11 +208,10 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
     }
   };
 
-  // Give them vibrant placeholder colors to mimic the reference image until textures arrive
   const placeholderColors = ["#89D84D", "#EBBF3D", "#C8B1C8"];
 
   return (
-    <mesh 
+    <group 
       ref={meshRef}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
@@ -161,15 +220,35 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
       position={defaultPos}
       rotation={defaultRot}
     >
-      <planeGeometry args={[4, 4]} />
-      <meshBasicMaterial 
-        ref={materialRef} 
-        color={placeholderColors[index]} 
-        side={THREE.DoubleSide} 
-        transparent={true} 
-        opacity={defaultOpacity} 
-      />
-    </mesh>
+      {/* Main Artwork */}
+      <mesh>
+        <planeGeometry args={[4, 4]} />
+        <meshBasicMaterial 
+          ref={materialRef} 
+          map={index === 0 ? texture : null}
+          color={index === 0 && texture ? "white" : placeholderColors[index]} 
+          side={THREE.DoubleSide} 
+          transparent={true} 
+          opacity={defaultOpacity} 
+        />
+        {/* Shine Overlay */}
+        <ShineOverlay defaultOpacity={defaultOpacity} />
+      </mesh>
+
+      {/* Water Reflection */}
+      <mesh position={[0, -4.05, 0]} scale={[1, -1, 1]}>
+        <planeGeometry args={[4, 4]} />
+        <meshBasicMaterial 
+          ref={reflectionMatRef}
+          map={index === 0 ? texture : null}
+          color={index === 0 && texture ? "white" : placeholderColors[index]} 
+          side={THREE.DoubleSide} 
+          transparent={true} 
+          opacity={defaultOpacity * 0.3} 
+        />
+        <ShineOverlay defaultOpacity={defaultOpacity * 0.3} />
+      </mesh>
+    </group>
   );
 };
 

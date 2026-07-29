@@ -42,14 +42,14 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({
       {/* Play/Pause Button */}
       <button 
         onClick={onPlayPause}
-        className="transition-transform hover:scale-110 focus:outline-none"
+        className="transition-transform hover:scale-110 focus:outline-none flex items-center justify-center rounded-full"
         aria-label={isPlaying ? "Pause" : "Play"}
-        style={{ color: fgLight }}
+        style={{ color: fgLight, padding: '4px' }}
       >
         {isPlaying ? (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
         ) : (
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
         )}
       </button>
 
