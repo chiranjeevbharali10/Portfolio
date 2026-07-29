@@ -10,7 +10,8 @@ export const RippleBackground: React.FC = () => {
   const colorPrimary = '#FF7A2F'; // Orange
   const colorSecondary = '#EE8EAC'; // Pink
 
-  const numRipples = 6; // Reduced slightly for better performance
+  // We only want 3 circular rings now, spaced much further apart!
+  const numRipples = 3;
 
   // Update mouse position via CSS variables for smooth 60fps masking
   useEffect(() => {
@@ -101,10 +102,9 @@ export const RippleBackground: React.FC = () => {
   // NOTE: If you put this back to 50%, the animation has to scale to 8x to reach the screen corners.
   // 8x scale forces the element to 15,000 pixels wide, which breaks the GPU and causes severe flickering!
   // By keeping it at 70%, it only has to scale 4x, which completely fixes the flickering!
-  // This 70% to 95% gap gives you the EXACT same 25% soft fade-out distance you wanted.
   const RING_INNER_STOP = "70%";
-  const RING_SOLID_EDGE = "72%";
-  const RING_FADE_OUT = "99%";
+  const RING_SOLID_EDGE = "70.5%"; // Tighter gap (0.5%) for a much sharper inner edge
+  const RING_FADE_OUT = "100%";     // Tighter gap (10%) for a much sharper outer edge
 
   const renderRipples = (className: string) => (
     [...Array(numRipples)].map((_, i) => (
