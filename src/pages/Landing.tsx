@@ -137,32 +137,35 @@ export const Landing = () => {
 
                 <Link
                   to="/relax"
-                  className="group relative flex-1 rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/10 shadow-lg flex flex-col justify-end"
+                  className="group relative flex-1 rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-all duration-500 hover:scale-[0.98] border border-white/10 shadow-lg flex flex-col justify-end"
                 >
-                  {/* Highly Colorful Vibrant Background */}
+                  {/* Beautiful Vibrant Background */}
                   <div className="absolute inset-0 bg-gradient-to-br from-[#FF7A2F] via-[#EE8EAC] to-[#9d4edd] group-hover:scale-110 transition-transform duration-1000"></div>
                   {/* Dynamic Color shift on hover */}
                   <div className="absolute inset-0 bg-gradient-to-tr from-[#2596be] to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-1000"></div>
 
-                  {/* Decorative Ripple Effect Background (White so it pops on colors) */}
+                  {/* Clean Ripple Effect radiating from the center */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
-                     <div className="absolute w-32 h-32 rounded-full border border-white/40 animate-ping" style={{ animationDuration: '3s' }}></div>
-                     <div className="absolute w-48 h-48 rounded-full border border-white/30 animate-ping" style={{ animationDuration: '3s', animationDelay: '1s' }}></div>
-                     <div className="absolute w-64 h-64 rounded-full border border-white/20 animate-ping" style={{ animationDuration: '3s', animationDelay: '2s' }}></div>
+                     <div className="absolute w-32 h-32 rounded-full border-[2px] border-white/40 animate-ping" style={{ animationDuration: '3s' }}></div>
+                     <div className="absolute w-48 h-48 rounded-full border-[2px] border-white/30 animate-ping" style={{ animationDuration: '3s', animationDelay: '1s' }}></div>
+                     <div className="absolute w-64 h-64 rounded-full border-[2px] border-white/20 animate-ping" style={{ animationDuration: '3s', animationDelay: '2s' }}></div>
                   </div>
 
-                  {/* Spinning Vinyl */}
-                  <div className="absolute top-[-10%] right-[-10%] w-24 h-24 sm:w-32 sm:h-32 opacity-90 group-hover:opacity-100 group-hover:rotate-180 group-hover:scale-110 transition-all duration-1000 ease-out pointer-events-none drop-shadow-2xl">
-                    <div className="w-full h-full rounded-full border-[8px] sm:border-[10px] border-[#111] bg-gradient-to-tr from-[#1a1a1a] to-[#333] shadow-2xl flex items-center justify-center relative overflow-hidden">
+                  {/* Big, Visible Spinning Vinyl - Tucked cleanly into the corner */}
+                  <div className="absolute -top-6 -right-6 sm:-top-8 sm:-right-8 w-32 h-32 sm:w-40 sm:h-40 opacity-90 group-hover:opacity-100 group-hover:rotate-180 group-hover:scale-105 transition-all duration-1000 ease-out pointer-events-none drop-shadow-2xl">
+                    <div className="w-full h-full rounded-full border-[8px] sm:border-[10px] border-[#111] bg-gradient-to-tr from-[#1a1a1a] to-[#333] shadow-2xl flex items-center justify-center relative overflow-hidden group-hover:animate-[spin_3s_linear_infinite]">
                        <div className="absolute inset-0 bg-[conic-gradient(from_0deg,transparent_0deg,rgba(255,255,255,0.2)_45deg,transparent_90deg,transparent_180deg,rgba(255,255,255,0.2)_225deg,transparent_270deg)]"></div>
-                       {/* Colorful vinyl label to match the theme! */}
-                       <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-[#2596be] to-[#EE8EAC] flex items-center justify-center relative z-10 shadow-inner">
-                         <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-black"></div>
+                       {/* Colorful vinyl label */}
+                       <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-[#2596be] to-[#EE8EAC] flex items-center justify-center relative z-10 shadow-inner">
+                         <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-black"></div>
                        </div>
                     </div>
                   </div>
 
-                  <h2 className="font-podium text-xl text-white tracking-wide uppercase relative z-10 group-hover:tracking-widest transition-all duration-500 drop-shadow-md">RELAX</h2>
+                  {/* Clean, Tasteful Typography */}
+                  <h2 className="font-podium text-2xl sm:text-3xl text-white tracking-widest uppercase relative z-10 group-hover:tracking-[0.2em] transition-all duration-500 drop-shadow-md">
+                    RELAX
+                  </h2>
                 </Link>
               </div>
 
