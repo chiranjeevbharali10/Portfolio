@@ -27,49 +27,47 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({
   onNext,
   onPrev
 }) => {
-  // Use shades derived strictly from the 2-color system
-  // Base Primary: #FF7A2F (Orange)
-  // Base Secondary: #EE8EAC (Pink)
-  const bgDark = '#7A2C05'; // Darker shade of primary (orange) for contrast
-  const fgLight = '#EE8EAC'; // Secondary color (pink) for text/icons
+  // Premium Black Styling
+  const bgDark = '#0A0A0A'; // Deep solid black
+  const fgLight = '#FFFFFF'; // Crisp white
 
   return (
     <div 
-      className="rounded-full px-5 py-3 flex items-center justify-between w-full shadow-lg border border-[#F7A8C4]/20 backdrop-blur-md"
+      className="rounded-full px-5 py-3 md:px-6 md:py-4 flex items-center justify-between w-full shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/15 backdrop-blur-2xl"
       style={{ backgroundColor: bgDark, color: fgLight }}
     >
       
-      {/* Play/Pause Button */}
+      {/* Play/Pause Button - Inverted for pop */}
       <button 
         onClick={onPlayPause}
-        className="transition-transform hover:scale-110 focus:outline-none flex items-center justify-center rounded-full"
+        className="transition-all hover:scale-105 focus:outline-none flex items-center justify-center rounded-full bg-white text-black hover:bg-gray-200"
         aria-label={isPlaying ? "Pause" : "Play"}
-        style={{ color: fgLight, padding: '4px' }}
+        style={{ padding: '10px' }}
       >
         {isPlaying ? (
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>
         ) : (
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
         )}
       </button>
 
       {/* Track Info */}
       <div className="flex flex-col items-center flex-1 px-4">
-        <h4 className="text-xs font-bold font-inter tracking-widest uppercase mb-0.5" style={{ color: fgLight }}>
+        <h4 className="text-xs md:text-sm font-bold font-inter tracking-widest uppercase mb-0.5" style={{ color: fgLight }}>
           {track.title}
         </h4>
-        <div className="flex items-center gap-2 text-[9px] font-inter opacity-70" style={{ color: fgLight }}>
+        <div className="flex items-center gap-2 text-[10px] font-inter opacity-70" style={{ color: fgLight }}>
           <span>{formatTime(currentTime)}</span>
         </div>
       </div>
 
       {/* Next/Prev Controls */}
-      <div className="flex items-center gap-3">
-        <button onClick={onPrev} className="transition-transform hover:scale-110 focus:outline-none" aria-label="Previous track">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+      <div className="flex items-center gap-4">
+        <button onClick={onPrev} className="transition-transform hover:scale-110 focus:outline-none text-white/70 hover:text-white" aria-label="Previous track">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
         </button>
-        <button onClick={onNext} className="transition-transform hover:scale-110 focus:outline-none" aria-label="Next track">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        <button onClick={onNext} className="transition-transform hover:scale-110 focus:outline-none text-white/70 hover:text-white" aria-label="Next track">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
         </button>
       </div>
 

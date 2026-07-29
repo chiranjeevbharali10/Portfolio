@@ -142,7 +142,7 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
        materialRef.current.opacity = THREE.MathUtils.lerp(materialRef.current.opacity, defaultOpacity, 3.5 * delta);
     }
     if (reflectionMatRef.current) {
-       reflectionMatRef.current.opacity = THREE.MathUtils.lerp(reflectionMatRef.current.opacity, defaultOpacity * 0.3, 3.5 * delta);
+       reflectionMatRef.current.opacity = THREE.MathUtils.lerp(reflectionMatRef.current.opacity, defaultOpacity * 0.15, 3.5 * delta);
     }
 
     if (!isDragging) {
@@ -244,9 +244,9 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
           color={index === 0 && texture ? "white" : placeholderColors[index]} 
           side={THREE.DoubleSide} 
           transparent={true} 
-          opacity={defaultOpacity * 0.3} 
+          opacity={defaultOpacity * 0.15} 
         />
-        <ShineOverlay defaultOpacity={defaultOpacity * 0.3} />
+        <ShineOverlay defaultOpacity={defaultOpacity * 0.15} />
       </mesh>
     </group>
   );
