@@ -10,11 +10,13 @@ import { Landing } from "./pages/Landing";
 import { Universe } from "./pages/Universe";
 import { ThreeTestPage } from "./pages/ThreeTestPage";
 import { CreativeDeveloper } from "./pages/CreativeDeveloper";
+import { Relax } from "./pages/Relax/Relax";
 
 function App() {
   const location = useLocation();
   const isLanding = location.pathname === "/";
   const isCreative = location.pathname === "/creative";
+  const isRelax = location.pathname === "/relax";
   const isPlayground = location.pathname.startsWith("/playground");
 
   if (isPlayground) {
@@ -28,16 +30,17 @@ function App() {
   return (
     <main className="relative w-full min-h-screen bg-transparent selection:bg-accent selection:text-black">
       <LoadingScreen />
-      {!isCreative && <CustomCursor />}
+      {!isCreative && !isRelax && <CustomCursor />}
       <CinematicBackground />
-      {!isLanding && <FloatingObjects />}
-      
-      {!isLanding && !isCreative && <Navbar />}
+      {!isLanding && !isRelax && <FloatingObjects />}
+
+      {!isLanding && !isCreative && !isRelax && <Navbar />}
 
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/universe" element={<Universe />} />
         <Route path="/creative" element={<CreativeDeveloper />} />
+        <Route path="/relax" element={<Relax />} />
       </Routes>
     </main>
   );
