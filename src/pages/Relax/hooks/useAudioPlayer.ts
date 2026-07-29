@@ -112,6 +112,7 @@ export const useAudioPlayer = () => {
   return {
     activeStation,
     activeTrack,
+    activeTrackIndex,
     isPlaying,
     progress,
     currentTime,
@@ -120,6 +121,7 @@ export const useAudioPlayer = () => {
     nextTrack,
     prevTrack,
     changeStation,
-    seek
+    seek,
+    setTrackIndex: setActiveTrackIndex
   };
 };

@@ -5,13 +5,13 @@ import { WebGLNoise } from './WebGLNoise';
 
 export const RippleBackground: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   // Base colors requested by user
   const colorPrimary = '#FF7A2F'; // Orange
   const colorSecondary = '#EE8EAC'; // Pink
 
   const numRipples = 6; // Reduced slightly for better performance
-  
+
   // Update mouse position via CSS variables for smooth 60fps masking
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -56,7 +56,7 @@ export const RippleBackground: React.FC = () => {
 
       // FIX: Ensure smaller rings (lower time) start with HIGHER z-index!
       gsap.set(elements, {
-        scale: 1.0, 
+        scale: 1.0,
         opacity: 0,
         xPercent: -50,
         yPercent: -50,
@@ -78,9 +78,9 @@ export const RippleBackground: React.FC = () => {
       }, 0);
 
       tl.to(elements, {
-        scale: 8, 
+        scale: 8,
         duration: 24,
-        ease: "none" 
+        ease: "none"
       }, 0);
 
       tl.to(elements, {
@@ -94,6 +94,17 @@ export const RippleBackground: React.FC = () => {
     });
   }, { scope: containerRef });
 
+  // ==========================================
+  // MANUAL RIPPLE GRADIENT TUNING
+  // ==========================================
+  // Change these percentages to adjust the thickness and softness of the ripples.
+  // 0% -> INNER_STOP: Completely transparent hole in the middle
+  // INNER_STOP -> SOLID_EDGE: The sharp solid inner edge of the pink ripple
+  // SOLID_EDGE -> FADE_OUT: The soft outer fade-out tail of the pink ripple
+  const RING_INNER_STOP = "50%";
+  const RING_SOLID_EDGE = "50.5%";
+  const RING_FADE_OUT = "75%";
+
   const renderRipples = (className: string) => (
     [...Array(numRipples)].map((_, i) => (
       <div
@@ -104,9 +115,9 @@ export const RippleBackground: React.FC = () => {
           background: `radial-gradient(
               circle closest-side,
               transparent 0%,
-              transparent 50%,
-              ${colorSecondary} 50.5%,
-              ${colorSecondary}00 100%
+              transparent ${RING_INNER_STOP},
+              ${colorSecondary} ${RING_SOLID_EDGE},
+              ${colorSecondary}00 ${RING_FADE_OUT}
             )`
         }}
       />

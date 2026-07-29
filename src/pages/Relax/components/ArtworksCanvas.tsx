@@ -85,14 +85,16 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
   }, [index]);
 
   // ==========================================
-  // 1. MANUAL POSITION TUNING (Tighter transitions)
+  // 1. MANUAL POSITION TUNING
   // ==========================================
   const defaultPos = useMemo(() => {
-    if (diff === 0) return new THREE.Vector3(0, 0, 2);         // HERO (Centered)
-    if (diff === 1) return new THREE.Vector3(3.5, 0.1, 0.5);   // NEXT (Right)
-    if (diff === 2) return new THREE.Vector3(8.0, 0.2, -1.5);  // FAR NEXT (Pushed out of screen)
-    if (diff === -1) return new THREE.Vector3(-3.5, 0.1, 0.5); // PREV (Left)
+    if (diff === 0) return new THREE.Vector3(0, 0, 2);         // HERO
+    if (diff === 1) return new THREE.Vector3(3.5, 0.1, 0.5);   // NEXT
+    if (diff === 2) return new THREE.Vector3(8.0, 0.2, -1.5);  // FAR NEXT
+    if (diff >= 3) return new THREE.Vector3(12.0, 0.3, -3.0);  // OFF SCREEN NEXT
+    if (diff === -1) return new THREE.Vector3(-3.5, 0.1, 0.5); // PREV
     if (diff === -2) return new THREE.Vector3(-8.0, 0.2, -1.5); // FAR PREV
+    if (diff <= -3) return new THREE.Vector3(-12.0, 0.3, -3.0); // OFF SCREEN PREV
     return new THREE.Vector3(0, 0, 0);
   }, [diff]);
 
@@ -101,20 +103,21 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
   // ==========================================
   const defaultRot = useMemo(() => {
     if (diff === 0) return new THREE.Euler(0, 0, 0);
-    if (diff === 1) return new THREE.Euler(0, 0.5, -0.05); // Tilt right side into the screen
-    if (diff === 2) return new THREE.Euler(0, 0.8, -0.1);   // Tilt even more
-    if (diff === -1) return new THREE.Euler(0, -0.5, 0.05); // Tilt left side into the screen
-    if (diff === -2) return new THREE.Euler(0, -0.8, 0.1);
+    if (diff === 1) return new THREE.Euler(0, 0.5, -0.05);
+    if (diff >= 2) return new THREE.Euler(0, 0.8, -0.1);
+    if (diff === -1) return new THREE.Euler(0, -0.5, 0.05);
+    if (diff <= -2) return new THREE.Euler(0, -0.8, 0.1);
     return new THREE.Euler(0, 0, 0);
   }, [diff]);
 
   // ==========================================
-  // 3. MANUAL SIZE/SCALE TUNING (Smaller cards)
+  // 3. MANUAL SIZE/SCALE TUNING
   // ==========================================
   const defaultScale = useMemo(() => {
-    if (diff === 0) return 0.9;  // Hero size (Made smaller)
-    if (Math.abs(diff) === 1) return 0.6;   // Adjacent cards size
-    if (Math.abs(diff) === 2) return 0.4;  // Far adjacent cards size
+    if (diff === 0) return 0.9;
+    if (Math.abs(diff) === 1) return 0.6;
+    if (Math.abs(diff) === 2) return 0.4;
+    if (Math.abs(diff) >= 3) return 0.2;
     return 0.1;
   }, [diff]);
 
@@ -122,9 +125,10 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
   // 4. MANUAL OPACITY TUNING
   // ==========================================
   const defaultOpacity = useMemo(() => {
-    if (diff === 0) return 1.0;    // Hero fully opaque
-    if (Math.abs(diff) === 1) return 0.6;  // Adjacent semi-transparent
-    if (Math.abs(diff) === 2) return 0.2;  // Far adjacent almost invisible
+    if (diff === 0) return 1.0;
+    if (Math.abs(diff) === 1) return 0.6;
+    if (Math.abs(diff) === 2) return 0.2;
+    if (Math.abs(diff) >= 3) return 0.0;
     return 0.0;
   }, [diff]);
 
@@ -190,7 +194,7 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
     if (dragStartX.current !== null) {
       const deltaX = e.clientX - dragStartX.current;
       const swipeThreshold = 40;
-      const maxIndex = 2;
+      const maxIndex = 3; // Update to allow swiping to the 4th item
       
       if (deltaX > swipeThreshold) {
         setActiveIndex(Math.max(activeIndex - 1, 0));
@@ -208,7 +212,7 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
     }
   };
 
-  const placeholderColors = ["#89D84D", "#EBBF3D", "#C8B1C8"];
+  const placeholderColors = ["#89D84D", "#EBBF3D", "#C8B1C8", "#51A3D8"]; // Added 4th color
 
   return (
     <group 
@@ -252,17 +256,15 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
   );
 };
 
-export const ArtworksCanvas: React.FC = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-
+export const ArtworksCanvas: React.FC<{ activeIndex: number, setActiveIndex: (index: number) => void }> = ({ activeIndex, setActiveIndex }) => {
   return (
     <div className="absolute inset-0 w-full h-full z-20 pointer-events-none">
       <Canvas 
         camera={{ position: [0, 0, 10], fov: 45 }}
         className="pointer-events-auto"
       >
-        {/* Render exactly 3 items as requested */}
-        {[0, 1, 2].map((i) => (
+        {/* Render exactly 4 items now */}
+        {[0, 1, 2, 3].map((i) => (
           <VinylSleeve 
             key={i} 
             index={i} 

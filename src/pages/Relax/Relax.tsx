@@ -12,14 +12,16 @@ export const Relax = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   
   const { 
-    activeTrack, 
+    activeTrack,
+    activeTrackIndex,
     isPlaying, 
     progress, 
     currentTime, 
     duration, 
     togglePlay, 
     nextTrack, 
-    prevTrack 
+    prevTrack,
+    setTrackIndex
   } = useAudioPlayer();
 
   // Fade in the page initially
@@ -62,11 +64,11 @@ export const Relax = () => {
       <RippleBackground />
       <Header />
       
-      {/* 3D WebGL Gallery Array */}
-      <ArtworksCanvas />
+      {/* 3D WebGL Gallery Array - perfectly synced to the music track! */}
+      <ArtworksCanvas activeIndex={activeTrackIndex} setActiveIndex={setTrackIndex} />
 
       {/* Floating Music Player UI positioned beautifully over the Hero Mesh */}
-      <div className="absolute left-1/2 -translate-x-1/2 bottom-[20%] md:bottom-[22%] z-50 w-[85%] sm:w-full max-w-[400px] pointer-events-auto">
+      <div className="absolute left-1/2 -translate-x-1/2 bottom-[12%] md:bottom-[15%] z-50 w-[85%] sm:w-full max-w-[400px] pointer-events-auto">
         <MusicPlayer 
             track={activeTrack}
             isPlaying={isPlaying}

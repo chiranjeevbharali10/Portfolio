@@ -20,6 +20,8 @@ export const stations: Record<StationId, Station> = {
     tracks: [
       { id: 'l1', title: 'Midnight Coffee', url: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3' },
       { id: 'l2', title: 'Dusty Grooves', url: 'https://cdn.pixabay.com/download/audio/2022/11/22/audio_febc508520.mp3?filename=lofi-chill-140858.mp3' },
+      { id: 'l3', title: 'Chill Abstract', url: 'https://cdn.pixabay.com/download/audio/2022/02/10/audio_fc48af67b2.mp3?filename=chill-abstract-intention-12099.mp3' },
+      { id: 'l4', title: 'Smooth Night', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
     ]
   },
   jazz: {
