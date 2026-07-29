@@ -54,20 +54,20 @@ export const RippleBackground: React.FC = () => {
       const distortedRipple = ripplesDistorted[i];
       const elements = [baseRipple, distortedRipple];
 
+      // FIX: Ensure smaller rings (lower time) start with HIGHER z-index!
       gsap.set(elements, {
-        scale: 0,
+        scale: 1.0, 
         opacity: 0,
         xPercent: -50,
         yPercent: -50,
-        zIndex: currentZ + i
+        zIndex: currentZ + (numRipples - i)
       });
 
       const tl = gsap.timeline({
         repeat: -1,
-        delay: i * 4, // Stagger
         onRepeat: () => {
           currentZ += numRipples;
-          gsap.set(elements, { zIndex: currentZ + i });
+          gsap.set(elements, { zIndex: currentZ + (numRipples - i) });
         }
       });
 
@@ -78,9 +78,9 @@ export const RippleBackground: React.FC = () => {
       }, 0);
 
       tl.to(elements, {
-        scale: 6,
+        scale: 8, 
         duration: 24,
-        ease: "power1.inOut"
+        ease: "none" 
       }, 0);
 
       tl.to(elements, {
@@ -88,6 +88,9 @@ export const RippleBackground: React.FC = () => {
         duration: 5,
         ease: "none"
       }, 19);
+
+      // Jump directly to the exact second in the 24s loop.
+      tl.time((i / numRipples) * 24);
     });
   }, { scope: containerRef });
 
@@ -100,8 +103,8 @@ export const RippleBackground: React.FC = () => {
           transformOrigin: 'center center',
           background: `radial-gradient(
               circle closest-side,
-              ${colorPrimary} 0%,
-              ${colorPrimary} 50%,
+              transparent 0%,
+              transparent 50%,
               ${colorSecondary} 50.5%,
               ${colorSecondary}00 100%
             )`
