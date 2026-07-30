@@ -139,27 +139,67 @@ export const Landing = () => {
                   to="/relax"
                   className="group relative flex-1 rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-all duration-500 hover:scale-[0.98] border border-white/10 shadow-lg flex flex-col justify-end"
                 >
-                  {/* Beautiful Vibrant Background */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#FF7A2F] via-[#EE8EAC] to-[#9d4edd] group-hover:scale-110 transition-transform duration-1000"></div>
-                  {/* Dynamic Color shift on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-[#2596be] to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-1000"></div>
+                  <img
+                    src="/Relax_bento.png"
+                    alt="Relax Background"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                  />
+                  {/* Subtle dark gradient overlay for text readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
 
-                  {/* Clean Ripple Effect radiating from the center */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
-                     <div className="absolute w-32 h-32 rounded-full border-[2px] border-white/40 animate-ping" style={{ animationDuration: '3s' }}></div>
-                     <div className="absolute w-48 h-48 rounded-full border-[2px] border-white/30 animate-ping" style={{ animationDuration: '3s', animationDelay: '1s' }}></div>
-                     <div className="absolute w-64 h-64 rounded-full border-[2px] border-white/20 animate-ping" style={{ animationDuration: '3s', animationDelay: '2s' }}></div>
-                  </div>
-
-                  {/* Big, Visible Spinning Vinyl - Tucked cleanly into the corner */}
-                  <div className="absolute -top-6 -right-6 sm:-top-8 sm:-right-8 w-32 h-32 sm:w-40 sm:h-40 opacity-90 group-hover:opacity-100 group-hover:rotate-180 group-hover:scale-105 transition-all duration-1000 ease-out pointer-events-none drop-shadow-2xl">
-                    <div className="w-full h-full rounded-full border-[8px] sm:border-[10px] border-[#111] bg-gradient-to-tr from-[#1a1a1a] to-[#333] shadow-2xl flex items-center justify-center relative overflow-hidden group-hover:animate-[spin_3s_linear_infinite]">
-                       <div className="absolute inset-0 bg-[conic-gradient(from_0deg,transparent_0deg,rgba(255,255,255,0.2)_45deg,transparent_90deg,transparent_180deg,rgba(255,255,255,0.2)_225deg,transparent_270deg)]"></div>
-                       {/* Colorful vinyl label */}
-                       <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-[#2596be] to-[#EE8EAC] flex items-center justify-center relative z-10 shadow-inner">
-                         <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-black"></div>
-                       </div>
-                    </div>
+                  {/* Animated Wave Overlay */}
+                  <div className="absolute inset-0 pointer-events-none overflow-hidden z-[5] transition-transform duration-1000 group-hover:scale-105 opacity-80">
+                    <svg
+                      className="w-full h-full mix-blend-multiply"
+                      viewBox="0 0 500 550"
+                      preserveAspectRatio="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g fill="none" stroke="#4a0033" strokeWidth="1.5" vectorEffect="non-scaling-stroke">
+                        <path d="M -500,220 C -320,185 -180,255 0,220 C 180,185 320,255 500,220" strokeOpacity="0.15">
+                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="24s" repeatCount="indefinite" />
+                        </path>
+                        <path d="M -500,245 C -330,200 -170,290 0,245 C 170,200 330,290 500,245" strokeOpacity="0.2">
+                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="26s" repeatCount="indefinite" />
+                        </path>
+                        <path d="M -500,270 C -340,215 -160,325 0,270 C 160,215 340,325 500,270" strokeOpacity="0.25">
+                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="22s" repeatCount="indefinite" />
+                        </path>
+                        <path d="M -500,295 C -350,230 -150,360 0,295 C 150,230 350,360 500,295" strokeOpacity="0.3">
+                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="28s" repeatCount="indefinite" />
+                        </path>
+                        <path d="M -500,320 C -335,245 -165,395 0,320 C 165,245 335,395 500,320" strokeOpacity="0.3">
+                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="25s" repeatCount="indefinite" />
+                        </path>
+                        <path d="M -500,345 C -325,275 -175,415 0,345 C 175,275 325,415 500,345" strokeOpacity="0.35">
+                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="23s" repeatCount="indefinite" />
+                        </path>
+                        <path d="M -500,370 C -340,310 -160,430 0,370 C 160,310 340,430 500,370" strokeOpacity="0.35">
+                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="27s" repeatCount="indefinite" />
+                        </path>
+                        <path d="M -500,395 C -345,345 -155,445 0,395 C 155,345 345,445 500,395" strokeOpacity="0.4">
+                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="24s" repeatCount="indefinite" />
+                        </path>
+                        <path d="M -500,420 C -355,380 -145,460 0,420 C 145,380 355,460 500,420" strokeOpacity="0.35">
+                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="26s" repeatCount="indefinite" />
+                        </path>
+                        <path d="M -500,445 C -350,415 -150,475 0,445 C 150,415 350,475 500,445" strokeOpacity="0.3">
+                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="22s" repeatCount="indefinite" />
+                        </path>
+                        <path d="M -500,470 C -340,450 -160,490 0,470 C 160,450 340,490 500,470" strokeOpacity="0.25">
+                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="28s" repeatCount="indefinite" />
+                        </path>
+                        <path d="M -500,495 C -330,485 -170,505 0,495 C 170,485 330,505 500,495" strokeOpacity="0.2">
+                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="25s" repeatCount="indefinite" />
+                        </path>
+                        <path d="M -500,515 C -350,510 -150,520 0,515 C 150,510 350,520 500,515" strokeOpacity="0.15">
+                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="23s" repeatCount="indefinite" />
+                        </path>
+                        <path d="M -500,535 C -340,533 -160,537 0,535 C 160,533 340,537 500,535" strokeOpacity="0.1">
+                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="27s" repeatCount="indefinite" />
+                        </path>
+                      </g>
+                    </svg>
                   </div>
 
                   {/* Clean, Tasteful Typography */}
