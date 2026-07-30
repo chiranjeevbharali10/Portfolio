@@ -150,7 +150,7 @@ export const Landing = () => {
                   {/* Animated Wave Overlay */}
                   <div className="absolute inset-0 pointer-events-none overflow-hidden z-[5] opacity-100 transition-transform duration-1000 group-hover:scale-105">
                     <svg
-                      className="w-full h-full opacity-60"
+                      className="w-full h-full"
                       viewBox="0 0 500 550"
                       preserveAspectRatio="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -165,33 +165,47 @@ export const Landing = () => {
                         </mask>
                       </defs>
                       <g mask="url(#fade-mask)">
-                        <g fill="none" stroke="#63142e" vectorEffect="non-scaling-stroke" style={{ transformOrigin: '150px 0px', animation: 'flowDownRelax 2.5s linear infinite' }}>
+                        <g fill="none" stroke="#5a0020" vectorEffect="non-scaling-stroke" style={{ transformOrigin: '150px 0px', animation: 'flowDownRelax 4s linear infinite' }}>
                           <style>
                             {`
                               @keyframes flowDownRelax {
                                 0% { transform: scale(1); }
-                                100% { transform: scale(1.08); }
+                                100% { transform: scale(1.40); }
                               }
                             `}
                           </style>
-                          {Array.from({ length: 40 }).map((_, i) => {
-                            const S = Math.pow(1.08, i);
-                            const p0x = 150 - 150 * S;
-                            const p0y = 105 * S;
-                            const c1x = 150 - 20 * S;
-                            const c1y = 100 * S;
-                            const c2x = 150 + 20 * S;
-                            const c2y = 100 * S;
-                            const p3x = 150 + 150 * S;
-                            const p3y = 250 * S;
+                          {Array.from({ length: 8 }).flatMap((_, c) => {
+                            const S_chunk = Math.pow(1.40, c);
+                            const templates = [
+                              { p0dx: -150, p0dy: 105, c1dx: -20, c1dy: 100, c2dx: 20, c2dy: 100, p3dx: 150, p3dy: 250 },
+                              { p0dx: -153, p0dy: 107, c1dx: -25, c1dy: 102, c2dx: 15, c2dy: 101, p3dx: 145, p3dy: 255 },
+                              { p0dx: -156, p0dy: 109, c1dx: -15, c1dy: 103, c2dx: 25, c2dy: 103, p3dx: 155, p3dy: 260 },
+                              { p0dx: -165, p0dy: 115, c1dx: -22, c1dy: 109, c2dx: 18, c2dy: 110, p3dx: 150, p3dy: 275 },
+                              { p0dx: -170, p0dy: 118, c1dx: -18, c1dy: 113, c2dx: 22, c2dy: 112, p3dx: 148, p3dy: 282 },
+                              { p0dx: -183, p0dy: 128, c1dx: -30, c1dy: 121, c2dx: 10, c2dy: 122, p3dx: 152, p3dy: 305 },
+                              { p0dx: -184, p0dy: 129.5, c1dx: -25, c1dy: 122.5, c2dx: 15, c2dy: 123, p3dx: 148, p3dy: 310 },
+                              { p0dx: -186, p0dy: 131, c1dx: -28, c1dy: 124, c2dx: 12, c2dy: 124, p3dx: 155, p3dy: 315 },
+                              { p0dx: -188, p0dy: 132.5, c1dx: -20, c1dy: 125.5, c2dx: 20, c2dy: 125, p3dx: 150, p3dy: 320 },
+                            ];
                             
-                            return (
-                              <path 
-                                key={i} 
-                                strokeWidth={0.5 + 0.04 * i}
-                                d={`M ${p0x},${p0y} C ${c1x},${c1y} ${c2x},${c2y} ${p3x},${p3y}`} 
-                              />
-                            );
+                            return templates.map((t, r) => {
+                              const p0x = 150 + t.p0dx * S_chunk;
+                              const p0y = t.p0dy * S_chunk;
+                              const c1x = 150 + t.c1dx * S_chunk;
+                              const c1y = t.c1dy * S_chunk;
+                              const c2x = 150 + t.c2dx * S_chunk;
+                              const c2y = t.c2dy * S_chunk;
+                              const p3x = 150 + t.p3dx * S_chunk;
+                              const p3y = t.p3dy * S_chunk;
+                              
+                              return (
+                                <path 
+                                  key={`${c}-${r}`} 
+                                  strokeWidth={0.5 + 0.04 * (c * 9 + r)}
+                                  d={`M ${p0x},${p0y} C ${c1x},${c1y} ${c2x},${c2y} ${p3x},${p3y}`} 
+                                />
+                              );
+                            });
                           })}
                         </g>
                       </g>

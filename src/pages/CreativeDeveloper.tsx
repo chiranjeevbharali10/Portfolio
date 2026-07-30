@@ -2,39 +2,18 @@ import { useRef, useState, useEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import SocialHoverMenu from "../components/SocialHoverMenu";
 import { isAppLoaded } from "../utils/loadingState";
 import { SkillsSection } from "../components/SkillsSection";
 import { FlowJourney } from "../components/FlowJourney";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const SmileIcon = () => {
-  const strokeWidth = 3;
-  return (
-    <svg width="100%" height="100%" viewBox="0 0 100 100" className="text-[#1a1a1a] fill-current drop-shadow-sm">
-      <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth={strokeWidth} />
-      <circle cx="35" cy="40" r="6" fill="currentColor" />
-      <circle cx="65" cy="40" r="6" fill="currentColor" />
-      <path d="M 32 62 Q 50 80 68 62" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" />
-    </svg>
-  );
-};
-
 export const CreativeDeveloper = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const scrollSpacerRef = useRef<HTMLDivElement>(null);
-  const lockupRef = useRef<HTMLDivElement>(null);
-  const circleRef = useRef<HTMLDivElement>(null);
-  const circleInnerRef = useRef<HTMLDivElement>(null);
-  const spacerRef = useRef<HTMLDivElement>(null);
-  const navContainerRef = useRef<HTMLDivElement>(null);
-  const letterRefs = useRef<(HTMLDivElement | null)[]>([]);
   const contentWrapperRef = useRef<HTMLElement>(null);
   const leftColRef = useRef<HTMLDivElement>(null);
   const counterRef = useRef<HTMLHeadingElement>(null);
   const headingLinesRef = useRef<(HTMLDivElement | null)[]>([]);
-  const fixedHeaderRef = useRef<HTMLDivElement>(null);
   const flowContainerRef = useRef<HTMLDivElement>(null);
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -45,158 +24,10 @@ export const CreativeDeveloper = () => {
     });
   }, []);
 
-  const creativeLetters = "CREATIVE".split("");
-  const developerLetters = "DEVELOPER".split("");
-
   useGSAP(() => {
-    if (!fontsLoaded || !lockupRef.current || !circleRef.current || !spacerRef.current || !scrollSpacerRef.current) return;
+    if (!fontsLoaded) return;
 
     const playAnimation = () => {
-      // Lock scrolling during intro
-      document.body.style.overflow = "hidden";
-
-      const lockup = lockupRef.current!;
-      const circle = circleRef.current!;
-      const circleInner = circleInnerRef.current!;
-      const spacer = spacerRef.current!;
-
-      const tl = gsap.timeline({
-        onComplete: () => {
-          // Unlock scrolling after intro
-          document.body.style.overflow = "";
-
-          // Initialize ScrollTrigger only AFTER intro finishes so it records correct start values
-          const scrollTl = gsap.timeline({
-            scrollTrigger: {
-              trigger: scrollSpacerRef.current,
-              start: "top top",
-              end: "bottom top", // Animate while scrolling past the spacer
-              scrub: 1.2,
-            }
-          });
-
-          // Calculate exact Y translation to align the lockup's center with the buttons' center (56px from top)
-          const targetY = -(window.innerHeight / 2 - 56);
-
-          scrollTl.to(lockup, {
-            scale: 0.6, // INCREASED SCALE FOR NAVBAR LOGO
-            y: targetY,
-            ease: "power1.inOut"
-          }, 0);
-
-          if (navContainerRef.current) {
-            scrollTl.to(navContainerRef.current, {
-              y: "-31vh",
-              ease: "power1.inOut"
-            }, 0);
-          }
-
-          ScrollTrigger.refresh();
-        }
-      });
-
-      gsap.set(lockup, { scale: 2.0 });
-      gsap.set(letterRefs.current, { y: "100%" });
-      gsap.set(".hero-element", { opacity: 0, y: 30 });
-      gsap.set(".dot-icon", { scale: 0, opacity: 0 });
-
-      const offscreenLeft = -150;
-      const centerDock = spacer.offsetLeft + (spacer.offsetWidth / 2) - (circle.offsetWidth / 2);
-      const almostRight = centerDock + (lockup.offsetWidth - centerDock) * 0.45;
-
-      gsap.set(circle, { x: offscreenLeft });
-
-      const diameter = circle.offsetWidth || (window.innerWidth * 0.075);
-      const circumference = Math.PI * diameter || 1;
-
-      const distance1 = Math.abs(centerDock - offscreenLeft);
-      const rotation1 = (distance1 / circumference) * 360;
-
-      const distance2 = Math.abs(almostRight - centerDock);
-      const rotation2 = rotation1 + ((distance2 / circumference) * 360);
-
-      const distance3 = Math.abs(almostRight - centerDock);
-      const rawRotation3 = (distance3 / circumference) * 360;
-
-      const finalRawRotation = rotation2 - rawRotation3;
-      const finalUprightRotation = Math.round(finalRawRotation / 360) * 360;
-
-      // Intro Animation Timeline
-      tl.to(circle, {
-        x: centerDock,
-        duration: 1.2,
-        ease: "none",
-      }, 0.5)
-        .to(circleInner, {
-          rotation: rotation1,
-          duration: 1.2,
-          ease: "none"
-        }, 0.5)
-        .to(letterRefs.current.slice(0, creativeLetters.length).filter(Boolean), {
-          y: 0,
-          duration: 0.9,
-          ease: "back.out(1.2)",
-          stagger: { each: 0.125, from: "start" }
-        }, 0.85)
-        .to(circle, {
-          x: almostRight,
-          duration: 1.0,
-          ease: "power2.out",
-        }, 1.7)
-        .to(circleInner, {
-          rotation: rotation2,
-          duration: 1.0,
-          ease: "power2.out"
-        }, 1.7)
-        .to(letterRefs.current.slice(creativeLetters.length).filter(Boolean), {
-          y: 0,
-          duration: 0.9,
-          ease: "back.out(1.2)",
-          stagger: { each: 0.125, from: "end" }
-        }, 2.3)
-        .to(circle, {
-          x: centerDock,
-          duration: 0.5,
-          ease: "none"
-        }, 2.7)
-        .to(circleInner, {
-          rotation: finalUprightRotation,
-          duration: 0.5,
-          ease: "none"
-        }, 2.7)
-        .to(lockup, {
-          y: "-30vh",
-          scale: 2.25,
-          duration: 1,
-          ease: "power3.inOut"
-        }, 4.4)
-        .to(spacer, {
-          width: "0.25em",
-          duration: 1,
-          ease: "power3.inOut"
-        }, 4.4)
-        .to(circleInner, {
-          scale: 0,
-          opacity: 0,
-          duration: 0.8,
-          ease: "power3.inOut"
-        }, 4.4)
-        .to(".dot-icon", {
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          ease: "power3.inOut"
-        }, 4.4)
-        .to(".hero-element", {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          stagger: 0.2,
-          ease: "power2.out"
-        }, 4.9);
-
-      // The scroll timeline is now initialized inside the onComplete callback above.
-
       // --- ADVANCED ANIMATIONS FOR NEW SECTION ---
       
       // 1. Parallax for left column
@@ -274,20 +105,6 @@ export const CreativeDeveloper = () => {
         );
       }
 
-      // 5. Hide Fixed Header when entering Flow Journey
-      if (fixedHeaderRef.current && flowContainerRef.current) {
-        gsap.to(fixedHeaderRef.current, {
-          opacity: 0,
-          y: -50,
-          ease: "power2.inOut",
-          scrollTrigger: {
-            trigger: flowContainerRef.current,
-            start: "top bottom", // Start fading as soon as FlowJourney enters the screen
-            end: "top top", // Fully hidden by the time FlowJourney reaches the top of the screen
-            scrub: true
-          }
-        });
-      }
     };
 
     if (isAppLoaded()) {
@@ -296,78 +113,12 @@ export const CreativeDeveloper = () => {
       window.addEventListener('appLoaded', playAnimation, { once: true });
     }
 
-    // Cleanup overflow on unmount
-    return () => {
-      document.body.style.overflow = "";
-    };
 
   }, { scope: containerRef, dependencies: [fontsLoaded] });
 
   return (
     <div ref={containerRef} className="relative w-full bg-[#ffcce0] text-[#1a1a1a] selection:bg-[#1a1a1a] selection:text-[#ffcce0]">
       
-      {/* Spacer to give the scroll animation room to breathe before the next section */}
-      <div ref={scrollSpacerRef} className="h-[120vh] w-full"></div>
-      
-      {/* Fixed Sticky Header Section (always visible) */}
-      <div ref={fixedHeaderRef} className="fixed inset-0 w-full h-screen z-40 pointer-events-none flex flex-col items-center justify-center">
-        
-        {/* Kinetic Typography Lockup */}
-        <div
-          ref={lockupRef}
-          className="relative flex items-end justify-center font-french font-bold uppercase text-[8vw] leading-[0.8] tracking-tighter whitespace-nowrap origin-center pointer-events-auto"
-          style={{ zIndex: 50 }} // keep above the scrolling content
-        >
-          <div className="flex">
-            {creativeLetters.map((l, i) => (
-              <div key={`c-${i}`} className="inline-block" style={{ clipPath: "inset(-100% -20% 0% -20%)" }}>
-                <div ref={el => { letterRefs.current[i] = el; }} className="inline-block drop-shadow-sm px-[0.1vw]">{l}</div>
-              </div>
-            ))}
-          </div>
-
-          <div ref={spacerRef} className="w-[0.9em] shrink-0"></div>
-
-          <div className="flex">
-            {developerLetters.map((l, i) => (
-              <div key={`d-${i}`} className="inline-block" style={{ clipPath: "inset(-100% -20% 0% -20%)" }}>
-                <div ref={el => { letterRefs.current[creativeLetters.length + i] = el; }} className="inline-block drop-shadow-sm px-[0.1vw]">{l}</div>
-              </div>
-            ))}
-          </div>
-
-          <div
-            ref={circleRef}
-            className="absolute bottom-0 left-0 z-30 flex items-center justify-center pointer-events-none"
-            style={{ width: '0.8em', height: '0.8em' }}
-          >
-            <div ref={circleInnerRef} className="absolute inset-0 origin-center w-full h-full flex items-center justify-center text-[#1a1a1a]">
-              <SmileIcon />
-            </div>
-            <div
-              className="dot-icon absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#1a1a1a] rounded-full opacity-0 scale-0"
-              style={{ width: '0.1em', height: '0.1em', marginTop: '-0.01em', marginLeft: '-0.29em' }}
-            ></div>
-          </div>
-        </div>
-
-        {/* Hero Bottom Bar / Future Navbar */}
-        <div 
-          ref={navContainerRef}
-          className="hero-element absolute top-[31%] w-full flex justify-between items-start px-12 mt-8 pointer-events-auto"
-          style={{ zIndex: 50 }} // keep above the scrolling content
-        >
-          <div className="flex justify-start">
-            <button className="h-12 px-6 bg-white rounded-full font-medium font-inter text-[15px] shadow-sm text-black hover:scale-105 transition-transform">
-              Let's work
-            </button>
-          </div>
-          <div className="flex justify-end">
-            <SocialHoverMenu />
-          </div>
-        </div>
-      </div>
-
       {/* New Scrollable Content Section */}
       <section ref={contentWrapperRef} className="min-h-screen w-full flex flex-col md:flex-row px-8 md:px-16 lg:px-24 pt-32 pb-48">
         
