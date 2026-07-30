@@ -148,56 +148,52 @@ export const Landing = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
 
                   {/* Animated Wave Overlay */}
-                  <div className="absolute inset-0 pointer-events-none overflow-hidden z-[5] transition-transform duration-1000 group-hover:scale-105 opacity-80">
+                  <div className="absolute inset-0 pointer-events-none overflow-hidden z-[5] opacity-100 transition-transform duration-1000 group-hover:scale-105">
                     <svg
-                      className="w-full h-full mix-blend-multiply"
+                      className="w-full h-full opacity-60"
                       viewBox="0 0 500 550"
                       preserveAspectRatio="none"
                       xmlns="http://www.w3.org/2000/svg"
                     >
-                      <g fill="none" stroke="#4a0033" strokeWidth="1.5" vectorEffect="non-scaling-stroke">
-                        <path d="M -500,220 C -320,185 -180,255 0,220 C 180,185 320,255 500,220" strokeOpacity="0.15">
-                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="24s" repeatCount="indefinite" />
-                        </path>
-                        <path d="M -500,245 C -330,200 -170,290 0,245 C 170,200 330,290 500,245" strokeOpacity="0.2">
-                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="26s" repeatCount="indefinite" />
-                        </path>
-                        <path d="M -500,270 C -340,215 -160,325 0,270 C 160,215 340,325 500,270" strokeOpacity="0.25">
-                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="22s" repeatCount="indefinite" />
-                        </path>
-                        <path d="M -500,295 C -350,230 -150,360 0,295 C 150,230 350,360 500,295" strokeOpacity="0.3">
-                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="28s" repeatCount="indefinite" />
-                        </path>
-                        <path d="M -500,320 C -335,245 -165,395 0,320 C 165,245 335,395 500,320" strokeOpacity="0.3">
-                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="25s" repeatCount="indefinite" />
-                        </path>
-                        <path d="M -500,345 C -325,275 -175,415 0,345 C 175,275 325,415 500,345" strokeOpacity="0.35">
-                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="23s" repeatCount="indefinite" />
-                        </path>
-                        <path d="M -500,370 C -340,310 -160,430 0,370 C 160,310 340,430 500,370" strokeOpacity="0.35">
-                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="27s" repeatCount="indefinite" />
-                        </path>
-                        <path d="M -500,395 C -345,345 -155,445 0,395 C 155,345 345,445 500,395" strokeOpacity="0.4">
-                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="24s" repeatCount="indefinite" />
-                        </path>
-                        <path d="M -500,420 C -355,380 -145,460 0,420 C 145,380 355,460 500,420" strokeOpacity="0.35">
-                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="26s" repeatCount="indefinite" />
-                        </path>
-                        <path d="M -500,445 C -350,415 -150,475 0,445 C 150,415 350,475 500,445" strokeOpacity="0.3">
-                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="22s" repeatCount="indefinite" />
-                        </path>
-                        <path d="M -500,470 C -340,450 -160,490 0,470 C 160,450 340,490 500,470" strokeOpacity="0.25">
-                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="28s" repeatCount="indefinite" />
-                        </path>
-                        <path d="M -500,495 C -330,485 -170,505 0,495 C 170,485 330,505 500,495" strokeOpacity="0.2">
-                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="25s" repeatCount="indefinite" />
-                        </path>
-                        <path d="M -500,515 C -350,510 -150,520 0,515 C 150,510 350,520 500,515" strokeOpacity="0.15">
-                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="23s" repeatCount="indefinite" />
-                        </path>
-                        <path d="M -500,535 C -340,533 -160,537 0,535 C 160,533 340,537 500,535" strokeOpacity="0.1">
-                          <animateTransform attributeName="transform" type="translate" from="0 0" to="500 0" dur="27s" repeatCount="indefinite" />
-                        </path>
+                      <defs>
+                        <linearGradient id="horizon-fade" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="35%" stopColor="white" stopOpacity="0" />
+                          <stop offset="45%" stopColor="white" stopOpacity="1" />
+                        </linearGradient>
+                        <mask id="fade-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="500" height="550">
+                          <rect width="500" height="550" fill="url(#horizon-fade)" />
+                        </mask>
+                      </defs>
+                      <g mask="url(#fade-mask)">
+                        <g fill="none" stroke="#63142e" vectorEffect="non-scaling-stroke" style={{ transformOrigin: '150px 0px', animation: 'flowDownRelax 2.5s linear infinite' }}>
+                          <style>
+                            {`
+                              @keyframes flowDownRelax {
+                                0% { transform: scale(1); }
+                                100% { transform: scale(1.08); }
+                              }
+                            `}
+                          </style>
+                          {Array.from({ length: 40 }).map((_, i) => {
+                            const S = Math.pow(1.08, i);
+                            const p0x = 150 - 150 * S;
+                            const p0y = 105 * S;
+                            const c1x = 150 - 20 * S;
+                            const c1y = 100 * S;
+                            const c2x = 150 + 20 * S;
+                            const c2y = 100 * S;
+                            const p3x = 150 + 150 * S;
+                            const p3y = 250 * S;
+                            
+                            return (
+                              <path 
+                                key={i} 
+                                strokeWidth={0.5 + 0.04 * i}
+                                d={`M ${p0x},${p0y} C ${c1x},${c1y} ${c2x},${c2y} ${p3x},${p3y}`} 
+                              />
+                            );
+                          })}
+                        </g>
                       </g>
                     </svg>
                   </div>
