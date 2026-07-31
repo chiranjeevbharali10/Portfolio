@@ -1,5 +1,5 @@
 import React, { Suspense, useRef } from 'react';
-import { Canvas, useThree } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import { useGLTF, Environment, Float, PerspectiveCamera } from '@react-three/drei';
 import { ArrowUpRight, ArrowLeft } from 'lucide-react';
 import * as THREE from 'three';

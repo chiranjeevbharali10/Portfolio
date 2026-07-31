@@ -250,7 +250,7 @@ export const IslandJourney5: React.FC = () => {
       }
     });
 
-    if (welcomeRef.current && headingRef.current && paragraphRef.current && ctaBtnRef.current && footerRef.current) {
+    if (welcomeRef.current && headingRef.current && paragraphRef.current && ctaBtnRef.current && footerRef.current && word1Ref.current && word2Ref.current && starRef.current) {
 
       // 1. Surrounding text floats up and blurs away
       textTl.to([welcomeRef.current, paragraphRef.current, ctaBtnRef.current], {
@@ -456,9 +456,9 @@ export const IslandJourney5: React.FC = () => {
       <div ref={containerRef} className="h-[250vh] relative w-full">
         <div ref={overlayRef} className="sticky top-0 w-full h-[100vh] overflow-hidden bg-black text-black island-overlay">
           {/* Starfield Background */}
-          <div 
+          <div
             ref={starfieldRef}
-            className="absolute inset-0 w-full h-full opacity-0 will-change-[opacity]" 
+            className="absolute inset-0 w-full h-full opacity-0 will-change-[opacity]"
             style={{
               backgroundColor: '#000000',
               backgroundImage: `
@@ -595,8 +595,8 @@ export const IslandJourney5: React.FC = () => {
             <div className="flex-1 flex flex-col justify-center max-w-sm mt-12 gap-8 pointer-events-auto">
               {/* 100% Section */}
               <div>
-                <h1 className="text-8xl mb-4 text-[#fffce0] drop-shadow-[0_0_15px_rgba(255,252,200,0.5)]">100%</h1>
-                <p className="text-sm leading-relaxed text-[#fff8f0]/80 font-sans tracking-wide">
+                <h1 className="text-9xl mb-4 text-[#fffce0] drop-shadow-[0_0_15px_rgba(255,252,200,0.5)]">100%</h1>
+                <p className="text-lg leading-relaxed text-[#fff8f0]/80 font-sans tracking-wide">
                   dedicated to pixel-perfect execution,<br />
                   immersive animations, and<br />
                   flawless web performance.
@@ -612,11 +612,11 @@ export const IslandJourney5: React.FC = () => {
 
               {/* Statement */}
               <div>
-                <h2 className="text-3xl leading-tight mb-4 text-[#fffce0] drop-shadow-[0_0_12px_rgba(255,252,200,0.4)]">
+                <h2 className="text-4xl leading-tight mb-4 text-[#fffce0] drop-shadow-[0_0_12px_rgba(255,252,200,0.4)]">
                   A developer who thinks<br />
                   like a <span className="text-[#ffb6c1] drop-shadow-[0_0_10px_rgba(255,182,193,0.6)]">designer.</span>
                 </h2>
-                <p className="text-[13px] leading-relaxed text-[#fff8f0]/80 font-sans tracking-wide">
+                <p className="text-[17px] leading-relaxed text-[#fff8f0]/80 font-sans tracking-wide">
                   I craft digital experiences by blending<br />
                   engineering, creativity, and thoughtful design —<br />
                   turning ideas into products that feel intuitive,<br />
@@ -625,18 +625,18 @@ export const IslandJourney5: React.FC = () => {
               </div>
             </div>
 
-            {/* Bottom Row */}
-            <div className="flex flex-col md:flex-row justify-between items-end w-full gap-8">
-              {/* Skill Bar */}
-              <div className="flex flex-col md:flex-row gap-4 flex-1 w-full">
+            {/* Bottom Section */}
+            <div className="flex flex-col w-full gap-6">
+              {/* Skill Bars */}
+              <div className="flex flex-col md:flex-row gap-4 md:gap-6 w-full px-8 md:px-20 lg:px-32">
                 <SkillModule name="PRECISION" value="92%" icon="precision" />
                 <SkillModule name="ENGINEERING" value="88%" icon="engineering" />
                 <SkillModule name="DESIGN THINKING" value="90%" icon="design" />
                 <SkillModule name="CREATIVITY" value="85%" icon="creativity" />
               </div>
 
-              {/* Bottom Right */}
-              <div className="text-xs tracking-widest text-[#ffb6c1] drop-shadow-[0_0_8px_rgba(255,182,193,0.6)] flex items-center gap-2 whitespace-nowrap">
+              {/* Scroll To Explore - Below the boxes */}
+              <div className="text-[10px] tracking-widest text-[#ffb6c1] drop-shadow-[0_0_8px_rgba(255,182,193,0.6)] flex items-center justify-end w-full px-8 md:px-20 lg:px-32 gap-2 whitespace-nowrap">
                 SCROLL TO EXPLORE <span>+</span>
               </div>
             </div>
