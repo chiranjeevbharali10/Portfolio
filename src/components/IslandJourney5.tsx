@@ -16,22 +16,22 @@ const getFramePath = (index: number) => {
 const PixelIcon = ({ type }: { type: string }) => {
   if (type === 'precision') return (
     <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" shapeRendering="crispEdges">
-      <path d="M5 0h2v2H5V0zM0 5h2v2H0V5zM10 5h2v2h-2V5zM5 10h2v2H5v-2zM5 5h2v2H5V5z"/>
+      <path d="M5 0h2v2H5V0zM0 5h2v2H0V5zM10 5h2v2h-2V5zM5 10h2v2H5v-2zM5 5h2v2H5V5z" />
     </svg>
   );
   if (type === 'engineering') return (
     <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" shapeRendering="crispEdges">
-      <path d="M2 0h2v2H2V0zM8 0h2v2H8V0zM0 2h2v2H0V2zM10 2h2v2h-2V2zM0 8h2v2H0V8zM10 8h2v2h-2V8zM2 10h2v2H2v-2zM8 10h2v2H8v-2zM4 4h4v4H4V4z"/>
+      <path d="M2 0h2v2H2V0zM8 0h2v2H8V0zM0 2h2v2H0V2zM10 2h2v2h-2V2zM0 8h2v2H0V8zM10 8h2v2h-2V8zM2 10h2v2H2v-2zM8 10h2v2H8v-2zM4 4h4v4H4V4z" />
     </svg>
   );
   if (type === 'design') return (
     <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" shapeRendering="crispEdges">
-      <path d="M4 0h4v2H4V0zM2 2h2v2H2V2zM8 2h2v2H8V2zM2 4h2v2H2V4zM8 4h2v2H8V4zM2 6h2v2H2V6zM8 6h2v2H8V6zM4 8h4v2H4V8zM5 10h2v2H5v-2z"/>
+      <path d="M4 0h4v2H4V0zM2 2h2v2H2V2zM8 2h2v2H8V2zM2 4h2v2H2V4zM8 4h2v2H8V4zM2 6h2v2H2V6zM8 6h2v2H8V6zM4 8h4v2H4V8zM5 10h2v2H5v-2z" />
     </svg>
   );
   if (type === 'creativity') return (
     <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" shapeRendering="crispEdges">
-      <path d="M2 2h2v2H2V2zM8 2h2v2H8V2zM0 4h2v2H0V4zM4 4h4v2H4V4zM10 4h2v2h-2V4zM0 6h2v2H0V6zM10 6h2v2h-2V6zM2 8h2v2H2V8zM8 8h2v2H8V8zM4 10h4v2H4v-2z"/>
+      <path d="M2 2h2v2H2V2zM8 2h2v2H8V2zM0 4h2v2H0V4zM4 4h4v2H4V4zM10 4h2v2h-2V4zM0 6h2v2H0V6zM10 6h2v2h-2V6zM2 8h2v2H2V8zM8 8h2v2H8V8zM4 10h4v2H4v-2z" />
     </svg>
   );
   return null;
@@ -51,11 +51,11 @@ const SkillModule = ({ name, value, icon }: { name: string, value: string, icon:
       </div>
       <span className="text-[#ffb6c1] drop-shadow-[0_0_5px_rgba(255,182,193,0.6)]">{value}</span>
     </div>
-    
+
     <div className="flex gap-[2px] h-1.5 w-full">
       {Array.from({ length: 25 }).map((_, i) => (
-        <div 
-          key={i} 
+        <div
+          key={i}
           className={`h-full flex-1 ${i < (parseInt(value) / 4) ? 'bg-[#ffb6c1] drop-shadow-[0_0_4px_rgba(255,182,193,0.8)]' : 'bg-[#fff8f0]/10'}`}
         />
       ))}
@@ -73,7 +73,7 @@ export const IslandJourney5: React.FC = () => {
   // Refs for cinematic text transition
   const uiOverlayRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
-  
+
   const welcomeRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const word1Ref = useRef<HTMLDivElement>(null);
@@ -81,7 +81,7 @@ export const IslandJourney5: React.FC = () => {
   const starRef = useRef<HTMLDivElement>(null);
   const paragraphRef = useRef<HTMLParagraphElement>(null);
   const ctaBtnRef = useRef<HTMLButtonElement>(null);
-  
+
   const footerRef = useRef<HTMLDivElement>(null);
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -208,7 +208,7 @@ export const IslandJourney5: React.FC = () => {
           state.width / img.width,
           state.height / img.height
         );
-        const scale = baseScale * 1.166; 
+        const scale = baseScale * 1.166;
 
         const drawWidth = img.width * scale;
         const drawHeight = img.height * scale;
@@ -249,7 +249,7 @@ export const IslandJourney5: React.FC = () => {
     });
 
     if (welcomeRef.current && headingRef.current && paragraphRef.current && ctaBtnRef.current && footerRef.current) {
-      
+
       // 1. Surrounding text floats up and blurs away
       textTl.to([welcomeRef.current, paragraphRef.current, ctaBtnRef.current], {
         y: -50,
@@ -451,7 +451,7 @@ export const IslandJourney5: React.FC = () => {
 
             {/* Main Content */}
             <div className="max-w-3xl pointer-events-none flex flex-col justify-center h-full">
-              
+
               <div ref={welcomeRef} className="flex items-center gap-2 -mb-3.4 pointer-events-auto">
                 <span className="text-sm">✦</span>
                 <span className="text-sm font-medium tracking-widest uppercase">Welcome to my world</span>
@@ -477,7 +477,7 @@ export const IslandJourney5: React.FC = () => {
                 <div ref={starRef} className="absolute top-0 left-0 opacity-0 text-[0.8em]">✦</div>
                 <div ref={word2Ref} className="w-fit mt-3">DEVELOPER</div>
               </h1>
-              
+
               <p ref={paragraphRef} className="text-sm md:text-xl max-w-sm mb-10 opacity-80 font-medium leading-relaxed pointer-events-auto">
                 I build experiences that merge creativity with code.
               </p>
@@ -522,7 +522,7 @@ export const IslandJourney5: React.FC = () => {
 
           {/* End Frame Content */}
           <div ref={endTextRef} className="absolute inset-0 pointer-events-none flex flex-col justify-between p-8 md:p-12 font-minecraft text-[#fff8f0] opacity-0 z-20">
-            
+
             {/* Top Row */}
             <div className="flex justify-between items-start w-full">
               {/* Top Left */}
@@ -540,10 +540,10 @@ export const IslandJourney5: React.FC = () => {
             <div className="flex-1 flex flex-col justify-center max-w-sm mt-12 gap-8 pointer-events-auto">
               {/* 100% Section */}
               <div>
-                <h1 className="text-7xl mb-4 text-[#fff8f0] drop-shadow-[0_0_15px_rgba(255,248,240,0.4)]">100%</h1>
+                <h1 className="text-8xl mb-4 text-[#fffce0] drop-shadow-[0_0_15px_rgba(255,252,200,0.5)]">100%</h1>
                 <p className="text-sm leading-relaxed text-[#fff8f0]/80 font-sans tracking-wide">
-                  dedicated to pixel-perfect execution,<br/>
-                  immersive animations, and<br/>
+                  dedicated to pixel-perfect execution,<br />
+                  immersive animations, and<br />
                   flawless web performance.
                 </p>
               </div>
@@ -557,14 +557,14 @@ export const IslandJourney5: React.FC = () => {
 
               {/* Statement */}
               <div>
-                <h2 className="text-3xl leading-tight mb-4 text-[#fff8f0]">
-                  A developer who thinks<br/>
+                <h2 className="text-3xl leading-tight mb-4 text-[#fffce0] drop-shadow-[0_0_12px_rgba(255,252,200,0.4)]">
+                  A developer who thinks<br />
                   like a <span className="text-[#ffb6c1] drop-shadow-[0_0_10px_rgba(255,182,193,0.6)]">designer.</span>
                 </h2>
                 <p className="text-[13px] leading-relaxed text-[#fff8f0]/80 font-sans tracking-wide">
-                  I craft digital experiences by blending<br/>
-                  engineering, creativity, and thoughtful design —<br/>
-                  turning ideas into products that feel intuitive,<br/>
+                  I craft digital experiences by blending<br />
+                  engineering, creativity, and thoughtful design —<br />
+                  turning ideas into products that feel intuitive,<br />
                   human, and memorable.
                 </p>
               </div>
@@ -574,12 +574,12 @@ export const IslandJourney5: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-between items-end w-full gap-8">
               {/* Skill Bar */}
               <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-                 <SkillModule name="PRECISION" value="92%" icon="precision" />
-                 <SkillModule name="ENGINEERING" value="88%" icon="engineering" />
-                 <SkillModule name="DESIGN THINKING" value="90%" icon="design" />
-                 <SkillModule name="CREATIVITY" value="85%" icon="creativity" />
+                <SkillModule name="PRECISION" value="92%" icon="precision" />
+                <SkillModule name="ENGINEERING" value="88%" icon="engineering" />
+                <SkillModule name="DESIGN THINKING" value="90%" icon="design" />
+                <SkillModule name="CREATIVITY" value="85%" icon="creativity" />
               </div>
-              
+
               {/* Bottom Right */}
               <div className="text-xs tracking-widest text-[#ffb6c1] drop-shadow-[0_0_8px_rgba(255,182,193,0.6)] flex items-center gap-2 whitespace-nowrap">
                 SCROLL TO EXPLORE <span>+</span>
