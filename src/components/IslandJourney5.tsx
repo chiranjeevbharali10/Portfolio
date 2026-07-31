@@ -69,6 +69,8 @@ export const IslandJourney5: React.FC = () => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const bloomRef = useRef<HTMLDivElement>(null);
   const endTextRef = useRef<HTMLDivElement>(null);
+  const starfieldRef = useRef<HTMLDivElement>(null);
+  const scaleWrapperRef = useRef<HTMLDivElement>(null);
 
   // Refs for cinematic text transition
   const uiOverlayRef = useRef<HTMLDivElement>(null);
@@ -334,7 +336,7 @@ export const IslandJourney5: React.FC = () => {
       const endTextTl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
-          start: '60% top',
+          start: '40% top',
           end: 'bottom bottom',
           scrub: true,
         }
@@ -393,6 +395,38 @@ export const IslandJourney5: React.FC = () => {
           scrub: true,
         }
       });
+
+      // Cinematic Zoom Out as we enter night/black mode
+      if (scaleWrapperRef.current) {
+        gsap.fromTo(scaleWrapperRef.current, {
+          scale: 1,
+        }, {
+          scale: 0.85,
+          ease: 'power2.inOut',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: '40% top',
+            end: 'bottom bottom',
+            scrub: true,
+          }
+        });
+      }
+
+      // Starfield fade in
+      if (starfieldRef.current) {
+        gsap.fromTo(starfieldRef.current, {
+          opacity: 0,
+        }, {
+          opacity: 1,
+          ease: 'power2.inOut',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: '40% top',
+            end: 'bottom bottom',
+            scrub: true,
+          }
+        });
+      }
     }
 
     return () => {
@@ -421,14 +455,35 @@ export const IslandJourney5: React.FC = () => {
 
       <div ref={containerRef} className="h-[250vh] relative w-full">
         <div ref={overlayRef} className="sticky top-0 w-full h-[100vh] overflow-hidden bg-black text-black island-overlay">
-          <canvas
-            ref={canvasRef}
-            className="absolute inset-0 w-full h-full object-cover island-hero will-change-[filter,transform]"
+          {/* Starfield Background */}
+          <div 
+            ref={starfieldRef}
+            className="absolute inset-0 w-full h-full opacity-0 will-change-[opacity]" 
             style={{
-              width: '100%',
-              height: '100%',
+              backgroundColor: '#000000',
+              backgroundImage: `
+                radial-gradient(1.5px 1.5px at 25px 5px, white, transparent),
+                radial-gradient(1.5px 1.5px at 50px 25px, white, transparent),
+                radial-gradient(1.5px 1.5px at 125px 20px, rgba(255,255,255,0.7), transparent),
+                radial-gradient(2px 2px at 50px 75px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(2px 2px at 15px 125px, rgba(255,255,255,0.5), transparent),
+                radial-gradient(2.5px 2.5px at 110px 80px, white, transparent),
+                radial-gradient(1px 1px at 75px 125px, rgba(255,255,255,0.9), transparent),
+                radial-gradient(1px 1px at 100px 50px, rgba(255,255,255,0.4), transparent)
+              `,
+              backgroundSize: '150px 150px, 200px 200px, 120px 120px, 250px 250px, 180px 180px, 300px 300px, 140px 140px, 220px 220px'
             }}
           />
+          <div ref={scaleWrapperRef} className="absolute inset-0 w-full h-full origin-center will-change-transform">
+            <canvas
+              ref={canvasRef}
+              className="absolute inset-0 w-full h-full object-cover island-hero will-change-[filter]"
+              style={{
+                width: '100%',
+                height: '100%',
+              }}
+            />
+          </div>
           <div ref={bloomRef} className="island-bloom" />
 
           {/* UI Overlay */}
