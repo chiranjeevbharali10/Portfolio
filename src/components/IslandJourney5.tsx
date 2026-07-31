@@ -628,7 +628,7 @@ export const IslandJourney5: React.FC = () => {
             {/* Bottom Row */}
             <div className="flex flex-col md:flex-row justify-between items-end w-full gap-8">
               {/* Skill Bar */}
-              <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+              <div className="flex flex-col md:flex-row gap-4 flex-1 w-full">
                 <SkillModule name="PRECISION" value="92%" icon="precision" />
                 <SkillModule name="ENGINEERING" value="88%" icon="engineering" />
                 <SkillModule name="DESIGN THINKING" value="90%" icon="design" />
