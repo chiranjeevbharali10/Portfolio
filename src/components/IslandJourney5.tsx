@@ -13,11 +13,62 @@ const getFramePath = (index: number) => {
   return `/island_5/img_${paddedIndex}.jpg`;
 };
 
+const PixelIcon = ({ type }: { type: string }) => {
+  if (type === 'precision') return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" shapeRendering="crispEdges">
+      <path d="M5 0h2v2H5V0zM0 5h2v2H0V5zM10 5h2v2h-2V5zM5 10h2v2H5v-2zM5 5h2v2H5V5z"/>
+    </svg>
+  );
+  if (type === 'engineering') return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" shapeRendering="crispEdges">
+      <path d="M2 0h2v2H2V0zM8 0h2v2H8V0zM0 2h2v2H0V2zM10 2h2v2h-2V2zM0 8h2v2H0V8zM10 8h2v2h-2V8zM2 10h2v2H2v-2zM8 10h2v2H8v-2zM4 4h4v4H4V4z"/>
+    </svg>
+  );
+  if (type === 'design') return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" shapeRendering="crispEdges">
+      <path d="M4 0h4v2H4V0zM2 2h2v2H2V2zM8 2h2v2H8V2zM2 4h2v2H2V4zM8 4h2v2H8V4zM2 6h2v2H2V6zM8 6h2v2H8V6zM4 8h4v2H4V8zM5 10h2v2H5v-2z"/>
+    </svg>
+  );
+  if (type === 'creativity') return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor" shapeRendering="crispEdges">
+      <path d="M2 2h2v2H2V2zM8 2h2v2H8V2zM0 4h2v2H0V4zM4 4h4v2H4V4zM10 4h2v2h-2V4zM0 6h2v2H0V6zM10 6h2v2h-2V6zM2 8h2v2H2V8zM8 8h2v2H8V8zM4 10h4v2H4v-2z"/>
+    </svg>
+  );
+  return null;
+}
+
+const SkillModule = ({ name, value, icon }: { name: string, value: string, icon: string }) => (
+  <div className="border border-[#fff8f0]/30 p-4 flex flex-col gap-4 flex-1 min-w-[160px] relative pointer-events-auto bg-black/20 backdrop-blur-sm">
+    <div className="absolute -top-[2px] -left-[2px] w-1.5 h-1.5 bg-[#fff8f0]/80" />
+    <div className="absolute -top-[2px] -right-[2px] w-1.5 h-1.5 bg-[#fff8f0]/80" />
+    <div className="absolute -bottom-[2px] -left-[2px] w-1.5 h-1.5 bg-[#fff8f0]/80" />
+    <div className="absolute -bottom-[2px] -right-[2px] w-1.5 h-1.5 bg-[#fff8f0]/80" />
+
+    <div className="flex justify-between items-center text-xs tracking-[0.15em] text-[#fff8f0]">
+      <div className="flex items-center gap-3">
+        <PixelIcon type={icon} />
+        {name}
+      </div>
+      <span className="text-[#ffb6c1] drop-shadow-[0_0_5px_rgba(255,182,193,0.6)]">{value}</span>
+    </div>
+    
+    <div className="flex gap-[2px] h-1.5 w-full">
+      {Array.from({ length: 25 }).map((_, i) => (
+        <div 
+          key={i} 
+          className={`h-full flex-1 ${i < (parseInt(value) / 4) ? 'bg-[#ffb6c1] drop-shadow-[0_0_4px_rgba(255,182,193,0.8)]' : 'bg-[#fff8f0]/10'}`}
+        />
+      ))}
+    </div>
+  </div>
+);
+
 export const IslandJourney5: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const bloomRef = useRef<HTMLDivElement>(null);
+  const endTextRef = useRef<HTMLDivElement>(null);
 
   // Refs for cinematic text transition
   const uiOverlayRef = useRef<HTMLDivElement>(null);
@@ -41,6 +92,7 @@ export const IslandJourney5: React.FC = () => {
     loadedCount: 0,
     currentFrame: -1,
     targetFrame: 0,
+    animatedFrame: 0,
     animationFrameId: 0,
     width: 0,
     height: 0,
@@ -133,7 +185,8 @@ export const IslandJourney5: React.FC = () => {
     };
 
     const drawFrame = () => {
-      let frameToDraw = state.targetFrame;
+      state.animatedFrame += (state.targetFrame - state.animatedFrame) * 0.6;
+      let frameToDraw = Math.round(state.animatedFrame);
 
       if (!state.images[frameToDraw]) {
         for (let i = frameToDraw; i >= 0; i--) {
@@ -191,7 +244,7 @@ export const IslandJourney5: React.FC = () => {
         trigger: containerRef.current,
         start: 'top top',
         end: '40% top', // Dissolve over the first 40% of the 500vh scroll
-        scrub: 1.5,
+        scrub: true,
       }
     });
 
@@ -264,10 +317,39 @@ export const IslandJourney5: React.FC = () => {
         ease: 'power2.inOut'
       }, 0.1);
 
-      // 5. Disable pointer events for everything that disappeared
+      // 4. Disable pointer events for everything that disappeared
       textTl.to([welcomeRef.current, paragraphRef.current, ctaBtnRef.current, footerRef.current], {
         pointerEvents: 'none'
       }, 0);
+
+      // 5. Final quick fade to black
+      textTl.to(headingRef.current, {
+        opacity: 0,
+        ease: 'power2.inOut',
+      }, '>-0.1'); // Starts slightly before the previous animation ends
+    }
+
+    // End Frame Text Animation
+    if (endTextRef.current) {
+      const endTextTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: '60% top',
+          end: 'bottom bottom',
+          scrub: true,
+        }
+      });
+
+      endTextTl.fromTo(endTextRef.current, {
+        opacity: 0,
+        y: 40,
+        filter: 'blur(12px)',
+      }, {
+        opacity: 1,
+        y: 0,
+        filter: 'blur(0px)',
+        ease: 'power2.out',
+      });
     }
 
     // Fade out color grading filter
@@ -280,7 +362,7 @@ export const IslandJourney5: React.FC = () => {
           trigger: containerRef.current,
           start: 'top top',
           end: 'bottom bottom',
-          scrub: 1.5,
+          scrub: true,
         }
       });
     }
@@ -294,7 +376,7 @@ export const IslandJourney5: React.FC = () => {
           trigger: containerRef.current,
           start: 'top top',
           end: 'bottom bottom',
-          scrub: 1.5,
+          scrub: true,
         }
       });
     }
@@ -308,7 +390,7 @@ export const IslandJourney5: React.FC = () => {
           trigger: containerRef.current,
           start: 'top top',
           end: 'bottom bottom',
-          scrub: 1.5,
+          scrub: true,
         }
       });
     }
@@ -337,11 +419,11 @@ export const IslandJourney5: React.FC = () => {
         <p className="text-black/50 text-xs mt-4 font-mono">{loadingProgress}%</p>
       </div>
 
-      <div ref={containerRef} className="h-[500vh] relative w-full">
+      <div ref={containerRef} className="h-[250vh] relative w-full">
         <div ref={overlayRef} className="sticky top-0 w-full h-[100vh] overflow-hidden bg-black text-black island-overlay">
           <canvas
             ref={canvasRef}
-            className="absolute inset-0 w-full h-full object-cover island-hero"
+            className="absolute inset-0 w-full h-full object-cover island-hero will-change-[filter,transform]"
             style={{
               width: '100%',
               height: '100%',
@@ -433,6 +515,74 @@ export const IslandJourney5: React.FC = () => {
               <div className="flex items-center gap-2 w-full md:w-auto justify-center md:justify-end">
                 <span className="w-2 h-2 bg-pink-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(236,72,153,0.8)]"></span>
                 Available for work
+              </div>
+            </div>
+
+          </div>
+
+          {/* End Frame Content */}
+          <div ref={endTextRef} className="absolute inset-0 pointer-events-none flex flex-col justify-between p-8 md:p-12 font-minecraft text-[#fff8f0] opacity-0 z-20">
+            
+            {/* Top Row */}
+            <div className="flex justify-between items-start w-full">
+              {/* Top Left */}
+              <div className="flex flex-col gap-2">
+                <div className="text-xs tracking-widest text-[#fff8f0]">DEVELOPER FACTS</div>
+                <div className="text-xs text-[#ffb6c1] tracking-widest drop-shadow-[0_0_8px_rgba(255,182,193,0.6)]">01 / 01</div>
+              </div>
+              {/* Top Right */}
+              <div className="text-xs tracking-widest text-[#fff8f0] flex items-center gap-2">
+                v1.0 <span className="text-[#ffb6c1]">+</span>
+              </div>
+            </div>
+
+            {/* Left Content */}
+            <div className="flex-1 flex flex-col justify-center max-w-sm mt-12 gap-8 pointer-events-auto">
+              {/* 100% Section */}
+              <div>
+                <h1 className="text-7xl mb-4 text-[#fff8f0] drop-shadow-[0_0_15px_rgba(255,248,240,0.4)]">100%</h1>
+                <p className="text-sm leading-relaxed text-[#fff8f0]/80 font-sans tracking-wide">
+                  dedicated to pixel-perfect execution,<br/>
+                  immersive animations, and<br/>
+                  flawless web performance.
+                </p>
+              </div>
+
+              {/* Divider */}
+              <div className="flex items-center gap-4 w-64 my-2">
+                <div className="h-[1px] flex-1 bg-[#fff8f0]/30"></div>
+                <div className="w-2 h-2 rotate-45 bg-[#ffb6c1] drop-shadow-[0_0_8px_rgba(255,182,193,0.8)]"></div>
+                <div className="h-[1px] flex-1 bg-[#fff8f0]/30"></div>
+              </div>
+
+              {/* Statement */}
+              <div>
+                <h2 className="text-3xl leading-tight mb-4 text-[#fff8f0]">
+                  A developer who thinks<br/>
+                  like a <span className="text-[#ffb6c1] drop-shadow-[0_0_10px_rgba(255,182,193,0.6)]">designer.</span>
+                </h2>
+                <p className="text-[13px] leading-relaxed text-[#fff8f0]/80 font-sans tracking-wide">
+                  I craft digital experiences by blending<br/>
+                  engineering, creativity, and thoughtful design —<br/>
+                  turning ideas into products that feel intuitive,<br/>
+                  human, and memorable.
+                </p>
+              </div>
+            </div>
+
+            {/* Bottom Row */}
+            <div className="flex flex-col md:flex-row justify-between items-end w-full gap-8">
+              {/* Skill Bar */}
+              <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+                 <SkillModule name="PRECISION" value="92%" icon="precision" />
+                 <SkillModule name="ENGINEERING" value="88%" icon="engineering" />
+                 <SkillModule name="DESIGN THINKING" value="90%" icon="design" />
+                 <SkillModule name="CREATIVITY" value="85%" icon="creativity" />
+              </div>
+              
+              {/* Bottom Right */}
+              <div className="text-xs tracking-widest text-[#ffb6c1] drop-shadow-[0_0_8px_rgba(255,182,193,0.6)] flex items-center gap-2 whitespace-nowrap">
+                SCROLL TO EXPLORE <span>+</span>
               </div>
             </div>
 

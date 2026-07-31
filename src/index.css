@@ -64,6 +64,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Minecraft';
+  src: url('/fonts/Minecraft.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -75,6 +83,12 @@
 }
 
 @layer utilities {
+  .font-minecraft {
+    font-family: 'Minecraft', monospace;
+    -webkit-font-smoothing: none;
+    font-smooth: never;
+  }
+
   .font-podium {
     font-family: "FSP DEMO - PODIUM Sharp 4.11", "Podium", sans-serif;
   }
@@ -259,6 +273,32 @@
     inset: 0;
     pointer-events: none;
     opacity: var(--effect-opacity, 1);
+  }
+
+  /* Cinematic night atmosphere */
+  .night-atmosphere {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      rgba(35, 25, 90, 0.35),
+      rgba(0,0,0,0.05)
+    );
+    mix-blend-mode: screen;
+  }
+
+  /* Cinematic night glow */
+  .night-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at 50% 42%,
+      rgba(255,210,120,0.18),
+      transparent 28%
+    );
+    mix-blend-mode: screen;
   }
 
   /* Glowing typography for premium feel */

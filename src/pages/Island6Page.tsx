@@ -286,7 +286,7 @@ export const Island6Page: React.FC = () => {
             leading-[0.9]
             tracking-[0.08em]
             mb-8
-            font-incompleeta-light
+            font-minecraft
             thicken-text
             pointer-events-auto
             w-fit
