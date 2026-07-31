@@ -28,12 +28,26 @@ function CameraRig({
   containerRef,
   cameraRef,
   cameraGroupRef,
-  templeGroupRef
+  templeGroupRef,
+  dayAmbientRef,
+  dayDir1Ref,
+  dayDir2Ref,
+  nightAmbientRef,
+  nightDirRef,
+  nightPointRef,
+  fogRef
 }: { 
   containerRef: React.RefObject<HTMLDivElement | null>;
   cameraRef: React.RefObject<any>;
   cameraGroupRef: React.RefObject<any>;
   templeGroupRef: React.RefObject<any>;
+  dayAmbientRef: React.RefObject<any>;
+  dayDir1Ref: React.RefObject<any>;
+  dayDir2Ref: React.RefObject<any>;
+  nightAmbientRef: React.RefObject<any>;
+  nightDirRef: React.RefObject<any>;
+  nightPointRef: React.RefObject<any>;
+  fogRef: React.RefObject<any>;
 }) {
   useGSAP(() => {
     if (!containerRef.current || !cameraRef.current || !cameraGroupRef.current || !templeGroupRef.current) return;
@@ -109,6 +123,21 @@ function CameraRig({
       }
     }, 0);
     
+    // 5. Crossfade Lights
+    tl.to([dayAmbientRef.current, dayDir1Ref.current, dayDir2Ref.current], { 
+      intensity: 0, 
+      ease: 'power2.inOut' 
+    }, 0);
+    
+    tl.to(nightAmbientRef.current, { intensity: 0.35, ease: 'power2.inOut' }, 0);
+    tl.to(nightDirRef.current, { intensity: 1.5, ease: 'power2.inOut' }, 0);
+    tl.to(nightPointRef.current, { intensity: 4, ease: 'power2.inOut' }, 0);
+    
+    // 6. Bring in the fog
+    if (fogRef.current) {
+      tl.to(fogRef.current, { near: 20, far: 80, ease: 'power2.inOut' }, 0);
+    }
+    
   }, { dependencies: [containerRef, cameraRef, cameraGroupRef, templeGroupRef], scope: containerRef });
 
   return null;
@@ -123,21 +152,63 @@ export const Island6Page: React.FC = () => {
   const cameraGroupRef = useRef<any>(null);
   const templeGroupRef = useRef<any>(null);
 
+  const dayAmbientRef = useRef<any>(null);
+  const dayDir1Ref = useRef<any>(null);
+  const dayDir2Ref = useRef<any>(null);
+  
+  const nightAmbientRef = useRef<any>(null);
+  const nightDirRef = useRef<any>(null);
+  const nightPointRef = useRef<any>(null);
+  const fogRef = useRef<any>(null);
+
+  useGSAP(() => {
+    if (!containerRef.current) return;
+    
+    // Animate the custom CSS variables for the color grading out, and text to white
+    gsap.fromTo(containerRef.current, {
+      '--effect-opacity': 1,
+      '--shadow-opacity': 0.35,
+      '--hero-contrast': 1.15,
+      '--hero-saturate': 1.2,
+      '--hero-brightness': 1.05,
+      '--model-saturate': 1.3,
+      color: '#000000',
+      backgroundColor: '#000000',
+    }, {
+      '--effect-opacity': 0,
+      '--shadow-opacity': 0,
+      '--hero-contrast': 1,
+      '--hero-saturate': 1,
+      '--hero-brightness': 1,
+      '--model-saturate': 1,
+      color: '#ffffff',
+      backgroundColor: '#15102d',
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1.5,
+      }
+    });
+  }, { scope: containerRef });
+
   return (
     <div ref={containerRef} className="w-full h-[500vh] bg-black font-kefir selection:bg-black selection:text-white">
       {/* Fixed Viewport Container */}
-      <div className="fixed inset-0 w-full h-screen overflow-hidden">
+      <div className="fixed inset-0 w-full h-screen overflow-hidden island-overlay">
         
-        {/* Background Image */}
+        {/* Background Image - Add mix-blend-screen to reveal bg color beneath black pixels */}
       <img
         src="/island_6/background image.png"
         alt="Island 6 Background"
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover island-hero mix-blend-screen"
       />
 
       {/* 3D Canvas Layer */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <Canvas>
+      <div className="absolute inset-0 z-0 pointer-events-none island-bloom">
+        <Canvas className="island-model">
+          <fog ref={fogRef} attach="fog" args={["#16122f", 100, 200]} />
+          
           {/* We wrap the camera in a group positioned exactly at the island's center.
               This way, rotating the group perfectly orbits the camera around the island! */}
           <group ref={cameraGroupRef}>
@@ -147,9 +218,15 @@ export const Island6Page: React.FC = () => {
             />
           </group>
           
-          <ambientLight intensity={1.5} />
-          <directionalLight position={[10, 10, 5]} intensity={2} />
-          <directionalLight position={[-10, 10, -5]} intensity={0.5} />
+          {/* Daytime Lights */}
+          <ambientLight ref={dayAmbientRef} intensity={1.5} />
+          <directionalLight ref={dayDir1Ref} position={[10, 10, 5]} intensity={2} />
+          <directionalLight ref={dayDir2Ref} position={[-10, 10, -5]} intensity={0.5} />
+
+          {/* Nighttime Cinematic Lights (Initial intensity 0) */}
+          <ambientLight ref={nightAmbientRef} intensity={0} color="#6d6cff" />
+          <directionalLight ref={nightDirRef} position={[5,10,-5]} intensity={0} color="#b8c7ff" />
+          <pointLight ref={nightPointRef} position={[0,3,0]} intensity={0} distance={15} color="#ffd27d" />
 
           <Suspense fallback={null}>
             <TempleModel templeGroupRef={templeGroupRef} />
@@ -159,6 +236,13 @@ export const Island6Page: React.FC = () => {
               cameraRef={cameraRef} 
               cameraGroupRef={cameraGroupRef} 
               templeGroupRef={templeGroupRef}
+              dayAmbientRef={dayAmbientRef}
+              dayDir1Ref={dayDir1Ref}
+              dayDir2Ref={dayDir2Ref}
+              nightAmbientRef={nightAmbientRef}
+              nightDirRef={nightDirRef}
+              nightPointRef={nightPointRef}
+              fogRef={fogRef}
             />
           </Suspense>
         </Canvas>
@@ -206,6 +290,7 @@ export const Island6Page: React.FC = () => {
             thicken-text
             pointer-events-auto
             w-fit
+            glow-text
           ">
             <div className="w-fit">CREATIVE</div>
             <div className="w-fit mt-3">DEVELOPER</div>

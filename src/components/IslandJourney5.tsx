@@ -16,6 +16,8 @@ const getFramePath = (index: number) => {
 export const IslandJourney5: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const bloomRef = useRef<HTMLDivElement>(null);
 
   // Refs for cinematic text transition
   const uiOverlayRef = useRef<HTMLDivElement>(null);
@@ -268,6 +270,49 @@ export const IslandJourney5: React.FC = () => {
       }, 0);
     }
 
+    // Fade out color grading filter
+    if (overlayRef.current) {
+      gsap.fromTo(overlayRef.current, {
+        '--effect-opacity': 1,
+      }, {
+        '--effect-opacity': 0,
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 1.5,
+        }
+      });
+    }
+
+    if (bloomRef.current) {
+      gsap.fromTo(bloomRef.current, {
+        opacity: 1,
+      }, {
+        opacity: 0,
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 1.5,
+        }
+      });
+    }
+
+    if (canvasRef.current) {
+      gsap.fromTo(canvasRef.current, {
+        filter: 'contrast(1.15) saturate(1.2) brightness(1.05)',
+      }, {
+        filter: 'contrast(1) saturate(1) brightness(1)',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 1.5,
+        }
+      });
+    }
+
     return () => {
       window.removeEventListener('resize', resizeCanvas);
       cancelAnimationFrame(state.animationFrameId);
@@ -293,15 +338,16 @@ export const IslandJourney5: React.FC = () => {
       </div>
 
       <div ref={containerRef} className="h-[500vh] relative w-full">
-        <div className="sticky top-0 w-full h-[100vh] overflow-hidden bg-black text-black">
+        <div ref={overlayRef} className="sticky top-0 w-full h-[100vh] overflow-hidden bg-black text-black island-overlay">
           <canvas
             ref={canvasRef}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover island-hero"
             style={{
               width: '100%',
               height: '100%',
             }}
           />
+          <div ref={bloomRef} className="island-bloom" />
 
           {/* UI Overlay */}
           <div ref={uiOverlayRef} className="absolute inset-0 pointer-events-none flex flex-col justify-between px-6 md:px-12 pb-6 md:pb-12 pt-0 font-kefir z-10">
@@ -343,6 +389,7 @@ export const IslandJourney5: React.FC = () => {
   will-change-transform
   w-fit
   relative
+  glow-text
 ">
                 <div ref={word1Ref} className="w-fit">CREATIVE</div>
                 <div ref={starRef} className="absolute top-0 left-0 opacity-0 text-[0.8em]">✦</div>
