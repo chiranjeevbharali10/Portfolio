@@ -12,6 +12,7 @@ import { ThreeTestPage } from "./pages/ThreeTestPage";
 import { CreativeDeveloper } from "./pages/CreativeDeveloper";
 import { Relax } from "./pages/Relax/Relax";
 import { IslandJourney5Page } from "./pages/IslandJourney5Page";
+import { Island6Page } from "./pages/Island6Page";
 
 function App() {
   const location = useLocation();
@@ -20,12 +21,14 @@ function App() {
   const isRelax = location.pathname === "/relax";
   const isPlayground = location.pathname.startsWith("/playground");
   const isIsland5 = location.pathname === "/island_5";
+  const isIsland6 = location.pathname === "/island_6";
 
-  if (isPlayground || isIsland5) {
+  if (isPlayground || isIsland5 || isIsland6) {
     return (
       <Routes>
         <Route path="/playground/globe" element={<ThreeTestPage />} />
         {isIsland5 && <Route path="/island_5" element={<IslandJourney5Page />} />}
+        {isIsland6 && <Route path="/island_6" element={<Island6Page />} />}
       </Routes>
     );
   }

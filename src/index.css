@@ -48,6 +48,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Incompleeta Regular';
+  src: url('/fonts/IncompleetaRegular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Incompleeta Light';
+  src: url('/fonts/IncompleetaLight.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -62,38 +78,52 @@
   .font-podium {
     font-family: "FSP DEMO - PODIUM Sharp 4.11", "Podium", sans-serif;
   }
-  
+
   .font-armin {
     font-family: 'Armin Grotesk', sans-serif;
   }
-  
+
   .font-kefir {
     font-family: 'Kefir', serif;
   }
-  
+
   .font-instrument {
     font-family: 'Instrument Serif', serif;
   }
-  
+
   .font-bangel {
     font-family: 'Bangel Black Wave', sans-serif;
   }
-  
+
   .font-asgard {
     font-family: 'Asgard Fit XBold', sans-serif;
   }
-  
+
+  .font-incompleeta {
+    font-family: 'Incompleeta Regular', sans-serif;
+  }
+
+  .font-incompleeta-light {
+    font-family: 'Incompleeta Light', sans-serif;
+  }
+
+  /* Adjust this pixel value (e.g. 1px, 2px, 0.5px) to manually control the font thickness */
+  .thicken-text {
+    -webkit-text-stroke: 2px currentColor;
+  }
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-  
+
   /* Glowing cyan-tinted subtle grid lines */
   .editorial-grid {
-    background-image: 
+    background-image:
       linear-gradient(to right, rgba(0, 229, 255, 0.04) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(0, 229, 255, 0.04) 1px, transparent 1px);
     background-size: 5vw 5vw;
@@ -101,7 +131,7 @@
   }
 
   .skills-grid {
-    background-image: 
+    background-image:
       linear-gradient(to right, var(--grid-color, rgba(0, 0, 0, 0.2)) 1px, transparent 1px),
       linear-gradient(to bottom, var(--grid-color, rgba(0, 0, 0, 0.2)) 1px, transparent 1px);
     background-size: 140px 140px;
@@ -118,7 +148,7 @@
     -webkit-text-stroke: 1px #DFFF00;
     color: transparent;
   }
-  
+
   .text-gradient-purple-pink {
     background: linear-gradient(135deg, #8B35FF, #FF2D9A);
     -webkit-background-clip: text;
@@ -126,9 +156,17 @@
   }
 
   @keyframes spin-slow-float {
-    0% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-8px) rotate(180deg); }
-    100% { transform: translateY(0px) rotate(360deg); }
+    0% {
+      transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+      transform: translateY(-8px) rotate(180deg);
+    }
+
+    100% {
+      transform: translateY(0px) rotate(360deg);
+    }
   }
 
   .animate-spin-slow-float {
@@ -136,18 +174,33 @@
   }
 
   @keyframes checkpoint-spin {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to { transform: translate(-50%, -50%) rotate(360deg); }
+    from {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
   }
 
   @keyframes checkpoint-spin-reverse {
-    from { transform: translate(-50%, -50%) rotate(360deg); }
-    to { transform: translate(-50%, -50%) rotate(0deg); }
+    from {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+
+    to {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
   }
 
   @keyframes spin-slow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .animate-spin-slow {
