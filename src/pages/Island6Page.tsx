@@ -1,31 +1,134 @@
-import React, { Suspense } from 'react';
-import { Canvas } from '@react-three/fiber';
+import React, { Suspense, useRef } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
 import { useGLTF, Environment, Float, PerspectiveCamera } from '@react-three/drei';
 import { ArrowUpRight, ArrowLeft } from 'lucide-react';
+import * as THREE from 'three';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-function TempleModel() {
+gsap.registerPlugin(ScrollTrigger);
+
+function TempleModel({ templeGroupRef }: { templeGroupRef: React.RefObject<any> }) {
   // Load the GLTF model
   const { scene } = useGLTF('/3D_model/voxel temple 3d model.glb');
   return (
     <Float speed={2} rotationIntensity={0.1} floatIntensity={0.5} floatingRange={[-0.1, 0.1]}>
-      <primitive
-        object={scene}
-        position={[5, -1.7, 0.3]}
-        scale={5.6}
-        rotation={[0, -0.24, 0.13]} 
-      />
+      <group ref={templeGroupRef}>
+        <primitive
+          object={scene}
+          position={[0, 0, 0]}
+        />
+      </group>
     </Float>
   );
+}
+
+function CameraRig({ 
+  containerRef,
+  cameraRef,
+  cameraGroupRef,
+  templeGroupRef
+}: { 
+  containerRef: React.RefObject<HTMLDivElement | null>;
+  cameraRef: React.RefObject<any>;
+  cameraGroupRef: React.RefObject<any>;
+  templeGroupRef: React.RefObject<any>;
+}) {
+  useGSAP(() => {
+    if (!containerRef.current || !cameraRef.current || !cameraGroupRef.current || !templeGroupRef.current) return;
+
+    const camera = cameraRef.current;
+    const group = cameraGroupRef.current;
+    const temple = templeGroupRef.current;
+    
+    // Set static positions/scales (First Frame values)
+    group.position.set(6.2, -1.8, 0.2);
+    temple.position.set(6.2, -1.8, 0.2);
+    temple.scale.setScalar(6.3);
+
+    // Explicitly set the initial state (Frame 1)
+    const localCamX = 8.6 - 6.2;
+    const localCamY = 5 - (-1.8);
+    const localCamZ = 9.9 - 0.2;
+    
+    camera.position.set(localCamX, localCamY, localCamZ);
+    group.rotation.set(0, 0, 0);
+    temple.rotation.set(0.01, -0.2, 0.12);
+    
+    // CRITICAL: We must update the world matrix before calling lookAt, 
+    // otherwise the camera calculates the angle using a stale (0,0,0) position!
+    group.updateMatrixWorld(true);
+    
+    // Create a proxy object to smoothly transition the camera's focal point
+    const lookAtTarget = new THREE.Vector3(0, 0, 0);
+    camera.lookAt(lookAtTarget);
+    camera.updateProjectionMatrix();
+
+    // Cinematic Drone Orbit Timeline (Frame 1 to Frame 2)
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1.5, // Smooth interpolation
+      }
+    });
+
+    // 1. Orbit to the exact specified end rotation
+    tl.to(group.rotation, {
+      y: -6.35,
+      ease: 'power2.inOut',
+    }, 0);
+
+    // 2. Animate the camera's local position (zoom/height)
+    tl.to(camera.position, {
+      x: -1.9,
+      y: 8,
+      z: 12.4,
+      ease: 'power2.inOut',
+    }, 0);
+
+    // 3. Animate the temple's rotation (Tilt/Lean)
+    tl.to(temple.rotation, {
+      x: -0.14,
+      y: -0.39,
+      z: 0.01,
+      ease: 'power2.inOut',
+    }, 0);
+
+    // 4. Pan the camera's focus to exactly center the island on the screen
+    tl.to(lookAtTarget, {
+      x: 5,
+      y: 2, 
+      z: 1,
+      ease: 'power2.inOut',
+      onUpdate: () => {
+        camera.lookAt(lookAtTarget);
+        camera.updateProjectionMatrix();
+      }
+    }, 0);
+    
+  }, { dependencies: [containerRef, cameraRef, cameraGroupRef, templeGroupRef], scope: containerRef });
+
+  return null;
 }
 
 // Preload the model
 useGLTF.preload('/3D_model/voxel temple 3d model.glb');
 
 export const Island6Page: React.FC = () => {
-  return (
-    <div className="relative w-full min-h-screen bg-black overflow-hidden font-kefir selection:bg-black selection:text-white">
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cameraRef = useRef<any>(null);
+  const cameraGroupRef = useRef<any>(null);
+  const templeGroupRef = useRef<any>(null);
 
-      {/* Background Image */}
+  return (
+    <div ref={containerRef} className="w-full h-[500vh] bg-black font-kefir selection:bg-black selection:text-white">
+      {/* Fixed Viewport Container */}
+      <div className="fixed inset-0 w-full h-screen overflow-hidden">
+        
+        {/* Background Image */}
       <img
         src="/island_6/background image.png"
         alt="Island 6 Background"
@@ -33,28 +136,37 @@ export const Island6Page: React.FC = () => {
       />
 
       {/* 3D Canvas Layer */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 pointer-events-none">
         <Canvas>
-          <PerspectiveCamera 
-            makeDefault 
-            position={[8.4, 5.1, 10]} 
-            fov={40} 
-            onUpdate={c => c.lookAt(0, 0, 0)} 
-          />
+          {/* We wrap the camera in a group positioned exactly at the island's center.
+              This way, rotating the group perfectly orbits the camera around the island! */}
+          <group ref={cameraGroupRef}>
+            <PerspectiveCamera 
+              ref={cameraRef}
+              makeDefault 
+            />
+          </group>
+          
           <ambientLight intensity={1.5} />
           <directionalLight position={[10, 10, 5]} intensity={2} />
           <directionalLight position={[-10, 10, -5]} intensity={0.5} />
 
           <Suspense fallback={null}>
-            <TempleModel />
+            <TempleModel templeGroupRef={templeGroupRef} />
             <Environment preset="city" />
+            <CameraRig 
+              containerRef={containerRef} 
+              cameraRef={cameraRef} 
+              cameraGroupRef={cameraGroupRef} 
+              templeGroupRef={templeGroupRef}
+            />
           </Suspense>
         </Canvas>
       </div>
 
       {/* UI Overlay */}
       <div className="absolute inset-0 pointer-events-none flex flex-col justify-between px-6 md:px-12 pb-6 md:pb-12 pt-0 z-10">
-
+        
         {/* Header */}
         <div className="flex justify-between items-center pointer-events-auto mt-1 md:mt-3 relative">
           <button className="px-6 py-2 rounded-full border border-black/20 hover:bg-black/5 transition-all text-[13px] font-medium flex items-center gap-2">
@@ -139,6 +251,8 @@ export const Island6Page: React.FC = () => {
             Available for work
           </div>
         </div>
+      </div>
+      
       </div>
     </div>
   );
