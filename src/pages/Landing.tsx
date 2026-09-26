@@ -13,60 +13,95 @@ export const Landing = () => {
 
   useGSAP(() => {
     const playAnimation = () => {
-      const tl = gsap.timeline({ delay: 0.4, repeat: -1, repeatDelay: 2.35 }); // Loops exactly every ~13 seconds
+      // 1. Restore the shrinking bento box & avatar timeline
+      const tl = gsap.timeline({ delay: 0.4, repeat: -1, repeatDelay: 2.35 });
 
-    // Shrink the main creativity box with a slight squash/bounce
-    tl.to(".creativity-poster", {
-      scaleY: 0.85, // <-- CHANGE THIS VALUE to adjust how much it shrinks
-      duration: 0.9,
-      ease: "back.out(1.2)",
-    })
-      // Avatar pops in AFTER the box finishes shrinking
-      .fromTo(".avatar-me",
-        { y: 200, scale: 0.85, zIndex: 10 }, // Start hidden behind (z-10)
-        { y: 0, scale: 1, duration: 0.8, ease: "back.out(1.4)" }, // "wooop" elastic pop
-        "> -0.1" 
-      )
-      .set(".avatar-me", { zIndex: 40 }, "-=0.4") // Snap to front (z-40) mid-bounce so hands overlap the border
-      // Bubble 1 pops in
-      .to(".bubble-1", {
-        opacity: 1,
-        scale: 1,
-        duration: 0.5,
-        ease: "back.out(1.7)"
-      }, "+=0.1")
-      // Bubble 2 pops in
-      .to(".bubble-2", {
-        opacity: 1,
-        scale: 1,
-        duration: 0.5,
-        ease: "back.out(1.7)"
-      }, "+=0.4")
-      
-      // --- 7 SECOND DELAY, THEN DISAPPEAR SEQUENCE ---
-      // 1. Bubbles disappear with a comic woosh
-      .to([".bubble-2", ".bubble-1"], {
-        scale: 0,
-        opacity: 0,
-        duration: 0.4,
-        ease: "back.in(2)",
-        stagger: 0.1
-      }, "+=7") // Wait 7 seconds
-      
-      // 2. Avatar speedy woosh down (instantly snap behind poster first)
-      .set(".avatar-me", { zIndex: 10 })
-      .to(".avatar-me", {
-        y: 200,
-        scale: 0.85,
-        duration: 0.35,
-        ease: "power4.in"
-      }, "+=0.1")
+      tl.to(".bento-group", {
+        scale: 0.9,
+        duration: 0.9,
+        ease: "back.out(1.2)",
+      })
+        .fromTo(".avatar-me",
+          { y: 200, scale: 0.85, zIndex: 10 },
+          { y: 0, scale: 1, duration: 0.8, ease: "back.out(1.4)" },
+          "> -0.1"
+        )
+        .set(".avatar-me", { zIndex: 40 }, "-=0.4")
+        .to(".bubble-1", {
+          opacity: 1,
+          scale: 1,
+          duration: 0.5,
+          ease: "back.out(1.7)"
+        }, "+=0.1")
+        .to(".bubble-2", {
+          opacity: 1,
+          scale: 1,
+          duration: 0.5,
+          ease: "back.out(1.7)"
+        }, "+=0.4")
+        .to([".bubble-2", ".bubble-1"], {
+          scale: 0,
+          opacity: 0,
+          duration: 0.4,
+          ease: "back.in(2)",
+          stagger: 0.1
+        }, "+=7")
+        .set(".avatar-me", { zIndex: 10 })
+        .to(".avatar-me", {
+          y: 200,
+          scale: 0.85,
+          duration: 0.35,
+          ease: "power4.in"
+        }, "+=0.1")
+        .to(".bento-group", {
+          scale: 1,
+          duration: 0.7,
+          ease: "back.out(1.2)"
+        });
 
-      // 3. Bento box scales back up to its original position
-      .to(".creativity-poster", {
-        scaleY: 1,
-        duration: 0.7,
-        ease: "back.out(1.2)"
+      // 2. Cinematic Gentle Floating Motion for Island and Building Text together
+      gsap.to([".island-container", ".building-text"], {
+        y: -3,
+        duration: 6.5,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      });
+
+      gsap.to(".island-container", {
+        rotation: 0.6,
+        duration: 7.5,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      });
+      gsap.set(".island-container", { transformOrigin: "center center" });
+
+      gsap.to(".island-aura", {
+        opacity: 0.35,
+        filter: "blur(20px) brightness(1.1)",
+        duration: 5.5,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      });
+
+      gsap.to(".island-shadow", {
+        scale: 0.92,
+        opacity: 0.7,
+        duration: 6.5,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
+      });
+
+      gsap.to(".island-fog", {
+        opacity: 0.2,
+        scale: 1.03,
+        duration: 7,
+        ease: "sine.inOut",
+        yoyo: true,
+        repeat: -1,
       });
     };
 
@@ -187,7 +222,7 @@ export const Landing = () => {
                               { p0dx: -186, p0dy: 131, c1dx: -28, c1dy: 124, c2dx: 12, c2dy: 124, p3dx: 155, p3dy: 315 },
                               { p0dx: -188, p0dy: 132.5, c1dx: -20, c1dy: 125.5, c2dx: 20, c2dy: 125, p3dx: 150, p3dy: 320 },
                             ];
-                            
+
                             return templates.map((t, r) => {
                               const p0x = 150 + t.p0dx * S_chunk;
                               const p0y = t.p0dy * S_chunk;
@@ -197,12 +232,12 @@ export const Landing = () => {
                               const c2y = t.c2dy * S_chunk;
                               const p3x = 150 + t.p3dx * S_chunk;
                               const p3y = t.p3dy * S_chunk;
-                              
+
                               return (
-                                <path 
-                                  key={`${c}-${r}`} 
+                                <path
+                                  key={`${c}-${r}`}
                                   strokeWidth={0.5 + 0.04 * (c * 9 + r)}
-                                  d={`M ${p0x},${p0y} C ${c1x},${c1y} ${c2x},${c2y} ${p3x},${p3y}`} 
+                                  d={`M ${p0x},${p0y} C ${c1x},${c1y} ${c2x},${c2y} ${p3x},${p3y}`}
                                 />
                               );
                             });
@@ -224,37 +259,35 @@ export const Landing = () => {
 
           {/* RIGHT COLUMN (2/3) */}
           <div className="w-full md:w-2/3 h-[500px] md:h-full p-2 md:p-0 landing-fade-target relative">
+            <div className="bento-group origin-bottom-left w-full h-full relative">
 
-            {/* AVATAR */}
-            {/* TO ADJUST AVATAR VERTICAL POSITION: Change the `top-[5%]` class below (e.g. to `top-[0%]`, `top-[10%]`, or `-top-[5%]`) */}
-            <div className="avatar-me absolute -top-[8%] left-[50%] -translate-x-[60%] -translate-y-[100%] z-10 w-32 sm:w-48 md:w-64 pointer-events-none">
-              
+              {/* AVATAR */}
+              <div className="avatar-me absolute -top-[8%] left-[50%] -translate-x-[50%] -translate-y-[100%] z-10 w-32 sm:w-48 md:w-64 pointer-events-none">
               {/* BUBBLE 1 */}
               <div className="bubble-1 absolute bottom-[85%] right-[75%] bg-white text-black font-podium tracking-wide text-[10px] sm:text-xs md:text-sm px-4 py-2 rounded-2xl rounded-br-sm shadow-[0_0_20px_rgba(255,255,255,0.4)] opacity-0 scale-50 origin-bottom-right whitespace-nowrap z-50">
                 Hi, I am Chiranjeev
               </div>
-
               {/* BUBBLE 2 */}
               <div className="bubble-2 absolute bottom-[65%] right-[85%] bg-white text-black font-podium tracking-wide text-[10px] sm:text-xs md:text-sm px-4 py-2 rounded-2xl rounded-tr-sm shadow-[0_0_20px_rgba(255,255,255,0.3)] opacity-0 scale-50 origin-top-right whitespace-nowrap z-50">
                 Click below to get started
               </div>
-
               <img src="/fonts/me-01.svg" alt="Chiranjeev Avatar" className="w-full h-auto object-contain drop-shadow-2xl" />
             </div>
 
-            {/* MAIN CREATIVITY POSTER */}
-            <Link
-              to="/creative"
-              className="creativity-poster origin-bottom group relative flex w-full h-full items-center justify-center bg-[#050508] rounded-[24px] sm:rounded-[28px] p-8 overflow-hidden transition-all duration-700 hover:scale-[0.99] shadow-2xl border-2 border-[#1b6bff]/80 z-20"
-            >
-              {/* Vibrant Warped SVG Grid Texture - Evenly Lit */}
-              <div className="absolute inset-[-5%] z-0 opacity-50 group-hover:opacity-80 transition-opacity duration-1000 flex items-center justify-center pointer-events-none">
+              {/* MAIN CREATIVITY POSTER */}
+              <Link
+                to="/island_5"
+                className="creativity-poster origin-center group relative flex w-full h-full items-center justify-end pr-[2%] lg:pr-[5%] bg-[#050508] rounded-[24px] sm:rounded-[28px] overflow-hidden shadow-2xl border-2 border-[#1b6bff]/80 z-20 cursor-pointer"
+              >
+
+              {/* Vibrant Warped SVG Grid Texture */}
+              <div className="absolute inset-[-5%] z-0 opacity-40 flex items-center justify-center pointer-events-none">
                 <svg viewBox="0 0 1000 1000" className="w-full h-full text-[#1b6bff]">
                   <g>
                     {Array.from({ length: 26 }).map((_, i) => {
                       const pos = i * 40;
                       const center = 500;
-                      const dist = 0.12; // Wavy grid
+                      const dist = 0.12;
                       const d = (pos - center) * dist;
                       return (
                         <g key={i}>
@@ -268,34 +301,61 @@ export const Landing = () => {
               </div>
 
               {/* Top Left Text */}
-              <div className="absolute top-6 left-8 font-inter text-[10px] text-white tracking-widest z-20">
+              <div className="absolute top-6 left-8 font-inter text-[10px] text-white tracking-widest z-20 pointer-events-none">
                 chiranjeevbharali10
               </div>
 
               {/* Top Right Icon */}
-              <div className="absolute top-6 right-8 z-20">
+              <div className="absolute top-6 right-8 z-20 pointer-events-none">
                 <img src="/fonts/earth-01.svg" alt="Earth" className="w-12 h-12 opacity-90" />
               </div>
 
               {/* Bottom Left Text */}
-              <div className="absolute bottom-6 left-8 font-inter text-[10px] text-white tracking-widest z-20 flex items-center gap-4">
+              <div className="absolute bottom-6 left-8 font-inter text-[10px] text-white tracking-widest z-20 flex items-center gap-4 pointer-events-none">
                 <span>07</span>
                 <span className="w-14 h-px bg-white"></span>
                 <span>'26</span>
               </div>
 
               {/* Bottom Right Icon */}
-              <div className="absolute bottom-6 right-8 z-20">
+              <div className="absolute bottom-6 right-8 z-20 pointer-events-none">
                 <img src="/fonts/xx.svg" alt="Icon" className="w-14 h-14 opacity-90" />
               </div>
 
-              {/* Main Typography Artwork */}
-              <img
-                src="/fonts/CREATIVITYMAKESSS-01.svg"
-                alt="Creativity Makes Anything Possible"
-                className="relative z-30 w-[90%] h-[90%] object-contain transition-transform duration-1000 group-hover:scale-[1.03]"
-              />
-            </Link>
+              {/* Typography (Left Side) - Floats in sync with island */}
+              <div className="building-text absolute left-[3%] top-[15%] z-20 flex flex-col pointer-events-none w-[55%] max-w-[650px]">
+                <img
+                  src="/Building.png"
+                  alt="Building Digital Worlds"
+                  className="w-full h-auto object-contain drop-shadow-2xl"
+                />
+              </div>
+
+              {/* Volumetric Magenta Fog - Reduced */}
+              <div className="island-fog absolute top-[55%] -right-[5%] -translate-y-1/2 w-[50%] h-[70%] bg-[#ff00ff]/10 rounded-full blur-[100px] pointer-events-none z-0" />
+
+              {/* Floating Shadow Beneath */}
+              <div className="island-shadow absolute bottom-[5%] right-[2%] w-[35%] h-[30px] bg-black/90 rounded-[100%] blur-[15px] pointer-events-none z-0" />
+
+              {/* Island Container (Shifted down and right) */}
+              <div className="island-container relative z-10 w-[80%] lg:w-[140%] max-w-[800px] h-auto flex items-center justify-center pointer-events-none translate-x-[8%] lg:translate-x-[15%] translate-y-[8%] lg:translate-y-[14%]">
+                {/* Pink Aura (Pulse) - Decreased Glare */}
+                <img
+                  src="/Island_frontPage.png"
+                  alt=""
+                  className="island-aura absolute inset-0 w-full h-full object-contain blur-[15px] opacity-20 mix-blend-screen"
+                />
+
+                {/* Main Island */}
+                <img
+                  src="/Island_frontPage.png"
+                  alt="Cyber Fantasy Island"
+                  className="island-main relative z-10 w-full h-full object-contain drop-shadow-[-12px_0_20px_rgba(255,255,255,0.15)]"
+                />
+              </div>
+
+              </Link>
+            </div>
           </div>
 
         </div>
