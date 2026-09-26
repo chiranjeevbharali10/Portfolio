@@ -23,7 +23,9 @@ export const FlowJourney = () => {
 
   useGSAP(() => {
     // 1. Circle Expansion (Solid Green)
-    gsap.to(circleRef.current, {
+    gsap.fromTo(circleRef.current, {
+      scale: 0,
+    }, {
       scale: 60,
       ease: "power2.inOut",
       scrollTrigger: {

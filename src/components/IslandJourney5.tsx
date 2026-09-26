@@ -231,7 +231,7 @@ export const IslandJourney5: React.FC = () => {
     const st = ScrollTrigger.create({
       trigger: containerRef.current,
       start: 'top top',
-      end: 'bottom bottom',
+      end: '75% bottom',
       scrub: true,
       onUpdate: (self) => {
         const progress = self.progress;
@@ -406,7 +406,7 @@ export const IslandJourney5: React.FC = () => {
           scrollTrigger: {
             trigger: containerRef.current,
             start: '40% top',
-            end: 'bottom bottom',
+            end: '75% bottom',
             scrub: true,
           }
         });
@@ -422,11 +422,27 @@ export const IslandJourney5: React.FC = () => {
           scrollTrigger: {
             trigger: containerRef.current,
             start: '40% top',
-            end: 'bottom bottom',
+            end: '75% bottom',
             scrub: true,
           }
         });
       }
+    }
+
+    // Thanos snap blur and fade out to black screen at the very end
+    if (overlayRef.current) {
+      gsap.to(overlayRef.current, {
+        opacity: 0,
+        filter: 'blur(20px)',
+        scale: 0.9,
+        ease: 'power2.in',
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: '85% bottom', // Start dissolving after frames finish
+          end: 'bottom bottom', // Finish dissolving right as it unpins
+          scrub: true,
+        }
+      });
     }
 
     return () => {
@@ -453,7 +469,7 @@ export const IslandJourney5: React.FC = () => {
         <p className="text-black/50 text-xs mt-4 font-mono">{loadingProgress}%</p>
       </div>
 
-      <div ref={containerRef} className="h-[250vh] relative w-full">
+      <div ref={containerRef} className="h-[400vh] relative w-full">
         <div ref={overlayRef} className="sticky top-0 w-full h-[100vh] overflow-hidden bg-black text-black island-overlay">
           {/* Starfield Background */}
           <div
