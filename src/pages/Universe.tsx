@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { FlowJourney } from "../components/FlowJourney";
+import { SkillsShooter } from "../components/skills-shooter/SkillsShooter";
 import { initSmoothScrolling } from "../utils/smoothScroll";
 
 export const Universe = () => {
@@ -40,6 +41,9 @@ export const Universe = () => {
     <div className="w-full bg-[#050505]">
       <div id="flow">
         <FlowJourney />
+      </div>
+      <div id="skills">
+        <SkillsShooter />
       </div>
       <div className="w-full min-h-[50vh] flex flex-col items-center justify-center">
         <h1 className="text-white text-2xl font-podium tracking-widest mt-12">A NEW UNIVERSE IS COMING</h1>
