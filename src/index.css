@@ -389,3 +389,10 @@
   .px-wave-a, .px-wave-b, .px-blink { animation: none; }
   .px-wave-b, .px-blink { opacity: 0; }
 }
+
+/* Island page loader icon */
+.island-loader-float { animation: island-loader-float 1.6s ease-in-out infinite; transform: scale(3); }
+@keyframes island-loader-float {
+  0%, 100% { transform: scale(3) translateY(0); }
+  50% { transform: scale(3) translateY(-3px); }
+}

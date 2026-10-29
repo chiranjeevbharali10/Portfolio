@@ -6,11 +6,25 @@ import { ArrowLeft, ArrowUpRight, Mouse } from 'lucide-react';
 gsap.registerPlugin(ScrollTrigger);
 
 const FRAME_COUNT = 238;
-const INITIAL_FRAMES_TO_LOAD = 30;
+// Frames load in passes: every 8th frame first (gates the loading screen, covers the whole scroll),
+// then every 4th, 2nd and the rest fill in behind it
+const LOAD_STRIDES = [8, 4, 2, 1];
+const CONCURRENCY = 8;
+const MAX_CANVAS_DPR = 1.5;
+
+// WebP frames re-encoded from /island_5 (720p desktop, 480p phones)
+const FRAME_SET = typeof window !== 'undefined' && window.innerWidth < 768 ? '480' : '720';
 
 const getFramePath = (index: number) => {
   const paddedIndex = (index + 1).toString().padStart(5, '0');
-  return `/island_5/img_${paddedIndex}.jpg`;
+  return `/island_frames/${FRAME_SET}/f_${paddedIndex}.webp`;
+};
+
+const framesForPass = (stride: number, done: Set<number>) => {
+  const frames: number[] = [];
+  for (let i = 0; i < FRAME_COUNT; i += stride) if (!done.has(i)) frames.push(i);
+  if (stride > 1 && !done.has(FRAME_COUNT - 1)) frames.push(FRAME_COUNT - 1);
+  return frames;
 };
 
 const PixelIcon = ({ type }: { type: string }) => {
@@ -104,63 +118,62 @@ export const IslandJourney5: React.FC = () => {
     const state = stateRef.current;
     let isCancelled = false;
 
-    const loadImages = async () => {
-      state.images = new Array(FRAME_COUNT);
+    // Keep the page from scrolling underneath the loading screen
+    const root = document.documentElement;
+    const prevOverflow = root.style.overflow;
+    root.style.overflow = 'hidden';
+    window.scrollTo(0, 0);
+    const unlock = () => { root.style.overflow = prevOverflow; };
 
-      const loadImage = (index: number): Promise<void> => {
-        return new Promise((resolve) => {
-          const img = new Image();
-          img.src = getFramePath(index);
-          img.onload = () => {
-            if (isCancelled) return;
-            state.images[index] = img;
-            state.loadedCount++;
-
-            if (!isLoaded && index < INITIAL_FRAMES_TO_LOAD) {
-              setLoadingProgress(Math.floor((state.loadedCount / INITIAL_FRAMES_TO_LOAD) * 100));
-            }
-            resolve();
-          };
-          img.onerror = () => {
-            if (isCancelled) return;
-            state.loadedCount++;
-            resolve();
-          };
-        });
-      };
-
-      await loadImage(0);
-
-      const initialPromises = [];
-      for (let i = 1; i < INITIAL_FRAMES_TO_LOAD; i++) {
-        initialPromises.push(loadImage(i));
+    // Download and decode up front, so drawing a frame never stalls the scroll
+    const loadImage = async (index: number) => {
+      const img = new Image();
+      img.src = getFramePath(index);
+      try {
+        await img.decode();
+        if (!isCancelled) state.images[index] = img;
+      } catch {
+        // Missing frame: the draw loop falls back to the nearest loaded one
       }
+      state.loadedCount++;
+    };
 
-      await Promise.all(initialPromises);
-      if (isCancelled) return;
-
-      setIsLoaded(true);
-
-      const loadRemaining = async () => {
-        const chunkSize = 10;
-        for (let i = INITIAL_FRAMES_TO_LOAD; i < FRAME_COUNT; i += chunkSize) {
-          if (isCancelled) break;
-          const chunk = [];
-          for (let j = i; j < i + chunkSize && j < FRAME_COUNT; j++) {
-            chunk.push(loadImage(j));
-          }
-          await Promise.all(chunk);
-          await new Promise(r => setTimeout(r, 10));
+    const loadAll = async (frames: number[], onEach?: (done: number) => void) => {
+      let next = 0;
+      let done = 0;
+      const worker = async () => {
+        while (next < frames.length && !isCancelled) {
+          await loadImage(frames[next++]);
+          onEach?.(++done);
         }
       };
+      await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+    };
 
-      loadRemaining();
+    const loadImages = async () => {
+      state.images = new Array(FRAME_COUNT);
+      const requested = new Set<number>();
+
+      for (const [pass, stride] of LOAD_STRIDES.entries()) {
+        const frames = framesForPass(stride, requested);
+        frames.forEach((f) => requested.add(f));
+        if (pass === 0) {
+          await loadAll(frames, (done) => setLoadingProgress(Math.floor((done / frames.length) * 100)));
+          if (isCancelled) return;
+          setIsLoaded(true);
+          unlock();
+        } else {
+          await loadAll(frames);
+        }
+        if (isCancelled) return;
+      }
     };
 
     loadImages();
 
     return () => {
       isCancelled = true;
+      unlock();
     };
   }, []);
 
@@ -174,7 +187,8 @@ export const IslandJourney5: React.FC = () => {
     const state = stateRef.current;
 
     const resizeCanvas = () => {
-      const dpr = window.devicePixelRatio || 1;
+      // Frames are 720p, so a higher-res canvas only costs fill time
+      const dpr = Math.min(window.devicePixelRatio || 1, MAX_CANVAS_DPR);
       const rect = canvas.parentElement!.getBoundingClientRect();
 
       canvas.width = rect.width * dpr;
@@ -190,12 +204,11 @@ export const IslandJourney5: React.FC = () => {
       state.animatedFrame += (state.targetFrame - state.animatedFrame) * 0.6;
       let frameToDraw = Math.round(state.animatedFrame);
 
+      // Not loaded yet: use the nearest loaded frame on either side
       if (!state.images[frameToDraw]) {
-        for (let i = frameToDraw; i >= 0; i--) {
-          if (state.images[i]) {
-            frameToDraw = i;
-            break;
-          }
+        for (let d = 1; d < FRAME_COUNT; d++) {
+          if (state.images[frameToDraw - d]) { frameToDraw -= d; break; }
+          if (state.images[frameToDraw + d]) { frameToDraw += d; break; }
         }
       }
 
@@ -459,14 +472,23 @@ export const IslandJourney5: React.FC = () => {
         className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#fdf3f4] transition-opacity duration-1000 ${isLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100'
           }`}
       >
-        <p className="text-black font-sans tracking-widest uppercase mb-4 text-sm font-medium">Loading World</p>
-        <div className="w-48 h-[1px] bg-black/10 relative overflow-hidden">
-          <div
-            className="absolute top-0 left-0 h-full bg-black transition-all duration-300 ease-out"
-            style={{ width: `${loadingProgress}%` }}
-          />
+        <div className="island-loader-float mb-8 text-[#ff8fa3]">
+          <PixelIcon type="creativity" />
         </div>
-        <p className="text-black/50 text-xs mt-4 font-mono">{loadingProgress}%</p>
+        <p className="font-minecraft text-black tracking-[0.3em] uppercase mb-5 text-sm">Loading World</p>
+        {/* Segmented pixel bar */}
+        <div className="flex gap-[3px] h-2.5 w-64">
+          {Array.from({ length: 20 }).map((_, i) => (
+            <div
+              key={i}
+              className={`flex-1 transition-colors duration-200 ${i < loadingProgress / 5 ? 'bg-[#ff8fa3]' : 'bg-black/10'}`}
+            />
+          ))}
+        </div>
+        <div className="flex justify-between w-64 mt-3 font-minecraft text-[10px] tracking-widest text-black/50 uppercase">
+          <span>{loadingProgress < 100 ? 'Building the island' : 'Ready'}</span>
+          <span>{loadingProgress}%</span>
+        </div>
       </div>
 
       <div ref={containerRef} className="h-[400vh] relative w-full">
