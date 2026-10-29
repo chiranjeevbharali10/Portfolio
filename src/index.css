@@ -377,3 +377,15 @@
 @media (prefers-reduced-motion: reduce) {
   .sb-stars, .sb-rock, .sb-ship, .sb-laser { animation: none; }
 }
+
+/* Pixel avatar frames: two-frame wave + occasional blink */
+.px-wave-a { animation: px-wave-a 0.8s steps(1) infinite; }
+.px-wave-b { animation: px-wave-b 0.8s steps(1) infinite; }
+.px-blink { opacity: 0; animation: px-blink 4s steps(1) infinite; }
+@keyframes px-wave-a { 0% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes px-wave-b { 0% { opacity: 0; } 50% { opacity: 1; } }
+@keyframes px-blink { 0% { opacity: 0; } 92% { opacity: 1; } 96% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .px-wave-a, .px-wave-b, .px-blink { animation: none; }
+  .px-wave-b, .px-blink { opacity: 0; }
+}

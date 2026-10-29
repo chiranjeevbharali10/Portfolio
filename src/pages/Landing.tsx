@@ -1,15 +1,12 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ShowcaseCard } from "../components/ShowcaseCard";
-import { ShowcaseTransition } from "../components/transitions/ShowcaseTransition";
 import { SkillsBento } from "../components/skills-shooter/SkillsBento";
-import { Projects } from "./Projects";
 import { isAppLoaded } from "../utils/loadingState";
 
 export const Landing = () => {
-  const [showProjects, setShowProjects] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
@@ -149,18 +146,10 @@ export const Landing = () => {
             {/* BOTTOM SECTION (Projects Left, Exp & About Right) */}
             <div className="flex gap-6 flex-1 min-h-[250px]">
 
-              {/* LEFT: PROJECTS (New Interactive Showcase Card) */}
-              <ShowcaseTransition
-                className="flex-1"
-                onSwap={() => setShowProjects(true)}
-              >
-                {(isTransitioned) => (
-                  <ShowcaseCard
-                    layout={isTransitioned ? 'horizontal' : 'vertical'}
-                    className="w-full h-full shadow-lg"
-                  />
-                )}
-              </ShowcaseTransition>
+              {/* LEFT: static showcase card (decorative only) */}
+              <div className="flex-1 flex">
+                <ShowcaseCard className="w-full h-full shadow-lg" />
+              </div>
 
               {/* RIGHT: SKILLS & EXPERIENCE (Stacked) */}
               <div className="flex flex-col gap-6 flex-1 landing-fade-target">
@@ -363,12 +352,6 @@ export const Landing = () => {
         </div>
 
       </section>
-
-      {showProjects && (
-        <div className="fixed inset-0 z-[80] overflow-y-auto">
-          <Projects />
-        </div>
-      )}
     </>
   );
 };

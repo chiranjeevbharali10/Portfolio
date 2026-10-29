@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { skillsData } from "../../data/skills";
 import { lenis } from "../../utils/smoothScroll";
 import { Scene } from "./Scene";
+import { SidePeek } from "./SidePeek";
 import { game, targets, useGame, world } from "./store";
 
 const MOVE_KEYS = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "KeyW", "KeyA", "KeyS", "KeyD"];
@@ -178,6 +179,7 @@ export const SkillsShooter = () => {
       ref={sectionRef}
       className="relative min-h-screen w-full bg-[#050505] flex flex-col items-center justify-center px-4 py-16 select-none"
     >
+      <SidePeek status={status} hitKey={lastHit?.n} />
       {isWon ? (
         <div className="w-full max-w-5xl flex flex-col items-center">
           <p className="font-minecraft text-xs uppercase tracking-[0.3em] text-[#35fe5d] mb-3">

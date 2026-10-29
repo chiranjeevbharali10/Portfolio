@@ -21,13 +21,13 @@ export const ShowcaseCard: React.FC<ShowcaseCardProps> = ({ className = '', onCl
       <div className={`w-full h-full border-[2px] border-black/80 rounded-[18px] sm:rounded-[24px] flex ${isHorizontal ? 'flex-row' : 'flex-col'} items-center justify-center gap-2 sm:gap-3 overflow-hidden ${isHorizontal ? 'px-4 py-2' : 'py-4'} pointer-events-none`}>
         {/* TOP/LEFT CIRCLE */}
         <div className={`${isHorizontal ? 'h-[90%]' : 'h-[45%] max-w-[90%]'} aspect-square bg-black rounded-full overflow-hidden relative flex items-center justify-center transition-transform duration-500 group-hover:scale-[1.03] shrink-0`}>
-          <div className="absolute inset-0 pointer-events-auto">
+          <div className="absolute inset-0 pointer-events-none">
             <FlowerScene />
           </div>
         </div>
         {/* BOTTOM/RIGHT CIRCLE */}
         <div className={`${isHorizontal ? 'h-[90%]' : 'h-[45%] max-w-[90%]'} aspect-square bg-black rounded-full overflow-hidden relative flex items-center justify-center transition-transform duration-500 group-hover:scale-[1.03] shrink-0`}>
-          <div className="absolute inset-0 pointer-events-auto">
+          <div className="absolute inset-0 pointer-events-none">
             <GlobeScene />
           </div>
         </div>
