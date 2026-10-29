@@ -338,3 +338,42 @@
   97% { filter: brightness(1.12); }
   98% { filter: brightness(0.92); }
 }
+
+/* Skills bento: mini shooter preview */
+.sb-stars {
+  animation: sb-stars 8s linear infinite;
+}
+@keyframes sb-stars {
+  to { transform: translateY(100%); }
+}
+.sb-rock {
+  animation-name: sb-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-fill-mode: backwards;
+}
+@keyframes sb-fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  8% { opacity: 1; }
+  70% { opacity: 1; }
+  78%, 100% { transform: translateY(260px) rotate(25deg); opacity: 0; }
+}
+.sb-ship {
+  animation: sb-ship 4s ease-in-out infinite;
+}
+@keyframes sb-ship {
+  0%, 100% { transform: translateX(-60%); }
+  50% { transform: translateX(60%); }
+}
+.sb-laser {
+  animation: sb-laser 0.7s linear infinite;
+}
+@keyframes sb-laser {
+  0% { transform: translate(-50%, 0); opacity: 1; }
+  100% { transform: translate(-50%, -220px); opacity: 0; }
+}
+.group:hover .sb-stars { animation-duration: 3s; }
+.group:hover .sb-laser { animation-duration: 0.35s; }
+@media (prefers-reduced-motion: reduce) {
+  .sb-stars, .sb-rock, .sb-ship, .sb-laser { animation: none; }
+}

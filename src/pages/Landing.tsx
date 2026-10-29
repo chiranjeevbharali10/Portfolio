@@ -4,6 +4,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ShowcaseCard } from "../components/ShowcaseCard";
 import { ShowcaseTransition } from "../components/transitions/ShowcaseTransition";
+import { SkillsBento } from "../components/skills-shooter/SkillsBento";
 import { Projects } from "./Projects";
 import { isAppLoaded } from "../utils/loadingState";
 
@@ -165,9 +166,10 @@ export const Landing = () => {
               <div className="flex flex-col gap-6 flex-1 landing-fade-target">
                 <Link
                   to="/universe#skills"
-                  className="group relative flex-1 bg-[#0c0c0c] rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col justify-end"
+                  className="group relative flex-1 bg-[#050505] rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col justify-start"
                 >
-                  <h2 className="font-podium text-xl text-primary tracking-wide uppercase">SKILLS</h2>
+                  <SkillsBento />
+                  <h2 className="relative z-10 font-podium text-xl text-primary tracking-wide uppercase">SKILLS</h2>
                 </Link>
 
                 <Link
