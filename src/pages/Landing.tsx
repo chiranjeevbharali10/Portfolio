@@ -262,7 +262,9 @@ export const Landing = () => {
             <div className="bento-group origin-bottom-left w-full h-full relative">
 
               {/* AVATAR */}
-              <div className="avatar-me absolute -top-[8%] left-[50%] -translate-x-[50%] -translate-y-[100%] z-10 w-32 sm:w-48 md:w-64 pointer-events-none">
+              {/* Anchored by its bottom edge (arm resting on the card's top border) so the
+                  position doesn't depend on the image having loaded before GSAP reads transforms. */}
+              <div className="avatar-me absolute bottom-[calc(100%-2px)] left-[50%] -translate-x-[50%] z-10 w-32 sm:w-48 md:w-64 pointer-events-none">
               {/* BUBBLE 1 */}
               <div className="bubble-1 absolute bottom-[85%] right-[75%] bg-white text-black font-podium tracking-wide text-[10px] sm:text-xs md:text-sm px-4 py-2 rounded-2xl rounded-br-sm shadow-[0_0_20px_rgba(255,255,255,0.4)] opacity-0 scale-50 origin-bottom-right whitespace-nowrap z-50">
                 Hi, I am Chiranjeev
@@ -271,7 +273,7 @@ export const Landing = () => {
               <div className="bubble-2 absolute bottom-[65%] right-[85%] bg-white text-black font-podium tracking-wide text-[10px] sm:text-xs md:text-sm px-4 py-2 rounded-2xl rounded-tr-sm shadow-[0_0_20px_rgba(255,255,255,0.3)] opacity-0 scale-50 origin-top-right whitespace-nowrap z-50">
                 Click below to get started
               </div>
-              <img src="/fonts/me-01.webp" alt="Chiranjeev Avatar" width={974} height={725} loading="lazy" decoding="async" className="w-full h-auto object-contain drop-shadow-2xl" />
+              <img src="/fonts/me-01.webp" alt="Chiranjeev Avatar" width={974} height={725} decoding="async" className="w-full h-auto object-contain drop-shadow-2xl" />
             </div>
 
               {/* MAIN CREATIVITY POSTER */}
