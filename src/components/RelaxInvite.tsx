@@ -59,10 +59,15 @@ export const RelaxInvite = () => {
     <section
       ref={sectionRef}
       aria-label="Take a break"
-      className="relative w-full min-h-[70vh] flex items-center justify-center px-4 py-24 bg-[#050505] overflow-hidden"
+      className="relative w-full min-h-[70vh] flex items-center justify-center px-4 py-24 overflow-hidden"
+      style={{
+        // Warm glow from the Relax palette. closest-side makes it fade out before every
+        // edge, so there's no hard seam against the skills section above (and no blur
+        // filter, which left banding lines in Chrome).
+        background:
+          'radial-gradient(closest-side at 50% 50%, rgba(255,107,26,0.16), rgba(236,72,153,0.09) 55%, transparent 100%), #050505',
+      }}
     >
-      {/* Warm glow borrowed from the Relax page palette */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] max-w-[720px] aspect-square rounded-full bg-[radial-gradient(circle,rgba(255,107,26,0.18),rgba(236,72,153,0.12)_45%,transparent_70%)] blur-2xl pointer-events-none" />
 
       <div className="relative w-full max-w-2xl font-minecraft">
         {/* Speaker tag */}
@@ -77,14 +82,16 @@ export const RelaxInvite = () => {
             {!done && <span className="crt-blink">▌</span>}
           </p>
 
-          <div
-            className={`mt-6 flex flex-col sm:flex-row gap-3 sm:gap-6 transition-opacity duration-500 ${done ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-          >
+          {/* Choices appear once the line is typed. No opacity fade: on this GPU-heavy page
+              the compositor sometimes left a fading layer stuck near-transparent. The fixed
+              min-height reserves their space so the box doesn't jump. */}
+          <div className="mt-6 min-h-[104px] sm:min-h-[46px]">
+          {done && (
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
             <Link
               to="/relax"
               onPointerEnter={loadRelax}
               onFocus={loadRelax}
-              tabIndex={done ? 0 : -1}
               className="group flex items-center gap-2 px-5 py-3 rounded-md text-black text-sm tracking-widest bg-gradient-to-r from-[#FF6B1A] to-[#FF2D9A] hover:brightness-110 transition-all shadow-[0_0_24px_rgba(255,45,154,0.35)]"
             >
               <span className="transition-transform group-hover:translate-x-1">▶</span>
@@ -95,12 +102,13 @@ export const RelaxInvite = () => {
               <button
                 type="button"
                 onClick={() => setDeclined(true)}
-                tabIndex={done ? 0 : -1}
-                className="px-5 py-3 rounded-md text-[#F5F3E8]/70 text-sm tracking-widest border border-[#F5F3E8]/25 hover:text-[#F5F3E8] hover:border-[#F5F3E8]/60 transition-all"
+                  className="px-5 py-3 rounded-md text-[#F5F3E8]/70 text-sm tracking-widest border border-[#F5F3E8]/25 hover:text-[#F5F3E8] hover:border-[#F5F3E8]/60 transition-all"
               >
                 MAYBE LATER
               </button>
             )}
+          </div>
+          )}
           </div>
 
           {/* Classic "more text" arrow */}
