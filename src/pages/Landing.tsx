@@ -127,26 +127,26 @@ export const Landing = () => {
               onFocus={loadUniverse}
               className="group relative h-[180px] sm:h-[220px] shrink-0 bg-[#35fe5d] rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col items-center justify-center landing-fade-target"
             >
-              {/* Headline (top) */}
-              <div className="absolute inset-x-4 sm:inset-x-6 top-4 sm:top-5 bottom-[44%] z-10 flex items-center justify-center pointer-events-none">
+              {/* Headline (centred on the card) */}
+              <div className="absolute inset-x-4 sm:inset-x-6 inset-y-0 z-10 flex items-center justify-center pointer-events-none">
                 <img
                   src="/fonts/GROW-WITH-THE-FLOW.svg"
                   alt="Grow With The Flow"
                   width={900}
                   height={270}
-                  className="w-full h-full object-contain brightness-0 transition-transform duration-700 group-hover:scale-105"
+                  className="h-[38%] w-auto max-w-full object-contain brightness-0 transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
 
               {/* Mini road + car (bottom) - echoes the Flow journey page */}
               <svg
                 aria-hidden="true"
-                viewBox="0 0 260 70"
+                viewBox="0 0 260 50"
                 preserveAspectRatio="xMidYMax slice"
-                className="absolute inset-x-0 bottom-0 h-[44%] w-full pointer-events-none"
+                className="absolute inset-x-0 bottom-0 h-[30%] w-full pointer-events-none"
               >
                 <defs>
-                  <path id="flow-card-road" d="M -30 54 C 25 54, 55 22, 110 24 S 185 60, 222 46 S 270 18, 300 22" />
+                  <path id="flow-card-road" d="M -30 38 C 25 38, 55 27, 110 28 S 185 41, 222 35 S 270 27, 300 29" />
                 </defs>
 
                 {/* Road: soft shadow, white edge lines, asphalt, dashed centre line */}
@@ -156,8 +156,8 @@ export const Landing = () => {
                 <use href="#flow-card-road" fill="none" stroke="#F5F3E8" strokeOpacity="0.75" strokeWidth="1.4" strokeDasharray="7 7" strokeLinecap="round" />
 
                 {/* Checkpoint */}
-                <circle cx="110" cy="24" r="8.5" fill="none" stroke="#35fe5d" strokeOpacity="0.45" strokeWidth="1.5" />
-                <circle cx="110" cy="24" r="2.6" fill="#35fe5d">
+                <circle cx="110" cy="28" r="8.5" fill="none" stroke="#35fe5d" strokeOpacity="0.45" strokeWidth="1.5" />
+                <circle cx="110" cy="28" r="2.6" fill="#35fe5d">
                   <animate attributeName="r" values="2.2;3.4;2.2" dur="1.8s" repeatCount="indefinite" />
                 </circle>
 
