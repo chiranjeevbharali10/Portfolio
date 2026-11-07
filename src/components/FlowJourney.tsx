@@ -5,13 +5,25 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 
 import { FlowCar } from './FlowCar';
+import { RoadsideScenery } from './RoadsideScenery';
+import type { RoadsideSceneryController } from './RoadsideScenery';
+import { ensureMilestones, getPhaseWeights } from './timeOfDay';
 
 gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
 export const flowJourneyState = {
   progress: 0,
   angle: 0,
+  /** Car's smoothed on-screen heading (radians, 0 = right), written by FlowCar */
+  carScreenAngle: Math.PI / 2,
+  // Time-of-day blend weights (sum to 1)
+  base: 1,
+  morning: 0,
+  evening: 0,
+  night: 0,
 };
+
+const getProgress = () => flowJourneyState.progress;
 
 export const FlowJourney = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -20,6 +32,11 @@ export const FlowJourney = () => {
   const titleWrapperRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const carMoverRef = useRef<HTMLDivElement>(null);
+  const sceneryRef = useRef<RoadsideSceneryController | null>(null);
+  const morningRef = useRef<HTMLDivElement>(null);
+  const eveningRef = useRef<HTMLDivElement>(null);
+  const nightRef = useRef<HTMLDivElement>(null);
+  const beamRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
     // 1. Circle Expansion (Solid Green)
@@ -40,6 +57,10 @@ export const FlowJourney = () => {
     gsap.to(gradientRef.current, {
       opacity: 1,
       ease: "power2.inOut",
+      // Once the background fully covers the giant green circle, stop drawing the circle (it's a huge GPU layer)
+      onUpdate() {
+        if (circleRef.current) circleRef.current.style.visibility = this.progress() >= 0.999 ? 'hidden' : 'visible';
+      },
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top -150%", // Starts fading after text is fully visible
@@ -70,6 +91,16 @@ export const FlowJourney = () => {
     const pathEl = pathRef.current;
     if (pathEl) {
       const length = pathEl.getTotalLength();
+      ensureMilestones(pathEl);
+
+      // Sky layers stack morning -> evening -> night; phases are sequential, so this is an exact crossfade
+      const applyTimeOfDay = (p: number) => {
+        const w = getPhaseWeights(p);
+        Object.assign(flowJourneyState, w);
+        if (morningRef.current) morningRef.current.style.opacity = String(1 - w.base);
+        if (eveningRef.current) eveningRef.current.style.opacity = String(w.evening + w.night);
+        if (nightRef.current) nightRef.current.style.opacity = String(w.night);
+      };
 
       const proxy = { progress: 0 };
       
@@ -82,7 +113,9 @@ export const FlowJourney = () => {
         // We only use the onUpdate to move the car!
         
         flowJourneyState.progress = p;
-        
+        applyTimeOfDay(p);
+        sceneryRef.current?.update(p);
+
         if (carMoverRef.current) {
           const pt = pathEl.getPointAtLength(length * p);
           
@@ -118,6 +151,26 @@ export const FlowJourney = () => {
 
       tl.to(proxy, { progress: 1, duration: 1, ease: "none", onUpdate: updatePath });
     }
+
+    // Headlight beam follows the car's smoothed heading; only touches the DOM when something changed
+    let lastStrength = -1;
+    let lastAngle = Infinity; // forces the first write
+    const updateBeam = () => {
+      const beam = beamRef.current;
+      if (!beam) return;
+      const { night, evening, carScreenAngle } = flowJourneyState;
+      const strength = Math.round(Math.min(1, night + evening * 0.35) * 100) / 100;
+      if (strength !== lastStrength) {
+        lastStrength = strength;
+        beam.style.opacity = String(strength);
+        beam.style.visibility = strength > 0 ? 'visible' : 'hidden';
+      }
+      if (strength > 0 && Math.abs(carScreenAngle - lastAngle) > 0.002) {
+        lastAngle = carScreenAngle;
+        beam.style.transform = `rotate(${carScreenAngle}rad) translateX(55px)`;
+      }
+    };
+    gsap.ticker.add(updateBeam);
 
     // 5. The "Wall" Checkpoints (Minimal Design + Pinning)
     const milestoneBlocks = gsap.utils.toArray('.milestone-block');
@@ -205,6 +258,7 @@ export const FlowJourney = () => {
       }, 0.3);
     });
 
+    return () => gsap.ticker.remove(updateBeam);
   }, { scope: containerRef });
 
   return (
@@ -224,6 +278,20 @@ export const FlowJourney = () => {
         <div 
           ref={gradientRef} 
           className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#0d3617] via-[#071f0d] to-[#050505] opacity-0"
+        ></div>
+
+        {/* Time-of-day layers (opacity driven by the car's progress) */}
+        <div
+          ref={morningRef}
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#2f7d34] via-[#1d5a24] to-[#0c2611] opacity-0"
+        ></div>
+        <div
+          ref={eveningRef}
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#5e4a26] via-[#3b2a20] to-[#170e1c] opacity-0"
+        ></div>
+        <div
+          ref={nightRef}
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#121212] via-[#070707] to-[#000000] opacity-0"
         ></div>
       </div>
 
@@ -269,6 +337,9 @@ export const FlowJourney = () => {
             </svg>
           </div>
 
+          {/* Roadside scenery (trees, houses, city, lake) that pops up as the car approaches - z-15 (above road, below text) */}
+          <RoadsideScenery pathRef={pathRef} controllerRef={sceneryRef} getProgress={getProgress} />
+
           {/* HTML Car Mover - z-index 30 (Above SVG road) */}
           <div className="absolute inset-0 w-full h-full max-w-[1400px] mx-auto pointer-events-none z-30">
             <div 
@@ -276,7 +347,31 @@ export const FlowJourney = () => {
               className="absolute w-[300px] h-[300px] pointer-events-none"
               style={{ left: '50%', top: '0%' }}
             >
-              <FlowCar />
+              {/* Headlight beam (night) - sits behind the car, rotated to its heading */}
+              <div
+                ref={beamRef}
+                className="absolute pointer-events-none"
+                style={{
+                  left: '50%',
+                  top: 'calc(50% - 85px)',
+                  width: 280,
+                  height: 170,
+                  transformOrigin: '0 50%',
+                  opacity: 0,
+                  visibility: 'hidden',
+                }}
+              >
+                <div
+                  className="w-full h-full"
+                  style={{
+                    clipPath: 'polygon(0 40%, 100% 0, 100% 100%, 0 60%)',
+                    background: 'linear-gradient(to right, rgba(255,238,190,0.42), rgba(255,238,190,0.1) 70%, rgba(255,238,190,0))',
+                  }}
+                />
+              </div>
+              <div className="relative w-full h-full">
+                <FlowCar />
+              </div>
             </div>
           </div>
 

@@ -41,6 +41,8 @@ function CarScene() {
     // Dampen rotation slightly for a heavy feel
     currentAngleRef.current += diff * (delta * 5); 
     groupRef.current.rotation.y = currentAngleRef.current;
+    // Share the smoothed on-screen heading (inverse of targetAngle mapping) for the headlight beam
+    flowJourneyState.carScreenAngle = -currentAngleRef.current - Math.PI / 2;
     
     // 2. Wheel Spin & Steering
     const deltaProgress = progress - lastProgressRef.current;
@@ -75,24 +77,82 @@ function CarScene() {
   );
 }
 
+// Light rig per time of day: [ambient color, ambient intensity, key color, key intensity, rim color, rim intensity, env intensity]
+type Rig = [string, number, string, number, string, number, number];
+const RIGS: Record<'base' | 'morning' | 'evening' | 'night', Rig> = {
+  base: ['#ffffff', 0.5, '#ffffff', 1.2, '#a6e3e9', 0.8, 1],
+  morning: ['#fff6e0', 0.7, '#fff0cc', 1.5, '#bfe6ff', 0.6, 1.1],
+  evening: ['#ffc59a', 0.45, '#ff9a55', 1.3, '#b07cff', 0.8, 0.75],
+  night: ['#8fa3ff', 0.22, '#9fb4ff', 0.55, '#4a6cff', 0.6, 0.3],
+};
+
+/** Car lighting that follows the morning -> evening -> night blend. */
+function TimeOfDayLights() {
+  const ambientRef = useRef<THREE.AmbientLight>(null);
+  const keyRef = useRef<THREE.SpotLight>(null);
+  const rimRef = useRef<THREE.DirectionalLight>(null);
+  const tmp = useMemo(() => ({ a: new THREE.Color(), k: new THREE.Color(), r: new THREE.Color(), c: new THREE.Color() }), []);
+
+  useFrame(({ scene }) => {
+    const w = flowJourneyState;
+    const weights = [w.base, w.morning, w.evening, w.night];
+    const rigs = [RIGS.base, RIGS.morning, RIGS.evening, RIGS.night];
+    tmp.a.setRGB(0, 0, 0);
+    tmp.k.setRGB(0, 0, 0);
+    tmp.r.setRGB(0, 0, 0);
+    let ai = 0, ki = 0, ri = 0, env = 0;
+    rigs.forEach((rig, i) => {
+      const k = weights[i];
+      if (!k) return;
+      tmp.a.add(tmp.c.set(rig[0]).multiplyScalar(k));
+      tmp.k.add(tmp.c.set(rig[2]).multiplyScalar(k));
+      tmp.r.add(tmp.c.set(rig[4]).multiplyScalar(k));
+      ai += rig[1] * k;
+      ki += rig[3] * k;
+      ri += rig[5] * k;
+      env += rig[6] * k;
+    });
+    if (ambientRef.current) {
+      ambientRef.current.color.copy(tmp.a);
+      ambientRef.current.intensity = ai;
+    }
+    if (keyRef.current) {
+      keyRef.current.color.copy(tmp.k);
+      keyRef.current.intensity = ki;
+    }
+    if (rimRef.current) {
+      rimRef.current.color.copy(tmp.r);
+      rimRef.current.intensity = ri;
+    }
+    scene.environmentIntensity = env;
+  });
+
+  return (
+    <>
+      <ambientLight ref={ambientRef} intensity={0.5} />
+
+      {/* Soft Key Light */}
+      <spotLight
+        ref={keyRef}
+        position={[10, 20, 10]}
+        angle={0.5}
+        penumbra={1}
+        intensity={1.2}
+        castShadow
+        shadow-mapSize={1024}
+      />
+
+      {/* Rim Light */}
+      <directionalLight ref={rimRef} position={[-10, 5, -10]} intensity={0.8} color="#a6e3e9" />
+    </>
+  );
+}
+
 export const FlowCar = () => {
   return (
     <div className="w-full h-full pointer-events-none">
       <Canvas shadows camera={{ position: [0, 15, -10], fov: 40 }}>
-        <ambientLight intensity={0.5} />
-        
-        {/* Soft Key Light */}
-        <spotLight 
-          position={[10, 20, 10]} 
-          angle={0.5} 
-          penumbra={1} 
-          intensity={1.2} 
-          castShadow 
-          shadow-mapSize={1024} 
-        />
-        
-        {/* Rim Light */}
-        <directionalLight position={[-10, 5, -10]} intensity={0.8} color="#a6e3e9" />
+        <TimeOfDayLights />
         
         <Suspense fallback={null}>
           <CarScene />
