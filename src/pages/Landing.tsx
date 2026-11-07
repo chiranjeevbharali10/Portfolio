@@ -264,7 +264,7 @@ export const Landing = () => {
               {/* AVATAR */}
               {/* Anchored by its bottom edge (arm resting on the card's top border) so the
                   position doesn't depend on the image having loaded before GSAP reads transforms. */}
-              <div className="avatar-me absolute bottom-[calc(100%-2px)] left-[50%] -translate-x-[50%] z-10 w-32 sm:w-48 md:w-64 pointer-events-none">
+              <div className="avatar-me absolute bottom-[calc(100%-24px)] sm:bottom-[calc(100%-36px)] md:bottom-[calc(100%-48px)] left-[50%] -translate-x-[50%] z-10 w-32 sm:w-48 md:w-64 pointer-events-none">
               {/* BUBBLE 1 */}
               <div className="bubble-1 absolute bottom-[85%] right-[75%] bg-white text-black font-podium tracking-wide text-[10px] sm:text-xs md:text-sm px-4 py-2 rounded-2xl rounded-br-sm shadow-[0_0_20px_rgba(255,255,255,0.4)] opacity-0 scale-50 origin-bottom-right whitespace-nowrap z-50">
                 Hi, I am Chiranjeev
