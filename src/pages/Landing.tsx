@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
-import { ShowcaseCard } from "../components/ShowcaseCard";
+import { BadgeCard } from "../components/BadgeCard";
 import { SkillsBento } from "../components/skills-shooter/SkillsBento";
 import { isAppLoaded } from "../utils/loadingState";
 import { loadUniverse } from "../utils/routePrefetch";
@@ -147,9 +147,9 @@ export const Landing = () => {
             {/* BOTTOM SECTION (Projects Left, Exp & About Right) */}
             <div className="flex gap-6 flex-1 min-h-[250px]">
 
-              {/* LEFT: static showcase card (decorative only) */}
+              {/* LEFT: decorative badge + vinyl card (CSS-only, no WebGL) */}
               <div className="flex-1 flex">
-                <ShowcaseCard className="w-full h-full shadow-lg" />
+                <BadgeCard className="w-full h-full shadow-lg" />
               </div>
 
               {/* RIGHT: SKILLS & EXPERIENCE (Stacked) */}

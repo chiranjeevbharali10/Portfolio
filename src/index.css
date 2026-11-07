@@ -461,3 +461,24 @@ html.no-scrollbar::-webkit-scrollbar {
 @media (prefers-reduced-motion: reduce) {
   .relax-ripple, .relax-wobble { animation-play-state: paused; }
 }
+
+/* Landing BadgeCard: transform-only animations (compositor, ~zero CPU) */
+.badge-spin {
+  animation: badge-spin 22s linear infinite;
+}
+@keyframes badge-spin {
+  to { transform: rotate(360deg); }
+}
+.badge-pulse {
+  animation: badge-pulse 2.4s ease-in-out infinite;
+}
+@keyframes badge-pulse {
+  0%, 100% { transform: scale(0.9) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(45deg); }
+}
+.vinyl-spin {
+  animation: badge-spin 4s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .badge-spin, .badge-pulse, .vinyl-spin { animation-play-state: paused; }
+}
