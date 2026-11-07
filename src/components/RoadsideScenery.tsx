@@ -6,6 +6,7 @@ import type { SceneSprite, SpriteKind, SpriteSets } from './sceneSprites';
 import { ensureMilestones, getZone } from './timeOfDay';
 import type { Zone } from './timeOfDay';
 import { NightLake } from './NightLake';
+import { findStopT } from './flowRoad';
 
 export type RoadsideSceneryController = { update: (progress: number) => void };
 
@@ -207,9 +208,19 @@ export const RoadsideScenery = ({ pathRef, controllerRef, getProgress }: Props) 
       return lo + rand() * (hi - lo);
     };
 
-    // ---- Streetlights first (night): evenly spaced right at the road edge ----
+    // ---- The streetlight the car parks under: on the kerb side, just ahead of the parking spot ----
+    const parkT = findStopT(pathEl);
+    {
+      const { a, tx, ty, nx, ny } = sampleAt(parkT);
+      const off = ROAD_HALF_WIDTH_PX + 16;
+      // -n is the kerb side (same side the car pulls toward)
+      tryPlace('streetlight', 'night', parkT - 0.03, a.x - nx * off + tx * 30, a.y - ny * off + ty * 30, 32, { skipCanopy: true });
+    }
+
+    // ---- Streetlights (night): evenly spaced right at the road edge ----
     let side = 1;
-    for (let t = 0.03; t < 0.985; t += 0.011) {
+    // Stop short of the parking spot so its own streetlight stands alone
+    for (let t = 0.03; t < parkT - 0.035; t += 0.011) {
       if (getZone(t) !== 'night') continue;
       const { a, nx, ny } = sampleAt(t);
       const scale = randScale('streetlight');
@@ -219,7 +230,7 @@ export const RoadsideScenery = ({ pathRef, controllerRef, getProgress }: Props) 
     }
 
     // ---- Main scenery along the road ----
-    for (let t = 0.03; t < 0.97; t += 0.014) {
+    for (let t = 0.03; t < Math.min(0.97, parkT); t += 0.014) {
       const zone = getZone(t);
       const { a, tx, ty, nx, ny } = sampleAt(t);
       const night = zone === 'night';

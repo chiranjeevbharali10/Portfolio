@@ -8,6 +8,7 @@ import { FlowCar } from './FlowCar';
 import { RoadsideScenery } from './RoadsideScenery';
 import type { RoadsideSceneryController } from './RoadsideScenery';
 import { ensureMilestones, getPhaseWeights } from './timeOfDay';
+import { ROAD_D, ROAD_END_Y, findStopT } from './flowRoad';
 
 gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
@@ -28,16 +29,10 @@ export const flowJourneyState = {
 
 const getProgress = () => flowJourneyState.progress;
 
-// ---- Road geometry (SVG viewBox 1000 x 5000) ----
-const ROAD_D =
-  'M 500 0 C 500 400, 200 600, 200 1000 S 800 1400, 800 1800 S 200 2200, 200 2600 ' +
-  'S 800 3000, 800 3400 S 200 3800, 200 4200 S 500 4600, 500 5000';
-// The drive ends with the car pulling over to the right edge of the road and stopping here;
-// the rest of the road fades out instead of dead-ending into the next section.
-const STOP_Y = 4640;
-const FADE_FROM_Y = 4700;
-const PULL_START = 0.9; // last 10% of the drive: ease over to the right edge
-const PULL_PX = 46; // how far right of the centre line the car ends up (road is ~185px wide)
+// ---- Road geometry: shared with the scenery (see flowRoad.ts) ----
+// The drive ends with the road bending right; the car eases toward the kerb and parks under a streetlight.
+const PULL_START = 0.9; // last 10% of the drive: ease toward the kerb
+const PULL_PX = 30; // how far off the centre line the car parks (road is ~185px wide)
 
 const smooth01 = (x: number) => {
   const c = Math.min(1, Math.max(0, x));
@@ -121,14 +116,8 @@ export const FlowJourney = () => {
         if (nightRef.current) nightRef.current.style.opacity = String(w.night);
       };
 
-      // Road position where the car stops (first point at/after STOP_Y)
-      let stopT = 1;
-      for (let i = 0; i <= 2000; i++) {
-        if (pathEl.getPointAtLength((length * i) / 2000).y >= STOP_Y) {
-          stopT = i / 2000;
-          break;
-        }
-      }
+      // Road position of the parking spot
+      const stopT = findStopT(pathEl);
 
       // Car position in px inside the road box for a drive progress p:
       // follows the road centre line, then eases over to the right edge during the last stretch.
@@ -144,7 +133,7 @@ export const FlowJourney = () => {
         tx /= m;
         ty /= m;
         const off = smooth01((p - PULL_START) / (1 - PULL_START)) * PULL_PX;
-        // (ty, -tx) is the screen-right side of the road for a car heading down the page
+        // (ty, -tx) is the car's left side: the kerb (top edge once the road turns right)
         return { x: a.x * sx + ty * off, y: a.y * sy - tx * off, t };
       };
 
@@ -181,8 +170,8 @@ export const FlowJourney = () => {
         scrollTrigger: {
           trigger: ".timeline-section",
           start: "top center",
-          // Finish when the stopping point reaches the middle of the screen
-          end: () => `+=${(document.querySelector('.timeline-section') as HTMLElement).offsetHeight * (STOP_Y / 5000)}`,
+          // Finish when the parking spot reaches the middle of the screen
+          end: () => `+=${(document.querySelector('.timeline-section') as HTMLElement).offsetHeight * (ROAD_END_Y / 5000)}`,
           invalidateOnRefresh: true,
           scrub: 2, // Heavy damping for maximum smoothness (zero jiggle)
         }
@@ -357,9 +346,9 @@ export const FlowJourney = () => {
           {/* Solid Thick Black Road (SVG) - z-index 10 */}
           <div className="absolute inset-0 w-full h-full pointer-events-none z-10 flex justify-center">
             <svg viewBox="0 0 1000 5000" preserveAspectRatio="none" className="w-full h-full max-w-[1400px] overflow-visible">
-              {/* Fade the road out below where the car stops, so it doesn't dead-end into the next section */}
+              {/* Fade the road out as it runs off to the right, so it never shows a hard end */}
               <defs>
-                <linearGradient id="road-end-fade" gradientUnits="userSpaceOnUse" x1="0" y1={FADE_FROM_Y} x2="0" y2="4990">
+                <linearGradient id="road-end-fade" gradientUnits="userSpaceOnUse" x1="860" y1="0" x2="1000" y2="0">
                   <stop offset="0" stopColor="#fff" />
                   <stop offset="1" stopColor="#000" />
                 </linearGradient>
