@@ -2,3 +2,7 @@
 let universePromise: Promise<typeof import("../pages/Universe")> | null = null;
 
 export const loadUniverse = () => (universePromise ??= import("../pages/Universe"));
+
+let relaxPromise: Promise<typeof import("../pages/Relax/Relax")> | null = null;
+
+export const loadRelax = () => (relaxPromise ??= import("../pages/Relax/Relax"));

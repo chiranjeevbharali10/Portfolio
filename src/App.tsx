@@ -8,14 +8,14 @@ import { LoadingScreen } from "./components/LoadingScreen";
 
 // Pages
 import { Landing } from "./pages/Landing";
-import { loadUniverse } from "./utils/routePrefetch";
+import { loadRelax, loadUniverse } from "./utils/routePrefetch";
 
 // Heavy routes are split into their own chunks so the landing page doesn't
 // download three.js / R3F / postprocessing up front.
 const Universe = lazy(() => loadUniverse().then((m) => ({ default: m.Universe })));
 const ThreeTestPage = lazy(() => import("./pages/ThreeTestPage").then((m) => ({ default: m.ThreeTestPage })));
 const CreativeDeveloper = lazy(() => import("./pages/CreativeDeveloper").then((m) => ({ default: m.CreativeDeveloper })));
-const Relax = lazy(() => import("./pages/Relax/Relax").then((m) => ({ default: m.Relax })));
+const Relax = lazy(() => loadRelax().then((m) => ({ default: m.Relax })));
 const IslandJourney5Page = lazy(() => import("./pages/IslandJourney5Page").then((m) => ({ default: m.IslandJourney5Page })));
 const Island6Page = lazy(() => import("./pages/Island6Page").then((m) => ({ default: m.Island6Page })));
 
