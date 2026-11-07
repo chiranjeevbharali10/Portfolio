@@ -122,9 +122,7 @@ export const Landing = () => {
 
             {/* GREEN FLOW CARD */}
             <Link
-              to="/universe#flow"
-              onPointerEnter={loadUniverse}
-              onFocus={loadUniverse}
+              to="/island_5#flow"
               className="group relative h-[180px] sm:h-[220px] shrink-0 bg-[#35fe5d] rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col items-center justify-center landing-fade-target"
             >
               {/* Top Right Stars */}

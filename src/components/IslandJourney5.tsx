@@ -92,7 +92,12 @@ const SkillModule = ({ name, value, icon }: { name: string, value: string, icon:
   </div>
 );
 
-export const IslandJourney5: React.FC = () => {
+interface IslandJourney5Props {
+  /** Fires once the first frames are loaded and the scroll animations are set up */
+  onReady?: () => void;
+}
+
+export const IslandJourney5: React.FC<IslandJourney5Props> = ({ onReady }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -116,6 +121,8 @@ export const IslandJourney5: React.FC = () => {
   const footerRef = useRef<HTMLDivElement>(null);
 
   const [isLoaded, setIsLoaded] = useState(false);
+  const onReadyRef = useRef(onReady);
+  onReadyRef.current = onReady;
   const [loadingProgress, setLoadingProgress] = useState(0);
 
   const stateRef = useRef({
@@ -472,6 +479,8 @@ export const IslandJourney5: React.FC = () => {
         }
       });
     }
+
+    onReadyRef.current?.();
 
     return () => {
       window.removeEventListener('resize', resizeCanvas);
