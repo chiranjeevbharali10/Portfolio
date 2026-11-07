@@ -127,62 +127,23 @@ export const Landing = () => {
               onFocus={loadUniverse}
               className="group relative h-[180px] sm:h-[220px] shrink-0 bg-[#35fe5d] rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col items-center justify-center landing-fade-target"
             >
-              {/* Road + car wrapping around the headline - echoes the Flow journey page */}
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 460 220"
-                preserveAspectRatio="xMidYMid slice"
-                className="absolute inset-0 w-full h-full pointer-events-none"
-              >
-                <defs>
-                  {/* Top stretch -> hairpin around the right side -> bottom stretch.
-                      Starts and ends off-canvas so the car's loop is seamless. */}
-                  <path id="flow-card-road" d="M -40 30 C 120 30, 300 18, 380 40 C 450 60, 450 165, 380 185 C 300 205, 120 192, -40 192" />
-                </defs>
-
-                {/* Road: soft shadow, cream edge lines, asphalt, dashed centre line */}
-                <use href="#flow-card-road" fill="none" stroke="#000" strokeOpacity="0.18" strokeWidth="38" transform="translate(0 4)" />
-                <use href="#flow-card-road" fill="none" stroke="#F5F3E8" strokeWidth="34" />
-                <use href="#flow-card-road" fill="none" stroke="#0b0b0b" strokeWidth="28" />
-                <use href="#flow-card-road" fill="none" stroke="#F5F3E8" strokeOpacity="0.75" strokeWidth="2" strokeDasharray="10 10" strokeLinecap="round" />
-
-                {/* Checkpoint (top stretch, clear of the headline) */}
-                <circle cx="57" cy="29" r="11" fill="none" stroke="#35fe5d" strokeOpacity="0.5" strokeWidth="2" />
-                <circle cx="57" cy="29" r="3.4" fill="#35fe5d">
-                  <animate attributeName="r" values="2.8;4.4;2.8" dur="1.8s" repeatCount="indefinite" />
-                </circle>
-
-                {/* Top-down car, drawn facing +x so rotate="auto" follows the road */}
-                <g>
-                  <animateMotion dur="9s" repeatCount="indefinite" rotate="auto">
-                    <mpath href="#flow-card-road" />
-                  </animateMotion>
-                  <g transform="scale(1.5) translate(0 4)">
-                    <polygon points="9,-3.5 22,-7.5 22,7.5 9,3.5" fill="#fff6c2" opacity="0.18" />
-                    <rect x="-9" y="-5" width="18" height="10" rx="2.6" fill="#35fe5d" stroke="#0b0b0b" strokeWidth="0.6" />
-                    <rect x="-6.6" y="-3.7" width="2.6" height="7.4" rx="0.8" fill="#1d1d1d" />
-                    <rect x="-3.8" y="-4" width="5.4" height="8" rx="1" fill="#22c447" />
-                    <rect x="1.8" y="-3.9" width="3.4" height="7.8" rx="1" fill="#1d1d1d" />
-                    <circle cx="8.6" cy="-3.2" r="0.9" fill="#fff6c2" />
-                    <circle cx="8.6" cy="3.2" r="0.9" fill="#fff6c2" />
-                    <rect x="-9.3" y="-4" width="0.9" height="1.8" fill="#ff3b30" />
-                    <rect x="-9.3" y="2.2" width="0.9" height="1.8" fill="#ff3b30" />
-                  </g>
-                </g>
-              </svg>
-
-              {/* Headline sticker: sits over the road, lifts on hover */}
-              <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-                <div className="bg-[#35fe5d] border-2 border-black rounded-2xl px-4 py-2 sm:px-5 sm:py-3 shadow-[6px_6px_0_#000] transition-all duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:shadow-[10px_10px_0_#000]">
-                  <img
-                    src="/fonts/GROW-WITH-THE-FLOW.svg"
-                    alt="Grow With The Flow"
-                    width={900}
-                    height={270}
-                    className="block h-14 sm:h-[76px] w-auto brightness-0"
-                  />
-                </div>
+              {/* Top Right Stars */}
+              <div className="absolute top-4 right-6 flex gap-1 opacity-40">
+                <span className="text-black text-xl">✦</span>
+                <span className="text-black text-xl">✦</span>
+                <span className="text-black text-xl">✦</span>
               </div>
+
+              {/* Bottom Left Symbols */}
+              <div className="absolute bottom-4 left-6 flex gap-2 opacity-40 text-black font-mono text-xs tracking-widest">
+                * 〰 ↙
+              </div>
+
+              <img
+                src="/fonts/GROW-WITH-THE-FLOW.svg"
+                alt="Grow With The Flow"
+                className="relative z-10 w-[95%] h-[95%] object-contain brightness-0 transition-transform duration-700 group-hover:scale-105"
+              />
             </Link>
 
             {/* BOTTOM SECTION (Projects Left, Exp & About Right) */}
