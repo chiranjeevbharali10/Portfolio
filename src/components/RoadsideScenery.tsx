@@ -97,7 +97,8 @@ export const RoadsideScenery = ({ pathRef, controllerRef, getProgress }: Props) 
     const containerRect = container.getBoundingClientRect();
     // Milestone text boxes (in container px), padded, so scenery never covers the copy
     const textRects = Array.from(
-      document.querySelectorAll<HTMLElement>('.timeline-section .milestone-block')
+      // Milestone copy + anything marked as off-limits (e.g. the parking lot)
+      document.querySelectorAll<Element>('.timeline-section .milestone-block, .timeline-section .scenery-avoid')
     ).map((el) => {
       const r = el.getBoundingClientRect();
       const pad = 40;

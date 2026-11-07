@@ -12,7 +12,10 @@ import { ensureMilestones, getPhaseWeights } from './timeOfDay';
 gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
 export const flowJourneyState = {
+  /** Car position along the road (0..1 of the road length) */
   progress: 0,
+  /** Scroll-driven drive progress (0..1); 1 = parked */
+  drive: 0,
   angle: 0,
   /** Car's smoothed on-screen heading (radians, 0 = right), written by FlowCar */
   carScreenAngle: Math.PI / 2,
@@ -24,6 +27,22 @@ export const flowJourneyState = {
 };
 
 const getProgress = () => flowJourneyState.progress;
+
+// ---- Road geometry (SVG viewBox 1000 x 5000) ----
+const ROAD_D =
+  'M 500 0 C 500 400, 200 600, 200 1000 S 800 1400, 800 1800 S 200 2200, 200 2600 ' +
+  'S 800 3000, 800 3400 S 200 3800, 200 4200 S 500 4600, 500 5000';
+// The drive ends with the car pulling over to the right edge of the road and stopping here;
+// the rest of the road fades out instead of dead-ending into the next section.
+const STOP_Y = 4640;
+const FADE_FROM_Y = 4700;
+const PULL_START = 0.9; // last 10% of the drive: ease over to the right edge
+const PULL_PX = 46; // how far right of the centre line the car ends up (road is ~185px wide)
+
+const smooth01 = (x: number) => {
+  const c = Math.min(1, Math.max(0, x));
+  return c * c * (3 - 2 * c);
+};
 
 export const FlowJourney = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -102,40 +121,58 @@ export const FlowJourney = () => {
         if (nightRef.current) nightRef.current.style.opacity = String(w.night);
       };
 
+      // Road position where the car stops (first point at/after STOP_Y)
+      let stopT = 1;
+      for (let i = 0; i <= 2000; i++) {
+        if (pathEl.getPointAtLength((length * i) / 2000).y >= STOP_Y) {
+          stopT = i / 2000;
+          break;
+        }
+      }
+
+      // Car position in px inside the road box for a drive progress p:
+      // follows the road centre line, then eases over to the right edge during the last stretch.
+      const carPos = (p: number, W: number, H: number) => {
+        const t = p * stopT;
+        const a = pathEl.getPointAtLength(length * t);
+        const b = pathEl.getPointAtLength(length * Math.min(t + 0.001, 1));
+        const sx = W / 1000;
+        const sy = H / 5000;
+        let tx = (b.x - a.x) * sx;
+        let ty = (b.y - a.y) * sy;
+        const m = Math.hypot(tx, ty) || 1;
+        tx /= m;
+        ty /= m;
+        const off = smooth01((p - PULL_START) / (1 - PULL_START)) * PULL_PX;
+        // (ty, -tx) is the screen-right side of the road for a car heading down the page
+        return { x: a.x * sx + ty * off, y: a.y * sy - tx * off, t };
+      };
+
       const proxy = { progress: 0 };
-      
+
       let lastAngle = 0;
       const updatePath = () => {
         const p = proxy.progress;
-        // The road drawing animation the user wanted to remove is here.
-        // Actually, the user asked to remove the drawing effect and make it a solid black highway.
-        // So we won't animate strokeDashoffset. We just keep it fully drawn.
-        // We only use the onUpdate to move the car!
-        
-        flowJourneyState.progress = p;
-        applyTimeOfDay(p);
-        sceneryRef.current?.update(p);
+        const svgEl = pathEl.ownerSVGElement;
+        const W = svgEl?.clientWidth || svgEl?.getBoundingClientRect().width || Math.min(window.innerWidth, 1400);
+        const H = svgEl?.clientHeight || svgEl?.getBoundingClientRect().height || window.innerHeight * 8;
+
+        const pos = carPos(p, W, H);
+        flowJourneyState.drive = p;
+        flowJourneyState.progress = pos.t;
+        applyTimeOfDay(pos.t);
+        sceneryRef.current?.update(pos.t);
 
         if (carMoverRef.current) {
-          const pt = pathEl.getPointAtLength(length * p);
-          
-          if (p < 0.999) {
-            const pt2 = pathEl.getPointAtLength(length * Math.min(p + 0.001, 1));
-            // SVG coordinate space is 1000x5000. We map dx, dy to true screen pixels.
-            // Wait, if we just use the raw SVG coordinates for dx/dy, the angle might be slightly skewed if aspect ratio isn't exactly 1000:5000.
-            // But 1000:5000 is 1:5.
-            const containerWidth = Math.min(window.innerWidth, 1400);
-            const containerHeight = window.innerHeight * 5; // 500vh
-            
-            const dx = ((pt2.x - pt.x) / 1000) * containerWidth;
-            const dy = ((pt2.y - pt.y) / 5000) * containerHeight;
-            lastAngle = Math.atan2(dy, dx); // in radians
+          // Heading from the actual movement (includes the pull-over), in true screen pixels
+          if (p < 0.998) {
+            const next = carPos(Math.min(p + 0.002, 1), W, H);
+            lastAngle = Math.atan2(next.y - pos.y, next.x - pos.x);
           }
-          
           flowJourneyState.angle = lastAngle;
-          
-          carMoverRef.current.style.left = `${(pt.x / 1000) * 100}%`;
-          carMoverRef.current.style.top = `${(pt.y / 5000) * 100}%`;
+
+          carMoverRef.current.style.left = `${(pos.x / W) * 100}%`;
+          carMoverRef.current.style.top = `${(pos.y / H) * 100}%`;
           carMoverRef.current.style.transform = `translate(-50%, -50%)`;
         }
       };
@@ -144,7 +181,9 @@ export const FlowJourney = () => {
         scrollTrigger: {
           trigger: ".timeline-section",
           start: "top center",
-          end: "bottom center",
+          // Finish when the stopping point reaches the middle of the screen
+          end: () => `+=${(document.querySelector('.timeline-section') as HTMLElement).offsetHeight * (STOP_Y / 5000)}`,
+          invalidateOnRefresh: true,
           scrub: 2, // Heavy damping for maximum smoothness (zero jiggle)
         }
       });
@@ -158,8 +197,9 @@ export const FlowJourney = () => {
     const updateBeam = () => {
       const beam = beamRef.current;
       if (!beam) return;
-      const { night, evening, carScreenAngle } = flowJourneyState;
-      const strength = Math.round(Math.min(1, night + evening * 0.35) * 100) / 100;
+      const { night, evening, carScreenAngle, drive } = flowJourneyState;
+      const parked = smooth01((drive - 0.97) / 0.03);
+      const strength = Math.round(Math.min(1, night + evening * 0.35) * (1 - parked) * 100) / 100;
       if (strength !== lastStrength) {
         lastStrength = strength;
         beam.style.opacity = String(strength);
@@ -317,23 +357,25 @@ export const FlowJourney = () => {
           {/* Solid Thick Black Road (SVG) - z-index 10 */}
           <div className="absolute inset-0 w-full h-full pointer-events-none z-10 flex justify-center">
             <svg viewBox="0 0 1000 5000" preserveAspectRatio="none" className="w-full h-full max-w-[1400px] overflow-visible">
+              {/* Fade the road out below where the car stops, so it doesn't dead-end into the next section */}
+              <defs>
+                <linearGradient id="road-end-fade" gradientUnits="userSpaceOnUse" x1="0" y1={FADE_FROM_Y} x2="0" y2="4990">
+                  <stop offset="0" stopColor="#fff" />
+                  <stop offset="1" stopColor="#000" />
+                </linearGradient>
+                <mask id="road-end-mask" maskUnits="userSpaceOnUse" x="-200" y="-200" width="1400" height="5400">
+                  <rect x="-200" y="-200" width="1400" height="5400" fill="url(#road-end-fade)" />
+                </mask>
+              </defs>
               {/* The solid black road with borders and center line */}
-              {/* 1. Outer White Borders */}
-              <path 
-                d="M 500 0 C 500 400, 200 600, 200 1000 S 800 1400, 800 1800 S 200 2200, 200 2600 S 800 3000, 800 3400 S 200 3800, 200 4200 S 500 4600, 500 5000" 
-                fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="140" strokeLinecap="round"
-              />
-              {/* 2. Main Black Road */}
-              <path 
-                ref={pathRef}
-                d="M 500 0 C 500 400, 200 600, 200 1000 S 800 1400, 800 1800 S 200 2200, 200 2600 S 800 3000, 800 3400 S 200 3800, 200 4200 S 500 4600, 500 5000" 
-                fill="none" stroke="#0a0a0a" strokeWidth="132" strokeLinecap="round"
-              />
-              {/* 3. Center Dashed Line */}
-              <path 
-                d="M 500 0 C 500 400, 200 600, 200 1000 S 800 1400, 800 1800 S 200 2200, 200 2600 S 800 3000, 800 3400 S 200 3800, 200 4200 S 500 4600, 500 5000" 
-                fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="4" strokeLinecap="round" strokeDasharray="40 40"
-              />
+              <g mask="url(#road-end-mask)">
+                {/* 1. Outer White Borders */}
+                <path d={ROAD_D} fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="140" strokeLinecap="butt" />
+                {/* 2. Main Black Road */}
+                <path ref={pathRef} d={ROAD_D} fill="none" stroke="#0a0a0a" strokeWidth="132" strokeLinecap="butt" />
+                {/* 3. Center Dashed Line */}
+                <path d={ROAD_D} fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="4" strokeLinecap="round" strokeDasharray="40 40" />
+              </g>
             </svg>
           </div>
 
