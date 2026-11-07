@@ -127,46 +127,37 @@ export const Landing = () => {
               onFocus={loadUniverse}
               className="group relative h-[180px] sm:h-[220px] shrink-0 bg-[#35fe5d] rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col items-center justify-center landing-fade-target"
             >
-              {/* Headline (centred on the card) */}
-              <div className="absolute inset-x-4 sm:inset-x-6 inset-y-0 z-10 flex items-center justify-center pointer-events-none">
-                <img
-                  src="/fonts/GROW-WITH-THE-FLOW.svg"
-                  alt="Grow With The Flow"
-                  width={900}
-                  height={270}
-                  className="h-[38%] w-auto max-w-full object-contain brightness-0 transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
-
-              {/* Mini road + car (bottom) - echoes the Flow journey page */}
+              {/* Road + car wrapping around the headline - echoes the Flow journey page */}
               <svg
                 aria-hidden="true"
-                viewBox="0 0 260 50"
-                preserveAspectRatio="xMidYMax slice"
-                className="absolute inset-x-0 bottom-0 h-[30%] w-full pointer-events-none"
+                viewBox="0 0 460 220"
+                preserveAspectRatio="xMidYMid slice"
+                className="absolute inset-0 w-full h-full pointer-events-none"
               >
                 <defs>
-                  <path id="flow-card-road" d="M -30 38 C 25 38, 55 27, 110 28 S 185 41, 222 35 S 270 27, 300 29" />
+                  {/* Top stretch -> hairpin around the right side -> bottom stretch.
+                      Starts and ends off-canvas so the car's loop is seamless. */}
+                  <path id="flow-card-road" d="M -40 30 C 120 30, 300 18, 380 40 C 450 60, 450 165, 380 185 C 300 205, 120 192, -40 192" />
                 </defs>
 
-                {/* Road: soft shadow, white edge lines, asphalt, dashed centre line */}
-                <use href="#flow-card-road" fill="none" stroke="#000" strokeOpacity="0.18" strokeWidth="30" transform="translate(0 3)" />
-                <use href="#flow-card-road" fill="none" stroke="#F5F3E8" strokeWidth="26" />
-                <use href="#flow-card-road" fill="none" stroke="#0b0b0b" strokeWidth="22" />
-                <use href="#flow-card-road" fill="none" stroke="#F5F3E8" strokeOpacity="0.75" strokeWidth="1.4" strokeDasharray="7 7" strokeLinecap="round" />
+                {/* Road: soft shadow, cream edge lines, asphalt, dashed centre line */}
+                <use href="#flow-card-road" fill="none" stroke="#000" strokeOpacity="0.18" strokeWidth="38" transform="translate(0 4)" />
+                <use href="#flow-card-road" fill="none" stroke="#F5F3E8" strokeWidth="34" />
+                <use href="#flow-card-road" fill="none" stroke="#0b0b0b" strokeWidth="28" />
+                <use href="#flow-card-road" fill="none" stroke="#F5F3E8" strokeOpacity="0.75" strokeWidth="2" strokeDasharray="10 10" strokeLinecap="round" />
 
-                {/* Checkpoint */}
-                <circle cx="110" cy="28" r="8.5" fill="none" stroke="#35fe5d" strokeOpacity="0.45" strokeWidth="1.5" />
-                <circle cx="110" cy="28" r="2.6" fill="#35fe5d">
-                  <animate attributeName="r" values="2.2;3.4;2.2" dur="1.8s" repeatCount="indefinite" />
+                {/* Checkpoint (top stretch, clear of the headline) */}
+                <circle cx="57" cy="29" r="11" fill="none" stroke="#35fe5d" strokeOpacity="0.5" strokeWidth="2" />
+                <circle cx="57" cy="29" r="3.4" fill="#35fe5d">
+                  <animate attributeName="r" values="2.8;4.4;2.8" dur="1.8s" repeatCount="indefinite" />
                 </circle>
 
                 {/* Top-down car, drawn facing +x so rotate="auto" follows the road */}
                 <g>
-                  <animateMotion dur="6s" repeatCount="indefinite" rotate="auto">
+                  <animateMotion dur="9s" repeatCount="indefinite" rotate="auto">
                     <mpath href="#flow-card-road" />
                   </animateMotion>
-                  <g transform="translate(0 4)">
+                  <g transform="scale(1.5) translate(0 4)">
                     <polygon points="9,-3.5 22,-7.5 22,7.5 9,3.5" fill="#fff6c2" opacity="0.18" />
                     <rect x="-9" y="-5" width="18" height="10" rx="2.6" fill="#35fe5d" stroke="#0b0b0b" strokeWidth="0.6" />
                     <rect x="-6.6" y="-3.7" width="2.6" height="7.4" rx="0.8" fill="#1d1d1d" />
@@ -179,6 +170,19 @@ export const Landing = () => {
                   </g>
                 </g>
               </svg>
+
+              {/* Headline sticker: sits over the road, lifts on hover */}
+              <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                <div className="bg-[#35fe5d] border-2 border-black rounded-2xl px-4 py-2 sm:px-5 sm:py-3 shadow-[6px_6px_0_#000] transition-all duration-300 group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:shadow-[10px_10px_0_#000]">
+                  <img
+                    src="/fonts/GROW-WITH-THE-FLOW.svg"
+                    alt="Grow With The Flow"
+                    width={900}
+                    height={270}
+                    className="block h-14 sm:h-[76px] w-auto brightness-0"
+                  />
+                </div>
+              </div>
             </Link>
 
             {/* BOTTOM SECTION (Projects Left, Exp & About Right) */}
