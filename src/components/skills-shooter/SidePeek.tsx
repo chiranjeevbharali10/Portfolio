@@ -22,6 +22,7 @@ export const SidePeek = ({ status, hitKey }: Props) => {
   const textRef = useRef<HTMLSpanElement>(null);
   const loop = useRef<gsap.core.Timeline | null>(null);
   const started = useRef(false);
+  const away = useRef(false); // relax invite is on screen
   const statusRef = useRef(status);
   statusRef.current = status;
 
@@ -86,9 +87,29 @@ export const SidePeek = ({ status, hitKey }: Props) => {
     return () => io.disconnect();
   }, []);
 
+  // Duck away while the relax invite (the next "speaker") is on screen, so two avatars
+  // never talk at once; come back when it leaves. See RelaxInvite.
+  useEffect(() => {
+    const onInvite = (e: Event) => {
+      const visible = (e as CustomEvent<{ visible: boolean }>).detail.visible;
+      if (visible === away.current) return;
+      away.current = visible;
+      if (!started.current) return;
+      if (visible) {
+        loop.current?.pause();
+        gsap.to(bubbleRef.current, { scale: 0, opacity: 0, duration: 0.2 });
+        gsap.to(slideRef.current, { yPercent: HIDDEN, duration: 0.4, ease: "power3.in" });
+      } else if (statusRef.current === "idle" || statusRef.current === "paused") {
+        loop.current?.restart();
+      }
+    };
+    window.addEventListener("relax-invite", onInvite);
+    return () => window.removeEventListener("relax-invite", onInvite);
+  }, []);
+
   // While playing: loop pauses and it just peeks from the bottom; hidden on the skills grid
   useEffect(() => {
-    if (!started.current) return;
+    if (!started.current || away.current) return;
     if (status === "playing") {
       loop.current?.pause();
       gsap.to(bubbleRef.current, { scale: 0, opacity: 0, duration: 0.2 });

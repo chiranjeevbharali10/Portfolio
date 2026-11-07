@@ -2,117 +2,112 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { loadRelax } from '../utils/routePrefetch';
 
-const PROMPT = 'Phew… that was a lot of skills. Do you wanna relax for a bit? 🎧';
-const LATER_REPLY = 'Fair enough, hero. The lo-fi room is always open when you need it ✨';
-const TYPE_MS = 32;
+// Same palette as the Relax page's default theme (RippleBackground THEME_COLORS[0])
+const ORANGE = '#FF7A2F';
+const PINK = '#EE8EAC';
+const INK = '#1A1A1A';
 
-/** Types `text` out one character at a time once `start` is true. */
-const useTypewriter = (text: string, start: boolean) => {
-  const [count, setCount] = useState(0);
+const TITLE = 'wanna justtt relaxxx?';
+const PROMPT = "that was a lot of skills. grab some lo-fi, look at pretty art, breathe for a bit.";
+const LATER_REPLY = "fair enough. the lo-fi room's always open when you need it ✨";
 
-  useEffect(() => setCount(0), [text]);
+// Film-grain overlay, like the WebGL noise on the Relax page but as a cheap static SVG
+const GRAIN =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
 
-  useEffect(() => {
-    if (!start) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setCount(text.length);
-      return;
-    }
-    // Derive progress from elapsed time so a busy main thread (e.g. the island
-    // frames decoding) can't stretch the typing out.
-    const total = Array.from(text).length;
-    const startedAt = performance.now();
-    const id = window.setInterval(() => {
-      const next = Math.min(total, Math.floor((performance.now() - startedAt) / TYPE_MS));
-      setCount(next);
-      if (next >= total) window.clearInterval(id);
-    }, TYPE_MS);
-    return () => window.clearInterval(id);
-  }, [text, start]);
-
-  // Array.from keeps emoji (surrogate pairs) intact while slicing
-  const chars = Array.from(text);
-  return { shown: chars.slice(0, count).join(''), done: count >= chars.length };
-};
-
-/** Retro game-style dialogue after the skills section, inviting visitors to /relax. */
+/** A window into the Relax page after the skills section: same rings, grain, wobbly title. */
 export const RelaxInvite = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const [inView, setInView] = useState(false);
   const [declined, setDeclined] = useState(false);
-  const { shown, done } = useTypewriter(declined ? LATER_REPLY : PROMPT, inView);
 
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
+    // Tell the skills section's fun-fact avatar to step aside while this is on screen
     const io = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setInView(true);
-        io.disconnect();
-      }
+      window.dispatchEvent(new CustomEvent('relax-invite', { detail: { visible: entry.isIntersecting } }));
     }, { threshold: 0.4 });
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      window.dispatchEvent(new CustomEvent('relax-invite', { detail: { visible: false } }));
+    };
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      aria-label="Take a break"
-      className="relative w-full min-h-[70vh] flex items-center justify-center px-4 py-24 overflow-hidden"
-      style={{
-        // Warm glow from the Relax palette. closest-side makes it fade out before every
-        // edge, so there's no hard seam against the skills section above (and no blur
-        // filter, which left banding lines in Chrome).
-        background:
-          'radial-gradient(closest-side at 50% 50%, rgba(255,107,26,0.16), rgba(236,72,153,0.09) 55%, transparent 100%), #050505',
-      }}
-    >
-
-      <div className="relative w-full max-w-2xl font-minecraft">
-        {/* Speaker tag */}
-        <div className="inline-block mb-[-2px] ml-6 px-4 py-1.5 bg-[#F5F3E8] text-black text-xs tracking-[0.2em] border-2 border-[#F5F3E8] rounded-t-md">
-          CHIRANJEEV
+    <section ref={sectionRef} aria-label="Take a break" className="w-full bg-[#050505] px-3 sm:px-6 md:px-10 pb-16 md:pb-24">
+      <div
+        className="relative isolate overflow-hidden rounded-[32px] md:rounded-[48px] min-h-[70vh] flex items-center justify-center px-6 py-20"
+        style={{ backgroundColor: ORANGE, color: INK }}
+      >
+        {/* Ripples expanding from the centre, like the Relax page background */}
+        <div aria-hidden="true" className="absolute inset-0 -z-10 pointer-events-none">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="relax-ripple absolute top-1/2 left-1/2 w-[90vw] h-[90vw] sm:w-[50vw] sm:h-[50vw] rounded-full"
+              style={{
+                animationDelay: `${-i * 4}s`,
+                background: `radial-gradient(circle closest-side, transparent 0%, transparent 70%, ${PINK} 70.5%, ${PINK}00 100%)`,
+              }}
+            />
+          ))}
+          <div className="absolute inset-0 opacity-[0.22] mix-blend-multiply" style={{ backgroundImage: GRAIN }} />
         </div>
 
-        {/* Dialogue box */}
-        <div className="relative bg-black/90 border-2 border-[#F5F3E8] rounded-lg p-6 sm:p-8 shadow-[6px_6px_0_rgba(255,107,26,0.55)]">
-          <p className="text-[#F5F3E8] text-base sm:text-lg leading-relaxed min-h-[3.5em]" aria-live="polite">
-            {shown}
-            {!done && <span className="crt-blink">▌</span>}
+        <div className="relative flex flex-col items-center text-center max-w-2xl">
+          <span className="-rotate-[6deg] border-[1.5px] rounded-full px-4 py-0.5 text-xs sm:text-sm font-bold tracking-wide mb-6" style={{ borderColor: INK }}>
+            psst…
+          </span>
+
+          <h2 className="font-asgard text-5xl sm:text-6xl md:text-7xl leading-[1.05] flex flex-wrap justify-center gap-x-3 sm:gap-x-5 lowercase" aria-label={TITLE}>
+            {/* Letters grouped per word so lines only break between words */}
+            {TITLE.split(' ').map((word, w) => (
+              <span key={w} aria-hidden="true" className="inline-flex whitespace-nowrap">
+                {Array.from(word).map((char, c) => {
+                  const i = w * 10 + c;
+                  return (
+                    <span
+                      key={c}
+                      className="relax-wobble inline-block"
+                      // Deterministic per-letter variety so the letters drift independently
+                      style={{ animationDuration: `${2.6 + (i % 5) * 0.35}s`, animationDelay: `${-(i * 0.37) % 2}s` }}
+                    >
+                      {char}
+                    </span>
+                  );
+                })}
+              </span>
+            ))}
+          </h2>
+
+          <p className="font-inter text-base sm:text-lg font-medium mt-6 max-w-md opacity-85" aria-live="polite">
+            {declined ? LATER_REPLY : PROMPT}
           </p>
 
-          {/* Choices appear once the line is typed. No opacity fade: on this GPU-heavy page
-              the compositor sometimes left a fading layer stuck near-transparent. The fixed
-              min-height reserves their space so the box doesn't jump. */}
-          <div className="mt-6 min-h-[104px] sm:min-h-[46px]">
-          {done && (
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <Link
               to="/relax"
               onPointerEnter={loadRelax}
               onFocus={loadRelax}
-              className="group flex items-center gap-2 px-5 py-3 rounded-md text-black text-sm tracking-widest bg-gradient-to-r from-[#FF6B1A] to-[#FF2D9A] hover:brightness-110 transition-all shadow-[0_0_24px_rgba(255,45,154,0.35)]"
+              className="group rotate-[-3deg] hover:rotate-0 rounded-full px-7 py-3 text-sm sm:text-base font-bold tracking-wide transition-transform duration-300 shadow-[0_10px_30px_rgba(0,0,0,0.18)]"
+              style={{ backgroundColor: INK, color: '#FDF5E6' }}
             >
-              <span className="transition-transform group-hover:translate-x-1">▶</span>
-              {declined ? 'OK FINE, TAKE ME THERE' : "YES, LET'S CHILL"}
+              {declined ? 'ok fine, take me there' : 'yesss, take me there'}{' '}
+              <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
             </Link>
 
             {!declined && (
               <button
                 type="button"
                 onClick={() => setDeclined(true)}
-                  className="px-5 py-3 rounded-md text-[#F5F3E8]/70 text-sm tracking-widest border border-[#F5F3E8]/25 hover:text-[#F5F3E8] hover:border-[#F5F3E8]/60 transition-all"
+                className="rotate-[4deg] hover:rotate-0 border-[1.5px] rounded-full px-6 py-2.5 text-sm sm:text-base font-bold tracking-wide transition-transform duration-300 hover:bg-black/10"
+                style={{ borderColor: INK }}
               >
-                MAYBE LATER
+                maybe later
               </button>
             )}
           </div>
-          )}
-          </div>
-
-          {/* Classic "more text" arrow */}
-          {done && <span className="absolute bottom-3 right-4 text-[#F5F3E8]/60 text-xs animate-bounce">▼</span>}
         </div>
       </div>
     </section>

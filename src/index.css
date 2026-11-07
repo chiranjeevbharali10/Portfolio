@@ -417,3 +417,28 @@ html.no-scrollbar::-webkit-scrollbar {
   0%, 100% { transform: scale(3) translateY(0); }
   50% { transform: scale(3) translateY(-3px); }
 }
+
+/* Relax invite (after the skills section): mirrors the Relax page's ripples + wobbly title */
+.relax-ripple {
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  animation: relax-ripple 12s linear infinite;
+}
+@keyframes relax-ripple {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  12% { opacity: 1; }
+  66% { opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(4.2); opacity: 0; }
+}
+.relax-wobble {
+  transform-origin: center;
+  animation: relax-wobble 3s ease-in-out infinite alternate;
+}
+@keyframes relax-wobble {
+  0% { transform: rotate(-6deg) translateY(2px) scale(0.96); }
+  50% { transform: rotate(3deg) translateY(-3px) scale(1.04); }
+  100% { transform: rotate(6deg) translateY(1px) scale(0.98); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .relax-ripple, .relax-wobble { animation-play-state: paused; }
+}
