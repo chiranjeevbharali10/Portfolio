@@ -234,13 +234,14 @@ export const RoadsideScenery = ({ pathRef, controllerRef, getProgress }: Props) 
       const zone = getZone(t);
       const { a, tx, ty, nx, ny } = sampleAt(t);
       const night = zone === 'night';
-      const count = night ? 2 : rand() < 0.35 ? 2 : 1;
+      // City is about half as dense as before: usually one building per stop, sometimes two
+      const count = night ? (rand() < 0.3 ? 2 : 1) : rand() < 0.35 ? 2 : 1;
       let s = rand() < 0.5 ? -1 : 1;
 
       for (let k = 0; k < count; k++, s *= -1) {
         let kind: SpriteKind = 'tree';
         if (zone === 'evening') kind = rand() < 0.6 ? 'house' : 'tree';
-        if (night) kind = 'building';
+        if (night) kind = rand() < 0.25 ? 'tree' : 'building'; // a few trees break up the city
         const scale = randScale(kind);
         const r = KIND_SPEC[kind].foot * scale;
         const offset = ROAD_HALF_WIDTH_PX + r + (night ? 30 + rand() * 170 : rand() * 110);

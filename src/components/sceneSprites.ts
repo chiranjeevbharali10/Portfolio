@@ -168,31 +168,120 @@ const buildHouse = (variant: number): THREE.Group => {
   return g;
 };
 
-const BUILDINGS = [
-  { w: 1.3, h: 3.2, d: 1.2, color: '#2c3346' },
-  { w: 1.0, h: 4.4, d: 1.0, color: '#363b52' },
-  { w: 1.6, h: 2.4, d: 1.3, color: '#2a3b4b' },
-  { w: 1.15, h: 3.8, d: 1.15, color: '#3d3550' },
-];
+const roofUnit = (g: THREE.Group, x: number, y: number, z: number) =>
+  g.add(box(0.32, 0.2, 0.28, '#4a5165', x, y + 0.1, z));
 
-const buildBuilding = (variant: number): THREE.Group => {
-  const s = BUILDINGS[variant % BUILDINGS.length];
+const antenna = (g: THREE.Group, x: number, y: number, z: number) => {
+  const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.6, 4), mat('#8890a8'));
+  pole.position.set(x, y + 0.3, z);
+  g.add(pole);
+  const tip = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 6), glow('#ff4d4d', 2.5));
+  tip.position.set(x, y + 0.62, z);
+  g.add(tip);
+};
+
+/** Classic box tower */
+const tower = (w: number, h: number, d: number, color: string, seed: number, withAntenna: boolean) => {
   const g = new THREE.Group();
-  g.add(box(s.w, s.h, s.d, s.color, 0, s.h / 2, 0));
-  // Roof ledge + rooftop units
-  g.add(box(s.w + 0.06, 0.08, s.d + 0.06, '#1c2130', 0, s.h + 0.04, 0));
-  g.add(box(0.35, 0.22, 0.3, '#4a5165', s.w * 0.2, s.h + 0.19, -s.d * 0.15));
-  if (variant % 2 === 1) {
-    const antenna = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.6, 4), mat('#8890a8'));
-    antenna.position.set(-s.w * 0.2, s.h + 0.38, s.d * 0.1);
-    g.add(antenna);
-    const tip = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 6), glow('#ff4d4d', 2.5));
-    tip.position.set(-s.w * 0.2, s.h + 0.7, s.d * 0.1);
-    g.add(tip);
-  }
-  addWindows(g, s.w, s.d, 0.4, s.h - 0.3, 0.38, 0.3, 0.55, 101 + variant * 7);
+  g.add(box(w, h, d, color, 0, h / 2, 0));
+  g.add(box(w + 0.06, 0.08, d + 0.06, '#1c2130', 0, h + 0.04, 0));
+  roofUnit(g, w * 0.2, h + 0.08, -d * 0.15);
+  if (withAntenna) antenna(g, -w * 0.2, h + 0.08, d * 0.1);
+  addWindows(g, w, d, 0.4, h - 0.3, 0.38, 0.3, 0.55, seed);
   return g;
 };
+
+/** Tower with a narrower upper block (setback) */
+const steppedTower = () => {
+  const g = new THREE.Group();
+  const [w1, h1, d1] = [1.6, 1.7, 1.4];
+  const [w2, h2, d2] = [1.0, 1.7, 0.95];
+  g.add(box(w1, h1, d1, '#5b6170', 0, h1 / 2, 0));
+  g.add(box(w1 + 0.06, 0.08, d1 + 0.06, '#2a2e38', 0, h1 + 0.04, 0));
+  g.add(box(w2, h2, d2, '#6b7282', 0, h1 + h2 / 2, 0));
+  g.add(box(w2 + 0.06, 0.08, d2 + 0.06, '#2a2e38', 0, h1 + h2 + 0.04, 0));
+  roofUnit(g, 0.15, h1 + h2 + 0.08, 0);
+  addWindows(g, w1, d1, 0.35, h1 - 0.3, 0.36, 0.32, 0.5, 211);
+  addWindows(g, w2, d2, h1 + 0.3, h1 + h2 - 0.3, 0.36, 0.3, 0.6, 223);
+  return g;
+};
+
+/** Round glass tower with rings of windows */
+const roundTower = () => {
+  const g = new THREE.Group();
+  const r = 0.62;
+  const h = 3.3;
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 12), mat('#2f4a5a'));
+  body.position.y = h / 2;
+  g.add(body);
+  const cap = new THREE.Mesh(new THREE.CylinderGeometry(r * 0.75, r + 0.05, 0.22, 12), mat('#1d2b36'));
+  cap.position.y = h + 0.11;
+  g.add(cap);
+  const rand = mulberry32(331);
+  const lit = glow('#bfe9ff', 1.6);
+  const dark = mat('#14202a');
+  const pane = new THREE.PlaneGeometry(0.18, 0.2);
+  for (let y = 0.4; y < h - 0.2; y += 0.36) {
+    for (let i = 0; i < 12; i++) {
+      const theta = (i / 12) * Math.PI * 2 + Math.PI / 12;
+      const m = new THREE.Mesh(pane, rand() < 0.55 ? lit : dark);
+      m.position.set(Math.cos(theta) * (r + 0.005), y, Math.sin(theta) * (r + 0.005));
+      // Plane faces +z by default; turn it to face outward along theta
+      m.rotation.y = Math.PI / 2 - theta;
+      g.add(m);
+    }
+  }
+  return g;
+};
+
+/** Wide low-rise brick block with a rooftop water tank */
+const lowRise = () => {
+  const g = new THREE.Group();
+  const [w, h, d] = [2.1, 1.15, 1.3];
+  g.add(box(w, h, d, '#6a3f33', 0, h / 2, 0));
+  g.add(box(w + 0.08, 0.1, d + 0.08, '#3a2620', 0, h + 0.05, 0));
+  const tank = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.4, 8), mat('#7a6a58'));
+  tank.position.set(-w * 0.25, h + 0.3, 0.1);
+  g.add(tank);
+  const lid = new THREE.Mesh(new THREE.ConeGeometry(0.25, 0.18, 8), mat('#5a4c3e'));
+  lid.position.set(-w * 0.25, h + 0.59, 0.1);
+  g.add(lid);
+  addWindows(g, w, d, 0.35, h - 0.25, 0.4, 0.34, 0.7, 401, [0.18, 0.22]);
+  return g;
+};
+
+/** Corner shop with a glowing neon sign and an awning */
+const shop = (signColor: string, wall: string, seed: number) => {
+  const g = new THREE.Group();
+  const [w, h, d] = [1.5, 0.9, 1.1];
+  g.add(box(w, h, d, wall, 0, h / 2, 0));
+  g.add(box(w + 0.06, 0.08, d + 0.06, '#22252d', 0, h + 0.04, 0));
+  // Neon sign over the camera-facing (front) wall
+  g.add(box(w * 0.7, 0.16, 0.05, glow(signColor, 2.4), 0, h - 0.12, -d / 2 - 0.04));
+  // Awning
+  const awning = box(w * 0.85, 0.05, 0.28, '#b8423a', 0, h * 0.55, -d / 2 - 0.14);
+  awning.rotation.x = -0.35;
+  g.add(awning);
+  // Shop window glow
+  const win = new THREE.Mesh(new THREE.PlaneGeometry(w * 0.6, 0.3), glow('#ffd892', 1.4));
+  win.position.set(0, 0.28, -d / 2 - 0.006);
+  win.rotation.y = Math.PI;
+  g.add(win);
+  addWindows(g, w, d, h * 0.55, h * 0.55, 1, 0.45, 0.4, seed, [0.16, 0.16]);
+  return g;
+};
+
+// Varied city: towers in different colours/heights, setback tower, round tower, low-rise and shops.
+const BUILDING_TYPES: { build: () => THREE.Group; height: number }[] = [
+  { build: () => tower(1.3, 3.2, 1.2, '#2c3346', 101, false), height: 3.5 },
+  { build: () => tower(1.0, 4.4, 1.0, '#3a4a66', 108, true), height: 5.0 },
+  { build: () => tower(1.2, 2.6, 1.2, '#8a8070', 115, false), height: 2.9 },
+  { build: steppedTower, height: 3.7 },
+  { build: roundTower, height: 3.6 },
+  { build: lowRise, height: 1.8 },
+  { build: () => shop('#ff4fa3', '#3b4455', 501), height: 1.2 },
+  { build: () => shop('#4fd1ff', '#5a4a3a', 509), height: 1.2 },
+];
 
 const buildStreetlight = (): THREE.Group => {
   const g = new THREE.Group();
@@ -234,7 +323,7 @@ for (const zone of ['base', 'morning', 'evening', 'night'] as Zone[]) {
     for (const rotY of rotations) jobs.push({ kind: 'tree', zone, build: () => buildTree(v), rotY, height: TREE_HEIGHTS[v] });
 }
 HOUSES.forEach((h, v) => jobs.push({ kind: 'house', zone: 'evening', build: () => buildHouse(v), rotY: 0.35 * (v - 1), height: h.h + 0.6 }));
-BUILDINGS.forEach((b, v) => jobs.push({ kind: 'building', zone: 'night', build: () => buildBuilding(v), rotY: 0.3 * (v % 2 ? 1 : -1), height: b.h + 0.3 }));
+BUILDING_TYPES.forEach((b, v) => jobs.push({ kind: 'building', zone: 'night', build: b.build, rotY: 0.3 * (v % 2 ? 1 : -1), height: b.height }));
 jobs.push({ kind: 'streetlight', zone: 'night', build: buildStreetlight, rotY: 0, height: 2.5 });
 
 // Frame sizes: a tree frame is 8 units away; buildings need a bigger frame
