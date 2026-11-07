@@ -78,12 +78,12 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
 
   useEffect(() => {
     if (index === 0) {
-      new THREE.TextureLoader().load('/frame1.png', (tex) => {
+      new THREE.TextureLoader().load('/frame1.webp', (tex) => {
         tex.colorSpace = THREE.SRGBColorSpace;
         setTexture(tex);
       });
     } else if (index === 1) {
-      new THREE.TextureLoader().load('/frame2.png', (tex) => {
+      new THREE.TextureLoader().load('/frame2.webp', (tex) => {
         tex.colorSpace = THREE.SRGBColorSpace;
         setTexture(tex);
       });

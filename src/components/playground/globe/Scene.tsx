@@ -6,7 +6,12 @@ import { Globe } from './Globe';
 import { Lights } from './Lights';
 import { Effects } from './Effects';
 
-export const Scene: React.FC = () => {
+export interface SceneProps {
+  dpr?: number | [number, number];
+  frameloop?: 'always' | 'demand' | 'never';
+}
+
+export const Scene: React.FC<SceneProps> = ({ dpr = [1, 2], frameloop = 'always' }) => {
   return (
     <Canvas
       gl={{
@@ -15,7 +20,8 @@ export const Scene: React.FC = () => {
         outputColorSpace: THREE.SRGBColorSpace
       }}
       camera={{ position: [0, 0, 5], fov: 40 }}
-      dpr={[1, 2]} // High DPR for retina displays
+      dpr={dpr}
+      frameloop={frameloop}
     >
       <color attach="background" args={['#000000']} />
 

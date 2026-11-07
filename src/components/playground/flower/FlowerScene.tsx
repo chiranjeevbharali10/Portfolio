@@ -5,7 +5,12 @@ import * as THREE from 'three';
 import { Flower } from './Flower';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 
-export const FlowerScene: React.FC = () => {
+export interface SceneProps {
+  dpr?: number | [number, number];
+  frameloop?: 'always' | 'demand' | 'never';
+}
+
+export const FlowerScene: React.FC<SceneProps> = ({ dpr = [1, 2], frameloop = 'always' }) => {
   return (
     <Canvas
       gl={{
@@ -14,7 +19,8 @@ export const FlowerScene: React.FC = () => {
         outputColorSpace: THREE.SRGBColorSpace
       }}
       camera={{ position: [0, 0, 5.5], fov: 35 }}
-      dpr={[1, 2]}
+      dpr={dpr}
+      frameloop={frameloop}
     >
       <color attach="background" args={['#000000']} />
       

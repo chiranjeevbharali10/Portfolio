@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ShowcaseCard } from "../components/ShowcaseCard";
 import { SkillsBento } from "../components/skills-shooter/SkillsBento";
 import { isAppLoaded } from "../utils/loadingState";
+import { loadUniverse } from "../utils/routePrefetch";
 
 export const Landing = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -122,6 +123,8 @@ export const Landing = () => {
             {/* GREEN FLOW CARD */}
             <Link
               to="/universe#flow"
+              onPointerEnter={loadUniverse}
+              onFocus={loadUniverse}
               className="group relative h-[180px] sm:h-[220px] shrink-0 bg-[#35fe5d] rounded-[24px] sm:rounded-[32px] p-4 sm:p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col items-center justify-center landing-fade-target"
             >
               {/* Top Right Stars */}
@@ -155,6 +158,8 @@ export const Landing = () => {
               <div className="flex flex-col gap-6 flex-1 landing-fade-target">
                 <Link
                   to="/universe#skills"
+              onPointerEnter={loadUniverse}
+              onFocus={loadUniverse}
                   className="group relative flex-1 bg-[#050505] rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-transform duration-500 hover:scale-[0.98] border border-white/5 flex flex-col justify-start"
                 >
                   <SkillsBento />
@@ -166,8 +171,12 @@ export const Landing = () => {
                   className="group relative flex-1 rounded-[24px] sm:rounded-[32px] p-6 overflow-hidden transition-all duration-500 hover:scale-[0.98] border border-white/10 shadow-lg flex flex-col justify-end"
                 >
                   <img
-                    src="/Relax_bento.png"
+                    src="/Relax_bento.webp"
                     alt="Relax Background"
+                    width={900}
+                    height={990}
+                    loading="lazy"
+                    decoding="async"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                   />
                   {/* Subtle dark gradient overlay for text readability */}
@@ -262,7 +271,7 @@ export const Landing = () => {
               <div className="bubble-2 absolute bottom-[65%] right-[85%] bg-white text-black font-podium tracking-wide text-[10px] sm:text-xs md:text-sm px-4 py-2 rounded-2xl rounded-tr-sm shadow-[0_0_20px_rgba(255,255,255,0.3)] opacity-0 scale-50 origin-top-right whitespace-nowrap z-50">
                 Click below to get started
               </div>
-              <img src="/fonts/me-01.svg" alt="Chiranjeev Avatar" className="w-full h-auto object-contain drop-shadow-2xl" />
+              <img src="/fonts/me-01.webp" alt="Chiranjeev Avatar" width={974} height={725} loading="lazy" decoding="async" className="w-full h-auto object-contain drop-shadow-2xl" />
             </div>
 
               {/* MAIN CREATIVITY POSTER */}
@@ -316,8 +325,11 @@ export const Landing = () => {
               {/* Typography (Left Side) - Floats in sync with island */}
               <div className="building-text absolute left-[3%] top-[15%] z-20 flex flex-col pointer-events-none w-[55%] max-w-[650px]">
                 <img
-                  src="/Building.png"
+                  src="/Building.webp"
                   alt="Building Digital Worlds"
+                  width={1600}
+                  height={800}
+                  decoding="async"
                   className="w-full h-auto object-contain drop-shadow-2xl"
                 />
               </div>
@@ -332,15 +344,21 @@ export const Landing = () => {
               <div className="island-container relative z-10 w-[80%] lg:w-[140%] max-w-[800px] h-auto flex items-center justify-center pointer-events-none translate-x-[8%] lg:translate-x-[15%] translate-y-[8%] lg:translate-y-[14%]">
                 {/* Pink Aura (Pulse) - Decreased Glare */}
                 <img
-                  src="/Island_frontPage.png"
+                  src="/Island_frontPage.webp"
                   alt=""
+                  width={1433}
+                  height={1098}
+                  decoding="async"
                   className="island-aura absolute inset-0 w-full h-full object-contain blur-[15px] opacity-20 mix-blend-screen"
                 />
 
                 {/* Main Island */}
                 <img
-                  src="/Island_frontPage.png"
+                  src="/Island_frontPage.webp"
                   alt="Cyber Fantasy Island"
+                  width={1433}
+                  height={1098}
+                  fetchPriority="high"
                   className="island-main relative z-10 w-full h-full object-contain drop-shadow-[-12px_0_20px_rgba(255,255,255,0.15)]"
                 />
               </div>

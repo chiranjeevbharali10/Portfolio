@@ -1,8 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
-
 @font-face {
   font-family: 'French VP Black';
-  src: url('/fonts/FrenchVP Black.ttf') format('truetype');
+  src: url('/fonts/FrenchVP Black.woff2') format('woff2'),
+       url('/fonts/FrenchVP Black.ttf') format('truetype');
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -10,7 +9,8 @@
 
 @font-face {
   font-family: 'Armin Grotesk';
-  src: url('/fonts/Fontspring-DEMO-armingrotesk-semibold.otf') format('opentype');
+  src: url('/fonts/Fontspring-DEMO-armingrotesk-semibold.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-armingrotesk-semibold.otf') format('opentype');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -18,7 +18,8 @@
 
 @font-face {
   font-family: 'Kefir';
-  src: url('/fonts/Kefir-Regular.otf') format('opentype');
+  src: url('/fonts/Kefir-Regular.woff2') format('woff2'),
+       url('/fonts/Kefir-Regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -26,7 +27,8 @@
 
 @font-face {
   font-family: 'Instrument Serif';
-  src: url('/fonts/InstrumentSerif-Regular.ttf') format('truetype');
+  src: url('/fonts/InstrumentSerif-Regular.woff2') format('woff2'),
+       url('/fonts/InstrumentSerif-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -34,7 +36,8 @@
 
 @font-face {
   font-family: 'Bangel Black Wave';
-  src: url('/fonts/art-grootfontein-bangel-black-wave.otf') format('opentype');
+  src: url('/fonts/art-grootfontein-bangel-black-wave.woff2') format('woff2'),
+       url('/fonts/art-grootfontein-bangel-black-wave.otf') format('opentype');
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -42,7 +45,8 @@
 
 @font-face {
   font-family: 'Asgard Fit XBold';
-  src: url('/fonts/AsgardTrial-FitXbold.ttf') format('truetype');
+  src: url('/fonts/AsgardTrial-FitXbold.woff2') format('woff2'),
+       url('/fonts/AsgardTrial-FitXbold.ttf') format('truetype');
   font-weight: 800;
   font-style: normal;
   font-display: swap;
@@ -50,7 +54,8 @@
 
 @font-face {
   font-family: 'Incompleeta Regular';
-  src: url('/fonts/IncompleetaRegular.ttf') format('truetype');
+  src: url('/fonts/IncompleetaRegular.woff2') format('woff2'),
+       url('/fonts/IncompleetaRegular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -58,7 +63,8 @@
 
 @font-face {
   font-family: 'Incompleeta Light';
-  src: url('/fonts/IncompleetaLight.ttf') format('truetype');
+  src: url('/fonts/IncompleetaLight.woff2') format('woff2'),
+       url('/fonts/IncompleetaLight.ttf') format('truetype');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -66,7 +72,8 @@
 
 @font-face {
   font-family: 'Minecraft';
-  src: url('/fonts/Minecraft.ttf') format('truetype');
+  src: url('/fonts/Minecraft.woff2') format('woff2'),
+       url('/fonts/Minecraft.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
