@@ -79,6 +79,20 @@
   font-display: swap;
 }
 
+/* Slim, translucent page scrollbar that suits the dark theme (instead of the default white one) */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(245, 243, 232, 0.22) transparent;
+}
+
+/* Full-screen scroll-driven pages hide it entirely (scrolling still works) */
+html.no-scrollbar {
+  scrollbar-width: none;
+}
+html.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
