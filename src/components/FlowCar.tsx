@@ -172,7 +172,7 @@ export const FlowCar = () => {
              </AccumulativeShadows>
           </group>
           
-          <Environment preset="city" />
+          <Environment files="/hdri/city_256.hdr" />
         </Suspense>
       </Canvas>
     </div>

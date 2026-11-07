@@ -1,3 +1,22 @@
+/* Primary display font, self-hosted (was loaded from db.onlinewebfonts.com).
+   Font by OnlineWebFonts, licensed CC BY 4.0: http://www.onlinewebfonts.com/fonts */
+@font-face {
+  font-family: 'FSP DEMO - PODIUM Sharp 4.11';
+  src: url('/fonts/podium-sharp.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Inter (variable 400-700, latin subset), self-hosted (was Google Fonts) */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @font-face {
   font-family: 'French VP Black';
   src: url('/fonts/FrenchVP Black.woff2') format('woff2'),

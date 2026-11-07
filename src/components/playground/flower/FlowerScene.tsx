@@ -26,7 +26,7 @@ export const FlowerScene: React.FC<SceneProps> = ({ dpr = [1, 2], frameloop = 'a
       
       {/* Lighting for the iridescent effect */}
       <ambientLight intensity={0.5} />
-      <Environment preset="studio" />
+      <Environment files="/hdri/studio_256.hdr" />
       
       {/* 12-point procedural flower */}
       <Flower />

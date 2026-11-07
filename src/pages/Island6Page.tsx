@@ -230,7 +230,7 @@ export const Island6Page: React.FC = () => {
 
           <Suspense fallback={null}>
             <TempleModel templeGroupRef={templeGroupRef} />
-            <Environment preset="city" />
+            <Environment files="/hdri/city_256.hdr" />
             <CameraRig 
               containerRef={containerRef} 
               cameraRef={cameraRef} 

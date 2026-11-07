@@ -7,7 +7,7 @@ export const Lights: React.FC = () => {
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 10]} intensity={1.5} />
       {/* Studio or city preset provides excellent glossy reflections */}
-      <Environment preset="studio" />
+      <Environment files="/hdri/studio_256.hdr" />
     </>
   );
 };
