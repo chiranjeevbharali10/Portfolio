@@ -35,6 +35,80 @@ const getFramePath = (index: number) => {
   return `/island_frames/${FRAME_SET}/f_${paddedIndex}.webp`;
 };
 
+// ---- Portrait phones only (desktop/landscape keeps the original letterboxed draw) ----
+// Fraction of the screen height the frame fills on a portrait phone
+const PORTRAIT_FILL = 0.56;
+
+const isPortraitPhone = (w: number, h: number) =>
+  w < h && typeof window !== 'undefined' && window.innerWidth < 768;
+
+// Horizontal position (0..1 of the frame) of the island: right of centre at the start,
+// drifting to the middle as the camera pulls round into the night shot
+const FOCUS_KEYS: [number, number][] = [[0, 0.73], [0.42, 0.7], [0.56, 0.52], [0.82, 0.46], [1, 0.46]];
+const portraitFocusX = (t: number) => {
+  for (let i = 1; i < FOCUS_KEYS.length; i++) {
+    const [t1, x1] = FOCUS_KEYS[i];
+    if (t <= t1) {
+      const [t0, x0] = FOCUS_KEYS[i - 1];
+      const k = (t - t0) / (t1 - t0);
+      return x0 + (x1 - x0) * (k * k * (3 - 2 * k));
+    }
+  }
+  return FOCUS_KEYS[FOCUS_KEYS.length - 1][1];
+};
+
+// Tiny offscreen copy of the frame; upscaling it gives a free, GPU-cheap blur
+let blurCanvas: HTMLCanvasElement | null = null;
+const drawBlurredCover = (ctx: CanvasRenderingContext2D, img: HTMLImageElement, w: number, h: number) => {
+  if (!blurCanvas) {
+    blurCanvas = document.createElement('canvas');
+    blurCanvas.width = 24;
+    blurCanvas.height = 14;
+  }
+  const bctx = blurCanvas.getContext('2d');
+  if (!bctx) return;
+  bctx.drawImage(img, 0, 0, blurCanvas.width, blurCanvas.height);
+  const cover = Math.max(w / blurCanvas.width, h / blurCanvas.height);
+  const cw = blurCanvas.width * cover;
+  const ch = blurCanvas.height * cover;
+  ctx.imageSmoothingEnabled = true;
+  ctx.globalAlpha = 0.85;
+  ctx.drawImage(blurCanvas, (w - cw) / 2, (h - ch) / 2, cw, ch);
+  ctx.globalAlpha = 1;
+};
+
+// The sharp frame, with its top/bottom edges faded out so it melts into the blurred bands
+let featherCanvas: HTMLCanvasElement | null = null;
+const drawFeathered = (
+  ctx: CanvasRenderingContext2D, img: HTMLImageElement,
+  x: number, y: number, w: number, h: number, viewW: number,
+) => {
+  // Only the on-screen slice of the (sideways-cropped) frame is worth compositing
+  const sx = Math.max(0, -x);
+  const visW = Math.min(w - sx, viewW);
+  const fw = Math.ceil(visW);
+  const fh = Math.ceil(h);
+  if (!featherCanvas) featherCanvas = document.createElement('canvas');
+  if (featherCanvas.width !== fw || featherCanvas.height !== fh) {
+    featherCanvas.width = fw;
+    featherCanvas.height = fh;
+  }
+  const fctx = featherCanvas.getContext('2d');
+  if (!fctx) return;
+  fctx.globalCompositeOperation = 'source-over';
+  fctx.clearRect(0, 0, fw, fh);
+  fctx.drawImage(img, (sx / w) * img.width, 0, (visW / w) * img.width, img.height, 0, 0, fw, fh);
+  const fade = fctx.createLinearGradient(0, 0, 0, fh);
+  fade.addColorStop(0, 'rgba(0,0,0,0)');
+  fade.addColorStop(0.14, 'rgba(0,0,0,1)');
+  fade.addColorStop(0.86, 'rgba(0,0,0,1)');
+  fade.addColorStop(1, 'rgba(0,0,0,0)');
+  fctx.globalCompositeOperation = 'destination-in';
+  fctx.fillStyle = fade;
+  fctx.fillRect(0, 0, fw, fh);
+  ctx.drawImage(featherCanvas, x + sx, y);
+};
+
 const framesForPass = (stride: number, done: Set<number>) => {
   const frames: number[] = [];
   for (let i = 0; i < FRAME_COUNT; i += stride) if (!done.has(i)) frames.push(i);
@@ -67,14 +141,14 @@ const PixelIcon = ({ type }: { type: string }) => {
 }
 
 const SkillModule = ({ name, value, icon }: { name: string, value: string, icon: string }) => (
-  <div className="border border-[#fff8f0]/30 p-4 flex flex-col gap-4 flex-1 min-w-[160px] relative pointer-events-auto bg-black/20 backdrop-blur-sm">
+  <div className="border border-[#fff8f0]/30 p-2.5 md:p-4 flex flex-col gap-2 md:gap-4 flex-1 min-w-0 md:min-w-[160px] relative pointer-events-auto bg-black/20 backdrop-blur-sm">
     <div className="absolute -top-[2px] -left-[2px] w-1.5 h-1.5 bg-[#fff8f0]/80" />
     <div className="absolute -top-[2px] -right-[2px] w-1.5 h-1.5 bg-[#fff8f0]/80" />
     <div className="absolute -bottom-[2px] -left-[2px] w-1.5 h-1.5 bg-[#fff8f0]/80" />
     <div className="absolute -bottom-[2px] -right-[2px] w-1.5 h-1.5 bg-[#fff8f0]/80" />
 
-    <div className="flex justify-between items-center text-xs tracking-[0.15em] text-[#fff8f0]">
-      <div className="flex items-center gap-3">
+    <div className="flex justify-between items-center max-md:gap-1 text-[9px] tracking-[0.08em] md:text-xs md:tracking-[0.15em] text-[#fff8f0]">
+      <div className="flex items-center gap-1.5 md:gap-3 max-md:min-w-0">
         <PixelIcon type={icon} />
         {name}
       </div>
@@ -245,15 +319,30 @@ export const IslandJourney5: React.FC<IslandJourney5Props> = ({ onReady }) => {
           state.width / img.width,
           state.height / img.height
         );
-        const scale = baseScale * 1.166;
+        let scale = baseScale * 1.166;
+        const portrait = isPortraitPhone(state.width, state.height);
+
+        if (portrait) {
+          // Phones: a 16:9 frame letterboxed into a tall screen is a thin strip. Fill the
+          // bands with a blurred cover of the same frame, and draw the frame larger.
+          drawBlurredCover(ctx, img, state.width, state.height);
+          scale = Math.max(scale, (state.height * PORTRAIT_FILL) / img.height);
+        }
 
         const drawWidth = img.width * scale;
         const drawHeight = img.height * scale;
 
-        const x = (state.width - drawWidth) / 2;
+        let x = (state.width - drawWidth) / 2;
         const y = (state.height - drawHeight) / 2;
 
-        ctx.drawImage(img, x, y, drawWidth, drawHeight);
+        if (drawWidth > state.width) {
+          // Cropped sideways (portrait only): keep the island in view as it drifts across the frame
+          const fx = portraitFocusX(frameToDraw / (FRAME_COUNT - 1));
+          x = Math.min(0, Math.max(state.width - drawWidth, state.width / 2 - fx * drawWidth));
+        }
+
+        if (portrait) drawFeathered(ctx, img, x, y, drawWidth, drawHeight, state.width);
+        else ctx.drawImage(img, x, y, drawWidth, drawHeight);
       }
 
       state.animationFrameId = requestAnimationFrame(drawFrame);
@@ -325,7 +414,9 @@ export const IslandJourney5: React.FC<IslandJourney5Props> = ({ onReady }) => {
 
       // Calculate exactly where headingRef needs to move so its NEW visual center hits the nav bar center
       const targetX = (window.innerWidth / 2) - (finalLocalCx * scaleTarget) - headRect.left;
-      const targetY = 28 - (finalLocalCy * scaleTarget) - headRect.top; // 28 is nav center Y
+      // 28 is the nav center Y; on phones the nav pills fill the row, so sit just below them
+      const navCenterY = window.innerWidth < 768 ? 64 : 28;
+      const targetY = navCenterY - (finalLocalCy * scaleTarget) - headRect.top;
 
       textTl.to(headingRef.current, {
         x: targetX,
@@ -661,7 +752,7 @@ export const IslandJourney5: React.FC<IslandJourney5Props> = ({ onReady }) => {
           </div>
 
           {/* End Frame Content */}
-          <div ref={endTextRef} className="absolute inset-0 pointer-events-none flex flex-col justify-between p-8 md:p-12 font-minecraft text-[#fff8f0] opacity-0 z-20">
+          <div ref={endTextRef} className="absolute inset-0 pointer-events-none flex flex-col justify-between px-5 pt-16 pb-6 md:p-12 font-minecraft text-[#fff8f0] opacity-0 z-20">
 
             {/* Top Row */}
             <div className="flex justify-between items-start w-full">
@@ -677,19 +768,19 @@ export const IslandJourney5: React.FC<IslandJourney5Props> = ({ onReady }) => {
             </div>
 
             {/* Left Content */}
-            <div className="flex-1 flex flex-col justify-center max-w-sm mt-12 gap-8 pointer-events-auto">
+            <div className="flex-1 flex flex-col justify-center max-w-sm mt-2 gap-4 md:mt-12 md:gap-8 pointer-events-auto">
               {/* 100% Section */}
               <div>
-                <h1 className="text-9xl mb-4 text-[#fffce0] drop-shadow-[0_0_15px_rgba(255,252,200,0.5)]">100%</h1>
-                <p className="text-lg leading-relaxed text-[#fff8f0]/80 font-sans tracking-wide">
-                  dedicated to pixel-perfect execution,<br />
-                  immersive animations, and<br />
+                <h1 className="text-6xl mb-2 md:text-9xl md:mb-4 text-[#fffce0] drop-shadow-[0_0_15px_rgba(255,252,200,0.5)]">100%</h1>
+                <p className="text-sm md:text-lg leading-relaxed text-[#fff8f0]/80 font-sans tracking-wide">
+                  dedicated to pixel-perfect execution,{' '}<br className="max-md:hidden" />
+                  immersive animations, and{' '}<br className="max-md:hidden" />
                   flawless web performance.
                 </p>
               </div>
 
               {/* Divider */}
-              <div className="flex items-center gap-4 w-64 my-2">
+              <div className="flex items-center gap-4 w-40 md:w-64 my-0 md:my-2">
                 <div className="h-[1px] flex-1 bg-[#fff8f0]/30"></div>
                 <div className="w-2 h-2 rotate-45 bg-[#ffb6c1] drop-shadow-[0_0_8px_rgba(255,182,193,0.8)]"></div>
                 <div className="h-[1px] flex-1 bg-[#fff8f0]/30"></div>
@@ -697,23 +788,23 @@ export const IslandJourney5: React.FC<IslandJourney5Props> = ({ onReady }) => {
 
               {/* Statement */}
               <div>
-                <h2 className="text-4xl leading-tight mb-4 text-[#fffce0] drop-shadow-[0_0_12px_rgba(255,252,200,0.4)]">
+                <h2 className="text-2xl md:text-4xl leading-tight mb-2 md:mb-4 text-[#fffce0] drop-shadow-[0_0_12px_rgba(255,252,200,0.4)]">
                   A developer who thinks<br />
                   like a <span className="text-[#ffb6c1] drop-shadow-[0_0_10px_rgba(255,182,193,0.6)]">designer.</span>
                 </h2>
-                <p className="text-[17px] leading-relaxed text-[#fff8f0]/80 font-sans tracking-wide">
-                  I craft digital experiences by blending<br />
-                  engineering, creativity, and thoughtful design —<br />
-                  turning ideas into products that feel intuitive,<br />
+                <p className="text-sm md:text-[17px] leading-relaxed text-[#fff8f0]/80 font-sans tracking-wide">
+                  I craft digital experiences by blending{' '}<br className="max-md:hidden" />
+                  engineering, creativity, and thoughtful design —{' '}<br className="max-md:hidden" />
+                  turning ideas into products that feel intuitive,{' '}<br className="max-md:hidden" />
                   human, and memorable.
                 </p>
               </div>
             </div>
 
             {/* Bottom Section */}
-            <div className="flex flex-col w-full gap-6">
+            <div className="flex flex-col w-full gap-3 md:gap-6">
               {/* Skill Bars */}
-              <div className="flex flex-col md:flex-row gap-4 md:gap-6 w-full px-8 md:px-20 lg:px-32">
+              <div className="grid grid-cols-2 md:flex md:flex-row gap-2 md:gap-6 w-full px-0 md:px-20 lg:px-32">
                 <SkillModule name="PRECISION" value="92%" icon="precision" />
                 <SkillModule name="ENGINEERING" value="88%" icon="engineering" />
                 <SkillModule name="DESIGN THINKING" value="90%" icon="design" />
@@ -721,7 +812,7 @@ export const IslandJourney5: React.FC<IslandJourney5Props> = ({ onReady }) => {
               </div>
 
               {/* Scroll To Explore - Below the boxes */}
-              <div className="text-[10px] tracking-widest text-[#ffb6c1] drop-shadow-[0_0_8px_rgba(255,182,193,0.6)] flex items-center justify-end w-full px-8 md:px-20 lg:px-32 gap-2 whitespace-nowrap">
+              <div className="text-[10px] tracking-widest text-[#ffb6c1] drop-shadow-[0_0_8px_rgba(255,182,193,0.6)] flex items-center justify-end w-full px-0 md:px-20 lg:px-32 gap-2 whitespace-nowrap">
                 SCROLL TO EXPLORE <span>+</span>
               </div>
             </div>

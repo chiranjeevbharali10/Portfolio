@@ -1,5 +1,5 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import type { ThreeEvent } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -275,6 +275,15 @@ const VinylSleeve: React.FC<VinylSleeveProps> = ({ index, activeIndex, setActive
   );
 };
 
+// Narrow portrait screens (phones) can't fit the 4-unit sleeve: shrink the whole row to fit.
+// Landscape/desktop viewports are far wider than this, so the scale stays exactly 1 there.
+const FIT_WIDTH = 4.8;
+const FitToViewport: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const width = useThree((s) => s.viewport.width);
+  const scale = Math.min(1, width / FIT_WIDTH);
+  return <group scale={scale}>{children}</group>;
+};
+
 export const ArtworksCanvas: React.FC<{ activeIndex: number, setActiveIndex: (index: number) => void }> = ({ activeIndex, setActiveIndex }) => {
   return (
     <div className="absolute inset-0 w-full h-full z-20 pointer-events-none">
@@ -283,14 +292,16 @@ export const ArtworksCanvas: React.FC<{ activeIndex: number, setActiveIndex: (in
         className="pointer-events-auto"
       >
         {/* Render exactly 4 items now */}
-        {[0, 1, 2, 3].map((i) => (
-          <VinylSleeve 
-            key={i} 
-            index={i} 
-            activeIndex={activeIndex}
-            setActiveIndex={setActiveIndex}
-          />
-        ))}
+        <FitToViewport>
+          {[0, 1, 2, 3].map((i) => (
+            <VinylSleeve 
+              key={i} 
+              index={i} 
+              activeIndex={activeIndex}
+              setActiveIndex={setActiveIndex}
+            />
+          ))}
+        </FitToViewport>
       </Canvas>
     </div>
   );
