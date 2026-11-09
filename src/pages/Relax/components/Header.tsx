@@ -50,7 +50,7 @@ export const Header: React.FC = () => {
   const titleText = "Justtt Relaxxx";
 
   return (
-    <header className="fixed top-0 left-0 w-full z-[100] px-6 md:px-12 py-6 md:py-8 flex items-center justify-center gap-6 sm:gap-12 md:gap-20 text-[#1A1A1A] pointer-events-none">
+    <header className="fixed top-0 left-0 w-full z-[100] px-4 sm:px-6 md:px-12 py-6 md:py-8 flex items-center justify-center gap-3 sm:gap-12 md:gap-20 text-[#1A1A1A] pointer-events-none">
       
       {/* LEFT: Home Pill */}
       <div className="flex pointer-events-auto pb-1 sm:pb-2">
@@ -65,7 +65,7 @@ export const Header: React.FC = () => {
       {/* CENTER: Animated Title */}
       <div className="flex justify-center mt-[-4px]">
         {/* Switched to Asgard font, adjusted sizes to fit better together */}
-        <h1 className="font-asgard text-3xl sm:text-4xl md:text-[2.75rem] text-center leading-none flex flex-wrap justify-center pointer-events-auto" style={{ textTransform: 'lowercase' }}>
+        <h1 className="font-asgard text-[1.6rem] whitespace-nowrap sm:whitespace-normal sm:text-4xl md:text-[2.75rem] text-center leading-none flex flex-nowrap sm:flex-wrap justify-center pointer-events-auto" style={{ textTransform: 'lowercase' }}>
           {titleText.split('').map((char, index) => {
             // Keep the space character intact
             if (char === ' ') {

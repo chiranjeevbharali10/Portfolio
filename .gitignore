@@ -26,3 +26,6 @@ dist-ssr
 *.glb
 *.zip
 *.mp4
+
+# Local project notes (not part of the site)
+Readmes/

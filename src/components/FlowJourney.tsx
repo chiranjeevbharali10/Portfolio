@@ -291,7 +291,7 @@ export const FlowJourney = () => {
   }, { scope: containerRef });
 
   return (
-    <div ref={containerRef} className="relative w-full bg-black">
+    <div ref={containerRef} className="relative w-full bg-black max-md:overflow-x-clip">
       
       {/* MASTER BACKGROUND (Sticky for all 550vh) */}
       <div className="sticky top-0 w-full h-screen flex items-center justify-center pointer-events-none z-10 overflow-hidden">
@@ -375,10 +375,12 @@ export const FlowJourney = () => {
           <div className="absolute inset-0 w-full h-full max-w-[1400px] mx-auto pointer-events-none z-30">
             <div 
               ref={carMoverRef} 
-              className="absolute w-[300px] h-[300px] pointer-events-none"
+              className="absolute w-[300px] h-[300px] max-md:w-[170px] max-md:h-[170px] pointer-events-none"
               style={{ left: '50%', top: '0%' }}
             >
-              {/* Headlight beam (night) - sits behind the car, rotated to its heading */}
+              {/* Headlight beam (night) - sits behind the car, rotated to its heading.
+                  Wrapper shrinks it with the smaller phone car. */}
+              <div className="absolute inset-0 pointer-events-none max-md:scale-[0.57]">
               <div
                 ref={beamRef}
                 className="absolute pointer-events-none"
@@ -399,6 +401,7 @@ export const FlowJourney = () => {
                     background: 'linear-gradient(to right, rgba(255,238,190,0.42), rgba(255,238,190,0.1) 70%, rgba(255,238,190,0))',
                   }}
                 />
+              </div>
               </div>
               <div className="relative w-full h-full">
                 <FlowCar />
@@ -440,14 +443,14 @@ export const FlowJourney = () => {
           <div className="relative w-full h-full max-w-6xl mx-auto px-6 z-30 pt-[20vh]">
               
               {/* MILESTONE 1: (y=1000 / 5000 = 20%) */}
-              <div className="absolute right-[5%] sm:right-[10%] md:right-[15%] w-full max-w-[500px]" style={{ top: "20%" }}>
+              <div className="absolute right-[5%] sm:right-[10%] md:right-[15%] w-full max-w-[500px] max-md:w-[62%]" style={{ top: "20%" }}>
                 <div className="milestone-block relative flex flex-col items-end text-right -translate-y-1/2">
-                  <h3 className="absolute -top-16 -right-10 font-podium text-[8rem] md:text-[12rem] tracking-tighter -z-10 pointer-events-none select-none">2020</h3>
+                  <h3 className="absolute -top-16 -right-10 max-md:-top-8 max-md:-right-1 font-podium text-[8rem] max-md:text-[4.5rem] md:text-[12rem] tracking-tighter -z-10 pointer-events-none select-none">2020</h3>
                   <div className="flex items-center gap-4">
-                    <h4 className="font-podium text-3xl md:text-5xl uppercase tracking-tight text-black">Creative<br/>Beginnings</h4>
+                    <h4 className="font-podium text-3xl max-md:text-2xl md:text-5xl uppercase tracking-tight text-black">Creative<br/>Beginnings</h4>
                   </div>
-                  <div className="divider-line h-1 bg-black my-6"></div>
-                  <ul className="font-inter text-sm md:text-base space-y-4 max-w-[400px] list-none">
+                  <div className="divider-line h-1 bg-black my-6 max-md:my-3"></div>
+                  <ul className="font-inter text-sm max-md:text-[13px] max-md:leading-snug md:text-base space-y-4 max-md:space-y-2 max-w-[400px] list-none">
                     <li>Joined a student club and discovered my passion for design.</li>
                     <li>Created posters, event branding, and social media creatives.</li>
                     <li>Learned Adobe Photoshop and built a strong foundation in visual communication.</li>
@@ -456,14 +459,14 @@ export const FlowJourney = () => {
               </div>
 
               {/* MILESTONE 2: (y=1800 / 5000 = 36%) */}
-              <div className="absolute left-[5%] sm:left-[10%] md:left-[15%] w-full max-w-[500px]" style={{ top: "36%" }}>
+              <div className="absolute left-[5%] sm:left-[10%] md:left-[15%] w-full max-w-[500px] max-md:w-[62%]" style={{ top: "36%" }}>
                 <div className="milestone-block relative flex flex-col items-start text-left -translate-y-1/2">
-                  <h3 className="absolute -top-16 -left-10 font-podium text-[8rem] md:text-[12rem] tracking-tighter -z-10 pointer-events-none select-none">2023</h3>
+                  <h3 className="absolute -top-16 -left-10 max-md:-top-8 max-md:-left-1 font-podium text-[8rem] max-md:text-[4.5rem] md:text-[12rem] tracking-tighter -z-10 pointer-events-none select-none">2023</h3>
                   <div className="flex items-center gap-4">
-                    <h4 className="font-podium text-3xl md:text-5xl uppercase tracking-tight text-black">First Lines<br/>of Code</h4>
+                    <h4 className="font-podium text-3xl max-md:text-2xl md:text-5xl uppercase tracking-tight text-black">First Lines<br/>of Code</h4>
                   </div>
-                  <div className="divider-line h-1 bg-black my-6"></div>
-                  <ul className="font-inter text-sm md:text-base space-y-4 max-w-[400px] list-none">
+                  <div className="divider-line h-1 bg-black my-6 max-md:my-3"></div>
+                  <ul className="font-inter text-sm max-md:text-[13px] max-md:leading-snug md:text-base space-y-4 max-md:space-y-2 max-w-[400px] list-none">
                     <li>Wrote my first lines of code in Python.</li>
                     <li>Started exploring UI and interface design with Figma.</li>
                     <li>Began seeing design and programming as complementary skills rather than separate disciplines.</li>
@@ -472,14 +475,14 @@ export const FlowJourney = () => {
               </div>
 
               {/* MILESTONE 3: (y=2600 / 5000 = 52%) */}
-              <div className="absolute right-[5%] sm:right-[10%] md:right-[15%] w-full max-w-[500px]" style={{ top: "52%" }}>
+              <div className="absolute right-[5%] sm:right-[10%] md:right-[15%] w-full max-w-[500px] max-md:w-[62%]" style={{ top: "52%" }}>
                 <div className="milestone-block relative flex flex-col items-end text-right -translate-y-1/2">
-                  <h3 className="absolute -top-16 -right-10 font-podium text-[8rem] md:text-[12rem] tracking-tighter -z-10 pointer-events-none select-none">2025</h3>
+                  <h3 className="absolute -top-16 -right-10 max-md:-top-8 max-md:-right-1 font-podium text-[8rem] max-md:text-[4.5rem] md:text-[12rem] tracking-tighter -z-10 pointer-events-none select-none">2025</h3>
                   <div className="flex items-center gap-4">
-                    <h4 className="font-podium text-3xl md:text-5xl uppercase tracking-tight text-black">Research<br/>& Growth</h4>
+                    <h4 className="font-podium text-3xl max-md:text-2xl md:text-5xl uppercase tracking-tight text-black">Research<br/>& Growth</h4>
                   </div>
-                  <div className="divider-line h-1 bg-black my-6"></div>
-                  <ul className="font-inter text-sm md:text-base space-y-4 max-w-[400px] list-none">
+                  <div className="divider-line h-1 bg-black my-6 max-md:my-3"></div>
+                  <ul className="font-inter text-sm max-md:text-[13px] max-md:leading-snug md:text-base space-y-4 max-md:space-y-2 max-w-[400px] list-none">
                     <li>Focused on learning deep learning and modern AI concepts.</li>
                     <li>Completed a Research Internship through the IEEE Computer Society Research Program in September.</li>
                     <li>Shifted focus toward backend development and began building server-side applications.</li>
@@ -489,14 +492,14 @@ export const FlowJourney = () => {
               </div>
 
               {/* MILESTONE 4: (y=3400 / 5000 = 68%) */}
-              <div className="absolute left-[5%] sm:left-[10%] md:left-[15%] w-full max-w-[500px]" style={{ top: "68%" }}>
+              <div className="absolute left-[5%] sm:left-[10%] md:left-[15%] w-full max-w-[500px] max-md:w-[62%]" style={{ top: "68%" }}>
                 <div className="milestone-block relative flex flex-col items-start text-left -translate-y-1/2">
-                  <h3 className="absolute -top-16 -left-10 font-podium text-[8rem] md:text-[12rem] tracking-tighter -z-10 pointer-events-none select-none">2026</h3>
+                  <h3 className="absolute -top-16 -left-10 max-md:-top-8 max-md:-left-1 font-podium text-[8rem] max-md:text-[4.5rem] md:text-[12rem] tracking-tighter -z-10 pointer-events-none select-none">2026</h3>
                   <div className="flex items-center gap-4">
-                    <h4 className="font-podium text-3xl md:text-5xl uppercase tracking-tight text-black">Production<br/>Systems</h4>
+                    <h4 className="font-podium text-3xl max-md:text-2xl md:text-5xl uppercase tracking-tight text-black">Production<br/>Systems</h4>
                   </div>
-                  <div className="divider-line h-1 bg-black my-6"></div>
-                  <ul className="font-inter text-sm md:text-base space-y-4 max-w-[400px] list-none">
+                  <div className="divider-line h-1 bg-black my-6 max-md:my-3"></div>
+                  <ul className="font-inter text-sm max-md:text-[13px] max-md:leading-snug md:text-base space-y-4 max-md:space-y-2 max-w-[400px] list-none">
                     <li>Joined NEEPCO as a Backend Intern.</li>
                     <li>Contributed to backend project development and real-world application features.</li>
                     <li>Gained experience collaborating in a professional development environment.</li>
@@ -506,14 +509,14 @@ export const FlowJourney = () => {
               </div>
 
               {/* MILESTONE 5: (y=4200 / 5000 = 84%) */}
-              <div className="absolute right-[5%] sm:right-[10%] md:right-[15%] w-full max-w-[500px]" style={{ top: "84%" }}>
+              <div className="absolute right-[5%] sm:right-[10%] md:right-[15%] w-full max-w-[500px] max-md:w-[62%]" style={{ top: "84%" }}>
                 <div className="milestone-block relative flex flex-col items-end text-right -translate-y-1/2">
-                  <h3 className="absolute -top-16 -right-10 font-podium text-[8rem] md:text-[12rem] tracking-tighter -z-10 pointer-events-none select-none">TODAY</h3>
+                  <h3 className="absolute -top-16 -right-10 max-md:-top-8 max-md:-right-1 font-podium text-[8rem] max-md:text-[4.5rem] md:text-[12rem] tracking-tighter -z-10 pointer-events-none select-none">TODAY</h3>
                   <div className="flex items-center gap-4">
-                    <h4 className="font-podium text-3xl md:text-5xl uppercase tracking-tight text-black">The<br/>Journey</h4>
+                    <h4 className="font-podium text-3xl max-md:text-2xl md:text-5xl uppercase tracking-tight text-black">The<br/>Journey</h4>
                   </div>
-                  <div className="divider-line h-1 bg-black my-6"></div>
-                  <ul className="font-inter text-sm md:text-base max-w-[400px] list-none space-y-4">
+                  <div className="divider-line h-1 bg-black my-6 max-md:my-3"></div>
+                  <ul className="font-inter text-sm max-md:text-[13px] md:text-base max-w-[400px] list-none space-y-4">
                     <li className="leading-relaxed">From graphic design to AI research and backend engineering, my journey has been driven by curiosity and a desire to build thoughtful, impactful software.</li>
                   </ul>
                 </div>
