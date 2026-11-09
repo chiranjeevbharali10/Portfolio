@@ -1,58 +1,82 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { PROJECTS } from '../data/projects';
+import { CREAM, INK, ProjectBadge, ProjectVinyl } from './projects/ProjectBadge';
+import { loadProjects } from '../utils/routePrefetch';
+
 /**
- * Decorative landing card: a rotating text badge and a spinning vinyl record.
- * Pure CSS/SVG transforms (GPU-composited), no JavaScript or WebGL, so it costs
- * almost nothing on phones. Replaces the old three.js flower/globe ShowcaseCard.
+ * Landing "record player of projects": the badge plays a tiny live demo of each project
+ * in turn, the vinyl shows its track. The whole card opens the /projects page.
+ * Styled after the SMOI site: cream + pastels, charcoal borders, hard offset shadows.
  */
-const BADGE_TEXT = 'CHIRANJEEV ✦ CREATIVE DEVELOPER ✦ ';
 
-// Square that fits both constraints: 78% of the card's width, 36% of its height
-const CIRCLE = { width: 'min(78cqw, 36cqh)', height: 'min(78cqw, 36cqh)' };
+const AUTO_MS = 6000;
 
-export const BadgeCard = ({ className = '' }: { className?: string }) => (
-  <div
-    aria-hidden="true"
-    className={`group relative bg-[#FFF4E4] rounded-[24px] sm:rounded-[32px] overflow-hidden border-2 border-black p-2 sm:p-2.5 ${className}`}
-  >
-    {/* Size container: circles use container units so they stay perfectly round
-        whether the card is narrow (width-limited) or short (height-limited). */}
-    <div
-      className="w-full h-full border-[2px] border-black/80 rounded-[18px] sm:rounded-[24px] flex flex-col items-center justify-center gap-[6cqh] overflow-hidden pointer-events-none"
-      style={{ containerType: 'size' }}
+// Both disks the same size, as large as the card allows (stays round in any card shape)
+const DISK = { width: 'min(86cqw, 41cqh)', height: 'min(86cqw, 41cqh)' };
+
+export const BadgeCard = ({ className = '' }: { className?: string }) => {
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const project = PROJECTS[index];
+
+  // Cycle through the projects, paused while the visitor is pointing at the card
+  useEffect(() => {
+    if (paused) return;
+    const id = window.setTimeout(() => setIndex((i) => (i + 1) % PROJECTS.length), AUTO_MS);
+    return () => window.clearTimeout(id);
+  }, [index, paused]);
+
+  return (
+    <Link
+      to="/projects"
+      aria-label="See my projects"
+      onPointerEnter={() => { setPaused(true); loadProjects(); }}
+      onPointerLeave={() => setPaused(false)}
+      onFocus={loadProjects}
+      className={`group relative block rounded-[24px] sm:rounded-[32px] overflow-hidden border-2 p-2 sm:p-2.5 transition-transform duration-500 hover:scale-[0.98] ${className}`}
+      style={{ background: CREAM, borderColor: INK, color: INK, boxShadow: `0 6px 0 ${INK}` }}
     >
-      {/* TOP: rotating text badge around a pulsing star */}
-      <div className="bg-black rounded-full relative flex items-center justify-center transition-transform duration-500 group-hover:scale-[1.03] shrink-0" style={CIRCLE}>
-        <svg viewBox="0 0 200 200" className="badge-spin absolute inset-0 w-full h-full">
-          <defs>
-            <path id="badge-circle" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0" />
-          </defs>
-          <text className="font-podium" fill="#FFF4E4" fontSize="17" letterSpacing="1.5">
-            <textPath href="#badge-circle" textLength="462" lengthAdjust="spacing">
-              {BADGE_TEXT}
-            </textPath>
-          </text>
-        </svg>
-        <span className="badge-pulse text-[#FF2D9A] text-4xl sm:text-5xl leading-none drop-shadow-[0_0_12px_rgba(255,45,154,0.6)]">✦</span>
-      </div>
-
-      {/* BOTTOM: spinning vinyl record */}
-      <div className="rounded-full relative transition-transform duration-500 group-hover:scale-[1.03] shrink-0" style={CIRCLE}>
-        {/* Disc + grooves + label spin together; the label text makes the spin visible */}
-        <div
-          className="vinyl-spin absolute inset-0 rounded-full"
-          style={{ background: 'repeating-radial-gradient(circle, #0b0b0b 0 2px, #1b1b1b 2px 3.5px)' }}
-        >
-          <div className="absolute inset-[32%] rounded-full bg-[#FF2D9A] flex items-center justify-center">
-            {/* Off-centre mark so the spin is visible; sized to the label so it never overflows */}
-            <span className="absolute top-[14%] left-1/2 -translate-x-1/2 text-black leading-none" style={{ fontSize: '0.75em' }}>✦</span>
-            <span className="absolute w-[14%] aspect-square rounded-full bg-[#FFF4E4]" />
+      {/* Size container: everything inside is sized in container units */}
+      <div
+        className="relative w-full h-full border-2 rounded-[18px] sm:rounded-[24px] flex flex-col items-center justify-evenly overflow-hidden px-3 py-2.5"
+        style={{
+          containerType: 'size',
+          borderColor: INK,
+          backgroundImage: 'radial-gradient(#c9d8f4 1px, transparent 1.2px)',
+          backgroundSize: '12px 12px',
+        }}
+      >
+        {/* Header: highlighted label + which project is playing */}
+        <div className="w-full flex items-center justify-between leading-none">
+          <span className="relative font-minecraft tracking-widest px-[3px]" style={{ fontSize: 'clamp(10px, 8.5cqw, 16px)' }}>
+            {/* highlighter mark, like the SMOI site's headings */}
+            <span
+              className="absolute left-0 right-0 bottom-[-2px] h-[60%] rounded-[3px] transition-colors duration-500"
+              style={{ background: project.color }}
+              aria-hidden="true"
+            />
+            <span className="relative">PROJECTS</span>
+          </span>
+          <div className="flex gap-[3px]" aria-hidden="true">
+            {PROJECTS.map((p, i) => (
+              <span
+                key={p.id}
+                className="w-[8px] h-[8px] rounded-full border-[1.5px] transition-colors duration-500"
+                style={{ borderColor: INK, background: i === index ? p.color : 'transparent' }}
+              />
+            ))}
           </div>
         </div>
-        {/* Static sheen: real vinyl reflections stay put while the disc turns */}
-        <div
-          className="absolute inset-0 rounded-full pointer-events-none"
-          style={{ background: 'conic-gradient(from 40deg, transparent 0 8%, rgba(255,255,255,0.14) 12%, transparent 18% 50%, rgba(255,255,255,0.1) 62%, transparent 68%)' }}
+
+        <ProjectBadge project={project} style={DISK} className="transition-transform duration-500 group-hover:scale-[1.03]" />
+
+        <ProjectVinyl
+          project={project}
+          className="transition-transform duration-500 group-hover:scale-[1.03] group-hover:rotate-12"
+          style={{ ...DISK, fontSize: 'clamp(7px, 5cqw, 12px)' }}
         />
       </div>
-    </div>
-  </div>
-);
+    </Link>
+  );
+};

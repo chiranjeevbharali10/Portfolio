@@ -8,13 +8,14 @@ import { LoadingScreen } from "./components/LoadingScreen";
 
 // Pages
 import { Landing } from "./pages/Landing";
-import { loadRelax, loadUniverse } from "./utils/routePrefetch";
+import { loadProjects, loadRelax, loadUniverse } from "./utils/routePrefetch";
 
 // Heavy routes are split into their own chunks so the landing page doesn't
 // download three.js / R3F / postprocessing up front.
 const Universe = lazy(() => loadUniverse().then((m) => ({ default: m.Universe })));
 const ThreeTestPage = lazy(() => import("./pages/ThreeTestPage").then((m) => ({ default: m.ThreeTestPage })));
 const CreativeDeveloper = lazy(() => import("./pages/CreativeDeveloper").then((m) => ({ default: m.CreativeDeveloper })));
+const Projects = lazy(() => loadProjects().then((m) => ({ default: m.Projects })));
 const Relax = lazy(() => loadRelax().then((m) => ({ default: m.Relax })));
 const IslandJourney5Page = lazy(() => import("./pages/IslandJourney5Page").then((m) => ({ default: m.IslandJourney5Page })));
 const Island6Page = lazy(() => import("./pages/Island6Page").then((m) => ({ default: m.Island6Page })));
@@ -24,6 +25,7 @@ function App() {
   const isLanding = location.pathname === "/";
   const isCreative = location.pathname === "/creative";
   const isRelax = location.pathname === "/relax";
+  const isProjects = location.pathname === "/projects";
   const isPlayground = location.pathname.startsWith("/playground");
   const isIsland5 = location.pathname === "/island_5";
   const isIsland6 = location.pathname === "/island_6";
@@ -43,11 +45,11 @@ function App() {
   return (
     <main className="relative w-full min-h-screen bg-transparent selection:bg-accent selection:text-black">
       <LoadingScreen />
-      {!isCreative && !isRelax && <CustomCursor />}
+      {!isCreative && !isRelax && !isProjects && <CustomCursor />}
       <CinematicBackground />
-      {!isLanding && !isRelax && <FloatingObjects />}
+      {!isLanding && !isRelax && !isProjects && <FloatingObjects />}
 
-      {!isLanding && !isCreative && !isRelax && <Navbar />}
+      {!isLanding && !isCreative && !isRelax && !isProjects && <Navbar />}
 
       <Suspense fallback={null}>
       <Routes>
@@ -55,6 +57,7 @@ function App() {
         <Route path="/universe" element={<Universe />} />
         <Route path="/creative" element={<CreativeDeveloper />} />
         <Route path="/relax" element={<Relax />} />
+        <Route path="/projects" element={<Projects />} />
       </Routes>
       </Suspense>
     </main>
