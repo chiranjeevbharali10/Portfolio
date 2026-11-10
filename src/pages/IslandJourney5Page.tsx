@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { IslandJourney5 } from '../components/IslandJourney5';
 import { FlowJourney } from '../components/FlowJourney';
 import { SkillsShooter } from '../components/skills-shooter/SkillsShooter';
+import { ProjectsInvite } from '../components/ProjectsInvite';
 import { RelaxInvite } from '../components/RelaxInvite';
 import { lenis } from '../utils/smoothScroll';
 
@@ -48,6 +49,7 @@ export const IslandJourney5Page: React.FC = () => {
       <div id="skills">
         <SkillsShooter />
       </div>
+      <ProjectsInvite />
       <RelaxInvite />
     </div>
   );

@@ -87,11 +87,15 @@ export const SidePeek = ({ status, hitKey }: Props) => {
     return () => io.disconnect();
   }, []);
 
-  // Duck away while the relax invite (the next "speaker") is on screen, so two avatars
-  // never talk at once; come back when it leaves. See RelaxInvite.
+  // Duck away while an invite card (projects / relax, the next "speakers") is on screen, so
+  // two avatars never talk at once; come back once none are. See ProjectsInvite / RelaxInvite.
   useEffect(() => {
+    const shown = new Set<string>();
     const onInvite = (e: Event) => {
-      const visible = (e as CustomEvent<{ visible: boolean }>).detail.visible;
+      const { id, visible: on } = (e as CustomEvent<{ id: string; visible: boolean }>).detail;
+      if (on) shown.add(id);
+      else shown.delete(id);
+      const visible = shown.size > 0;
       if (visible === away.current) return;
       away.current = visible;
       if (!started.current) return;

@@ -25,12 +25,12 @@ export const RelaxInvite = () => {
     if (!el) return;
     // Tell the skills section's fun-fact avatar to step aside while this is on screen
     const io = new IntersectionObserver(([entry]) => {
-      window.dispatchEvent(new CustomEvent('relax-invite', { detail: { visible: entry.isIntersecting } }));
+      window.dispatchEvent(new CustomEvent('relax-invite', { detail: { id: 'relax', visible: entry.isIntersecting } }));
     }, { threshold: 0.4 });
     io.observe(el);
     return () => {
       io.disconnect();
-      window.dispatchEvent(new CustomEvent('relax-invite', { detail: { visible: false } }));
+      window.dispatchEvent(new CustomEvent('relax-invite', { detail: { id: 'relax', visible: false } }));
     };
   }, []);
 
