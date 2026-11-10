@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { IslandJourney5 } from '../components/IslandJourney5';
 import { FlowJourney } from '../components/FlowJourney';
 import { SkillsShooter } from '../components/skills-shooter/SkillsShooter';
+import { ProjectsInvite } from '../components/ProjectsInvite';
 import { RelaxInvite } from '../components/RelaxInvite';
 import { lenis } from '../utils/smoothScroll';
 
@@ -48,7 +49,13 @@ export const IslandJourney5Page: React.FC = () => {
       <div id="skills">
         <SkillsShooter />
       </div>
-      <RelaxInvite />
+      {/* Two invite banners stacked, together filling one screen (phones just stack them) */}
+      <div className="w-full bg-[#050505] px-3 sm:px-6 md:px-10 pb-16 md:pb-24">
+        <div className="grid gap-4 md:gap-5 lg:grid-rows-2 lg:h-[calc(100svh-4rem)] lg:min-h-[560px]">
+          <ProjectsInvite />
+          <RelaxInvite />
+        </div>
+      </div>
     </div>
   );
 };
