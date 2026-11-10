@@ -1,29 +1,29 @@
 import { ArrowUpRight } from 'lucide-react';
 import type { Project } from '../../../data/projects';
 
-type Theme = 'neon' | 'gallery' | 'terminal' | 'smoi';
+type Theme = 'pit' | 'museum' | 'blueprint' | 'smoi';
 
 const STYLES: Record<Theme, { stat: string; value: string; label: string; chip: string; link: string }> = {
-  neon: {
-    stat: 'border border-[#35fe5d]/30 bg-black rounded-xl',
-    value: 'font-podium text-3xl text-[#35fe5d]',
+  pit: {
+    stat: 'border-l-4 border-[#ffd60a] bg-[#17181b]',
+    value: 'font-podium italic text-4xl text-white',
     label: 'font-mono text-[10px] tracking-widest text-white/50 uppercase',
-    chip: 'font-mono text-xs border border-white/15 text-white/70 rounded-md px-2.5 py-1',
-    link: 'bg-[#35fe5d] text-black rounded-lg font-mono text-xs uppercase tracking-widest px-5 py-3 hover:bg-white',
+    chip: 'font-mono text-xs uppercase tracking-wider border border-white/20 text-white/75 px-2.5 py-1',
+    link: 'bg-[#ffd60a] text-black font-mono text-xs font-bold uppercase tracking-widest px-5 py-3 hover:bg-white',
   },
-  gallery: {
-    stat: 'border-t-2 border-[#1d1a16]',
-    value: 'font-instrument text-4xl text-[#1d1a16]',
-    label: 'text-[11px] tracking-[0.2em] text-[#1d1a16]/60 uppercase',
-    chip: 'text-xs tracking-wide border border-[#1d1a16]/30 text-[#1d1a16] rounded-full px-3 py-1 italic font-instrument text-sm',
-    link: 'bg-[#1d1a16] text-[#f4efe6] rounded-full text-sm tracking-wide px-6 py-3 hover:bg-[#b23a2a]',
+  museum: {
+    stat: 'border-t border-[#d9b45a]/70',
+    value: 'font-instrument text-4xl text-[#f6ead7]',
+    label: 'text-[11px] tracking-[0.2em] text-[#f6ead7]/65 uppercase',
+    chip: 'font-instrument italic text-sm border border-[#f6ead7]/40 text-[#f6ead7] rounded-full px-3 py-1',
+    link: 'bg-[#f6ead7] text-[#3a0d09] rounded-full text-sm tracking-wide px-6 py-3 hover:bg-[#d9b45a]',
   },
-  terminal: {
-    stat: 'border border-[#2a3242] bg-[#0f141c] rounded-md',
-    value: 'font-mono text-2xl text-[#ff9f43]',
-    label: 'font-mono text-[10px] tracking-widest text-[#8b97ab] uppercase',
-    chip: 'font-mono text-xs bg-[#161d29] border border-[#2a3242] text-[#9fb4d4] rounded px-2.5 py-1',
-    link: 'bg-[#ff9f43] text-[#0b0f15] rounded-md font-mono text-xs uppercase tracking-widest px-5 py-3 hover:bg-[#ffc078]',
+  blueprint: {
+    stat: 'border border-white/40 bg-[#0a2577]/70',
+    value: 'font-mono text-2xl text-[#ffe45c]',
+    label: 'font-mono text-[10px] tracking-widest text-[#b5c6f2] uppercase',
+    chip: 'font-mono text-xs border border-dashed border-white/45 text-[#eaf1ff] px-2.5 py-1',
+    link: 'bg-[#ffe45c] text-[#0a2470] font-mono text-xs font-bold uppercase tracking-widest px-5 py-3 hover:bg-white',
   },
   smoi: {
     stat: 'border-2 border-[#514b50] rounded-[14px] bg-[#fffaee] shadow-[0_4px_0_#514b50]',

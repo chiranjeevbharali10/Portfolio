@@ -532,3 +532,42 @@ html.no-scrollbar::-webkit-scrollbar {
 @media (prefers-reduced-motion: reduce) {
   .proj-in, .llm-bar, .smoi-lid, .smoi-bob, .proj-marquee { animation: none; }
 }
+
+/* ---- /projects page ---- */
+.proj-marquee-rev {
+  animation: proj-marquee 46s linear infinite reverse;
+}
+/* Hero turntable: the tonearm rides the groove */
+.deck-arm {
+  transform-box: view-box;
+  transform-origin: 88px 12px;
+  animation: deck-arm 3.2s ease-in-out infinite alternate;
+}
+@keyframes deck-arm {
+  from { transform: rotate(-0.9deg); }
+  to { transform: rotate(0.9deg); }
+}
+.vinyl-slow {
+  animation: badge-spin 40s linear infinite;
+}
+/* AI Car: chequered flag strip and hazard tape */
+.pit-checker {
+  background-image: repeating-conic-gradient(#f2f2f2 0 25%, #0c0c0d 0 50%);
+  background-size: 20px 20px;
+}
+.pit-hazard {
+  background-image: repeating-linear-gradient(-45deg, #ffd60a 0 14px, #0c0c0d 14px 28px);
+}
+/* Local LLM: dashed wires between the pipeline boxes, flowing while a request passes */
+.bp-wire {
+  background-image: repeating-linear-gradient(90deg, currentColor 0 4px, transparent 4px 8px);
+}
+.bp-wire-on {
+  animation: bp-wire 0.4s linear infinite;
+}
+@keyframes bp-wire {
+  to { background-position: 8px 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .proj-marquee-rev, .deck-arm, .vinyl-slow, .bp-wire-on { animation: none; }
+}
