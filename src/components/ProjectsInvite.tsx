@@ -35,11 +35,12 @@ export const ProjectsInvite = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} aria-label="See my projects" className="w-full bg-[#050505] px-3 sm:px-6 md:px-10 pb-6 md:pb-10">
-      <div
-        className="relative isolate overflow-hidden rounded-[32px] md:rounded-[48px] min-h-[70vh] flex items-center justify-center px-6 py-20"
-        style={{ backgroundColor: PAPER, color: INK }}
-      >
+    <section
+      ref={sectionRef}
+      aria-label="See my projects"
+      className="relative isolate overflow-hidden rounded-[32px] md:rounded-[48px] min-h-[70vh] lg:min-h-0 lg:h-full flex items-center justify-center px-6 py-20 lg:py-4"
+      style={{ backgroundColor: PAPER, color: INK }}
+    >
         {/* Ripples expanding from the centre */}
         <div aria-hidden="true" className="absolute inset-0 -z-10 pointer-events-none">
           {[0, 1, 2].map((i) => (
@@ -55,14 +56,16 @@ export const ProjectsInvite = () => {
           <div className="absolute inset-0 opacity-[0.22] mix-blend-multiply" style={{ backgroundImage: GRAIN }} />
         </div>
 
-        <div className="relative flex flex-col items-center text-center max-w-2xl">
-          <span className="-rotate-[6deg] border-[1.5px] rounded-full px-4 py-0.5 text-xs sm:text-sm font-bold tracking-wide mb-6" style={{ borderColor: INK }}>
+        <div className="relative w-full max-w-2xl flex flex-col items-center text-center">
+          <div className="flex flex-col items-center">
+          <span className="-rotate-[6deg] border-[1.5px] rounded-full px-4 py-0.5 text-xs sm:text-sm font-bold tracking-wide mb-6 lg:mb-3" style={{ borderColor: INK }}>
             oh, and…
           </span>
 
-          <h2 className="font-asgard text-5xl sm:text-6xl md:text-7xl leading-[1.05] flex flex-wrap justify-center gap-x-3 sm:gap-x-5 lowercase" aria-label={TITLE}>
+          <h2 className="font-asgard text-[2.2rem] min-[400px]:text-[2.6rem] sm:text-6xl md:text-7xl lg:text-[min(4rem,6.6vh)] leading-[1.05] flex flex-wrap justify-center gap-x-3 sm:gap-x-5 lowercase" aria-label={TITLE}>
             {/* Letters grouped per word so lines only break between words */}
-            {TITLE.split(' ').map((word, w) => (
+            {TITLE.split(' ').flatMap((word, w) => [
+              /* Always break after the 2nd word, so both invites' titles sit on two matching lines */
               <span key={w} aria-hidden="true" className="inline-flex whitespace-nowrap">
                 {Array.from(word).map((char, c) => {
                   const i = w * 10 + c;
@@ -76,15 +79,18 @@ export const ProjectsInvite = () => {
                     </span>
                   );
                 })}
-              </span>
-            ))}
+              </span>,
+              ...(w === 1 ? [<span key="br" aria-hidden="true" className="basis-full h-0" />] : []),
+            ])}
           </h2>
+          </div>
 
-          <p className="font-inter text-base sm:text-lg font-medium mt-6 max-w-md opacity-85" aria-live="polite">
+          <div className="flex flex-col items-center">
+          <p className="font-inter text-base sm:text-lg lg:text-base font-medium mt-6 lg:mt-3 max-w-md opacity-85" aria-live="polite">
             {declined ? LATER_REPLY : PROMPT}
           </p>
 
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-10 lg:mt-4 flex flex-wrap items-center justify-center gap-4">
             <Link
               to="/projects"
               onPointerEnter={loadProjects}
@@ -107,8 +113,8 @@ export const ProjectsInvite = () => {
               </button>
             )}
           </div>
+          </div>
         </div>
-      </div>
     </section>
   );
 };
